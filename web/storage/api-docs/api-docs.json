@@ -1,0 +1,232 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Referral API",
+        "description": "This is API Microservice Referral Program",
+        "contact": {
+            "name": "Support Team",
+            "email": "bibrkacity@gmail.com"
+        },
+        "version": "1.0"
+    },
+    "paths": {
+        "/api/v1/referral/analytics/byLink": {
+            "get": {
+                "tags": [
+                    "Referral Analytics"
+                ],
+                "summary": "Get analytics for referral link",
+                "description": "Get analytics for referral link",
+                "parameters": [
+                    {
+                        "name": "user-id",
+                        "in": "header",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "package_name",
+                        "in": "query",
+                        "description": "Package Name",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "net.sumra.chat"
+                    },
+                    {
+                        "name": "dynamic_link",
+                        "in": "query",
+                        "description": "Dynamic Link",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "https://smr.page.link/MD7S"
+                    },
+                    {
+                        "name": "duration_days",
+                        "in": "query",
+                        "description": "Duration in days",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "14"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success getting analytics for referral link"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    },
+                    "404": {
+                        "description": "not found"
+                    }
+                }
+            }
+        },
+        "/api/v1/referral/analytics/unregistered": {
+            "get": {
+                "tags": [
+                    "Referral Analytics"
+                ],
+                "summary": "Get unregistered users (by referral code)",
+                "description": "Get unregistered users. If send referral code then get list by refcode",
+                "operationId": "App\\Api\\V1\\Controllers\\AnalyticsController::unregistered",
+                "parameters": [
+                    {
+                        "name": "referrer_code",
+                        "in": "query",
+                        "description": "Referrer code",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success getting unregistered users (by referral code)"
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                }
+            }
+        },
+        "/api/v1/referral/invite": {
+            "get": {
+                "tags": [
+                    "Referral"
+                ],
+                "summary": "Get user invite code",
+                "description": "Get user referrer invite code",
+                "parameters": [
+                    {
+                        "name": "user-id",
+                        "in": "header",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "package_name",
+                        "in": "query",
+                        "description": "Package Name",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "net.sumra.chat"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success get or generate referrer invite code"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    },
+                    "404": {
+                        "description": "not found"
+                    }
+                }
+            }
+        },
+        "/api/v1/referral": {
+            "get": {
+                "tags": [
+                    "Referral"
+                ],
+                "summary": "List all referrals for user",
+                "description": "List all referrals for user",
+                "parameters": [
+                    {
+                        "name": "user-id",
+                        "in": "header",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success join new user to referrer user"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    },
+                    "404": {
+                        "description": "not found"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Referral"
+                ],
+                "summary": "Join new user to referrer",
+                "description": "Send encryption data: username - New User Name, * package_name (required) - Package Name, referrer_code - Referrer code, * device_id (required) - User Device ID, * device_name (required) - User Device Name",
+                "parameters": [
+                    {
+                        "name": "user-id",
+                        "in": "header",
+                        "description": "New User ID",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "data": {
+                                        "description": "Encrypt data",
+                                        "type": "text",
+                                        "example": ""
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success send data"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    },
+                    "404": {
+                        "description": "not found"
+                    }
+                }
+            }
+        }
+    }
+}

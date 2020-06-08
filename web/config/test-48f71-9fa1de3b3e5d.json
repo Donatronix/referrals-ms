@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "test-48f71",
+  "private_key_id": "9fa1de3b3e5d8a0085a169323aa31aa99cd220bb",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCumgwjI9//4Kw7\nJvUyF2rX3IS7FfoDsDACGO2lqsLmrUQ7E48n/49C6zZRkK/hWuXoSCAr6npwg+1v\nME8mveytL68jbgVh8K/ONPZyd3Os5ROZR26Mcf3DyDksrbiAmxy8J1oo138cHE4J\nS3gHBcrQ48d8YKBh6gM2gvJayakVu290BZ8czCtYnNh/jq4iK1YM+mw1xTmObSn9\nhxwUd9ViMdvmz9IFNkVSTKOD1olS/4AhU6VhuE4E7HnGSiFq2yiDWFbr+9aGNExp\niNxIm+1DM9/luvzVZKLcoVF3gbkIua2wjr7v+7wXFYDTTM0eVrCB7I8BDfEJA3Lf\nqvtMf8p9AgMBAAECggEARyDGVQJmXEzgnPBP7uoPQoS5JaXcRehehlw1Y8newC5R\nn2dmaDr5158Ob8frfniTND89q+ZHntJ/xU3+0J+KbTsBtAM7+hwc4no884CqBQMF\nKuoopNpDMKC+ee8DPJDz8cpuNjkjtQXq3Gp8KRA5AUPpnkeWzoyQZoKNzGJemVUm\njvYJuTSEUhHwCVICo0/znirLFJhNkQb6AbUZZtGZ53keFMml+ilDM7GGUnNQGi1B\nwaT7awa+mCVw1nUfDjYrT1ta06xvEO+1K70h1ykHv/abVQQpJq0zqe9P9ZVrwk7l\naNLQ6Qc4gN8rmFNPC+H9cFVbtSmwWavviwPOjp9I2QKBgQDvK9x4n61AR2fqrLS2\nf+Nic0YLIjLJcXTE20gES+frVuGe5TdDQZiL1YrCfnlme0OzuwcSowOFmO7SMwXl\nuKMAtRdkejHeQWaDTNiMoNQ2fFAvo3Hp4a/wrlXfvYunQQ6tsLlPAQuVrrSGFOm1\nWIW0NTpT687TI+R/ymijGV6YgwKBgQC64xvkZCsoctsesedzEQthVS34t/KwJzSy\nwfIfg0OtR5j7ktlBTuPhwDd5ncVIm6gffKcoSm6ASW7F5VPKcMFCgVh+xnvVbem0\n+yT4wm2vq/X4rTlO/RSKrvw+CNgVCu+tXcgwK3X+ercyZsuAQmIboenJmtybV0gX\nvcI0bfyg/wKBgQDou9itdEwl2ZZQcUDkuivtWFjXaq7bAVFsYimBLNAAXSnt8gTF\nqKYlpGWDf4jo5Zfq5Fsskn5R2ZDD8KyTbwkHHjEmMBYovaFgsT2kEriOUIfC45xs\nx5XqcerUbuDfn1oGQIsCSvUX8cpvExicxAhPZOBeW3+GTE4E4FTUKVK4uwKBgQC5\ncnNTBzLsSEy3AMIypE8unl+n1qCzu7PHTjz8mDynzcw4l1eOPsJSWXKy86O4kP0b\ngY49pN5R3oxVQ2MKFyku3Tr7Uem/t/mY5T2iuwwsre6+fOXJQ8kGdO1IgW4qM1fy\nKIVlhzrm8s6m7Ooys6y2zsw2ib0vSET5igsUC7AL8QKBgB9WU6vG6gCZkiGNao8O\nhgnh2R8XAOuRIIXHV/6+cc8EzVKJaU64bIO9/bkJPoyA9VgQ7hWLqOO+GgM1aYjg\nhigh9lU9VABNgyIsJUkNXYqmWazC4je3yhcetIvguwu1HB9/vKsoQRGB02TMCONe\n07iBmIZHNMqWyr4+l/LasVo+\n-----END PRIVATE KEY-----\n",
+  "client_email": "sumra-referral-microservice@test-48f71.iam.gserviceaccount.com",
+  "client_id": "117212027352357045896",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/sumra-referral-microservice%40test-48f71.iam.gserviceaccount.com"
+}

@@ -1,0 +1,21 @@
+{
+    "name": "sumra/pubsub",
+    "description": "Package for messages exchange between microservices",
+    "type": "library",
+    "require": {
+        "vladimir-yuldashev/laravel-queue-rabbitmq": "^9.1"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Yurii Orlyk",
+            "email": "aigletter@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "Sumra\\PubSub\\": "src"
+        }
+    }
+}
