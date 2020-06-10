@@ -22,6 +22,10 @@ class User extends Model
         'status'
     ];
 
+    protected $dates = [
+        'updated_at'
+    ];
+
     /**
      * Boot the model.
      *

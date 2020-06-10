@@ -24,6 +24,7 @@ class CreateUsersTable extends Migration
             $table->integer('referrer_id')->default(0);
             $table->string('referral_code', 10)->unique()->nullable();
             $table->integer('status')->default(0);
+            $table->integer('updated_by')->nullable();
             $table->timestamps();
         });
     }

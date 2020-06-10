@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class DatabaseSeeder extends Seeder
+class CryptoKeysTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -11,8 +11,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->call([
-            CryptoKeysTableSeeder::class
-        ]);
+        factory(\App\Models\CryptoKey::class, 5)->create();
     }
 }

@@ -201,6 +201,11 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
+                                    "version_key": {
+                                        "description": "Version Key",
+                                        "type": "string",
+                                        "example": "66981685"
+                                    },
                                     "data": {
                                         "description": "Encrypt data",
                                         "type": "text",

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateManagersTable extends Migration
+class CreateCryptoKeysTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,11 @@ class CreateManagersTable extends Migration
      */
     public function up()
     {
-        Schema::create('managers', function (Blueprint $table) {
-            $table->engine = 'InnoDB';
-            $table->charset = 'utf8';
-            $table->collation = 'utf8_general_ci';
-
+        Schema::create('crypto_keys', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('version_key', 16);
+            $table->string('cipher', 12);
+            $table->string('cipher_key');
             $table->timestamps();
         });
     }
@@ -30,6 +29,6 @@ class CreateManagersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('managers');
+        Schema::dropIfExists('keys');
     }
 }

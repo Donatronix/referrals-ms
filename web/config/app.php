@@ -41,6 +41,25 @@ return [
 
     'debug' => env('APP_DEBUG', false),
 
+    /**
+     *
+     */
+    'debug_hide' => [
+        '_ENV' => [
+            'APP_KEY',
+            'DB_PASSWORD',
+        ],
+
+        '_SERVER' => [
+            'APP_KEY',
+            'DB_PASSWORD',
+        ],
+
+        '_POST' => [
+            'password',
+        ],
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Application URL
@@ -106,6 +125,6 @@ return [
 
     'key' => env('APP_KEY'),
 
-    'cipher' => 'AES-256-CBC',
+    'cipher' => 'AES-256-ECB',
 
 ];

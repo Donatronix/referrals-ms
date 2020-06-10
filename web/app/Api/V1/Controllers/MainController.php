@@ -8,7 +8,7 @@ use App\Models\Stats;
 use App\Models\User;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Crypt;
+use App\Services\Crypt;
 use PubSub;
 use Validator;
 
@@ -107,6 +107,12 @@ class MainController extends Controller
      *         required=true,
      *         @OA\JsonContent(
      *             @OA\Property(
+     *                 property="version_key",
+     *                 type="string",
+     *                 description="Version Key",
+     *                 example="66981685"
+     *             ),
+     *             @OA\Property(
      *                 property="data",
      *                 type="text",
      *                 description="Encrypt data",
@@ -150,7 +156,7 @@ class MainController extends Controller
         }
 
         try {
-            $inputData = Crypt::decrypt($data);
+            $inputData = Crypt::decrypt($data, $request);
         } catch (DecryptException $e) {
             // Return error
             return response()->jsonApi($e, 200);
