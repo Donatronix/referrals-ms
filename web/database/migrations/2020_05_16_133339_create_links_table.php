@@ -19,11 +19,11 @@ class CreateLinksTable extends Migration
             $table->collation = 'utf8_general_ci';
 
             $table->bigIncrements('id');
-            $table->integer('app_user_id')->nullable(false);
-            $table->string('package_name', 20)->nullable();
-            $table->string('referral_link', 35)->unique()->nullable();
+            $table->integer('user_id');
+            $table->string('package_name', 20);
+            $table->string('referral_link', 35)->unique();
 
-            $table->unique(['app_user_id', 'package_name']);
+            $table->unique(['user_id', 'package_name']);
 
             $table->timestamps();
         });

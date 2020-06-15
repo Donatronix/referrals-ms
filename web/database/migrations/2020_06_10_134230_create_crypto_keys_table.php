@@ -14,6 +14,10 @@ class CreateCryptoKeysTable extends Migration
     public function up()
     {
         Schema::create('crypto_keys', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_general_ci';
+
             $table->bigIncrements('id');
             $table->string('version_key', 16);
             $table->string('cipher', 12);

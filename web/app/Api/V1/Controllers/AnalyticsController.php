@@ -3,8 +3,8 @@
 namespace App\Api\V1\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Application;
 use App\Models\Link;
-use App\Models\Stats;
 use Illuminate\Http\Request;
 use Kreait\Firebase\DynamicLink\GetStatisticsForDynamicLink\FailedToGetStatisticsForDynamicLink;
 
@@ -21,7 +21,7 @@ class AnalyticsController extends Controller
      *     path="/api/v1/referral/analytics/byLink",
      *     summary="Get analytics for referral link",
      *     description="Get analytics for referral link",
-     *     tags={"Referral Analytics"},
+     *     tags={"Analytics"},
      *
      *     @OA\Parameter(
      *         name="user-id",
@@ -102,7 +102,7 @@ class AnalyticsController extends Controller
             $referralLink = $request->get('dynamic_link');
         }else{
             // Get invite object for user
-            $link = Link::where('app_user_id', $userId)->where('package_name', $packageName)->first();
+            $link = Link::where('user_id', $userId)->where('package_name', $packageName)->first();
 
             if(!$link){
                 return response()->jsonApi('Dynamic link not found for this user and package', 200);
@@ -152,7 +152,7 @@ class AnalyticsController extends Controller
      *     path="/api/v1/referral/analytics/unregistered",
      *     summary="Get unregistered users (by referral code)",
      *     description="Get unregistered users. If send referral code then get list by refcode",
-     *     tags={"Referral Analytics"},
+     *     tags={"Analytics"},
      *
      *     @OA\Parameter(
      *         name="referrer_code",
@@ -176,7 +176,7 @@ class AnalyticsController extends Controller
      * @param Request $request
      */
     public function unregistered(Request $request){
-        $list = Stats::where('is_registered', false)
+        $list = Application::where('is_registered', false)
             ->when($request->has('referrer_code'), function ($q) use ($request) {
                 return $q->where('referrer_code', $request->get('referrer_code'));
             })

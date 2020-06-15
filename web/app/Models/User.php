@@ -15,7 +15,7 @@ class User extends Model
     const STATUS_BLOCKED = 3;
 
     protected $fillable = [
-        'app_user_id',
+        'user_id',
         'user_name',
         'referrer_id',
         'referral_code',

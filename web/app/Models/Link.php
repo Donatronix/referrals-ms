@@ -13,7 +13,7 @@ class Link extends Model
     //const DEFAULT_ANDROID_MIN_PACKAGE_VERSION = '20040902';
 
     protected $fillable = [
-        'app_user_id',
+        'user_id',
         'package_name',
         'referral_link'
     ];

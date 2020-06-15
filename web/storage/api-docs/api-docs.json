@@ -13,7 +13,7 @@
         "/api/v1/referral/analytics/byLink": {
             "get": {
                 "tags": [
-                    "Referral Analytics"
+                    "Analytics"
                 ],
                 "summary": "Get analytics for referral link",
                 "description": "Get analytics for referral link",
@@ -75,7 +75,7 @@
         "/api/v1/referral/analytics/unregistered": {
             "get": {
                 "tags": [
-                    "Referral Analytics"
+                    "Analytics"
                 ],
                 "summary": "Get unregistered users (by referral code)",
                 "description": "Get unregistered users. If send referral code then get list by refcode",
@@ -101,54 +101,10 @@
                 }
             }
         },
-        "/api/v1/referral/invite": {
-            "get": {
-                "tags": [
-                    "Referral"
-                ],
-                "summary": "Get user invite code",
-                "description": "Get user referrer invite code",
-                "parameters": [
-                    {
-                        "name": "user-id",
-                        "in": "header",
-                        "description": "User ID",
-                        "required": true,
-                        "schema": {
-                            "type": "number"
-                        }
-                    },
-                    {
-                        "name": "package_name",
-                        "in": "query",
-                        "description": "Package Name",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "example": "net.sumra.chat"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success get or generate referrer invite code"
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "400": {
-                        "description": "Invalid request"
-                    },
-                    "404": {
-                        "description": "not found"
-                    }
-                }
-            }
-        },
         "/api/v1/referral": {
             "get": {
                 "tags": [
-                    "Referral"
+                    "Main"
                 ],
                 "summary": "List all referrals for user",
                 "description": "List all referrals for user",
@@ -180,7 +136,7 @@
             },
             "post": {
                 "tags": [
-                    "Referral"
+                    "Main"
                 ],
                 "summary": "Join new user to referrer",
                 "description": "Send encryption data: username - New User Name, * package_name (required) - Package Name, referrer_code - Referrer code, * device_id (required) - User Device ID, * device_name (required) - User Device Name",
@@ -229,6 +185,146 @@
                     },
                     "404": {
                         "description": "not found"
+                    }
+                }
+            }
+        },
+        "/api/v1/referral/invite": {
+            "get": {
+                "tags": [
+                    "Main"
+                ],
+                "summary": "Get user invite code",
+                "description": "Get user referrer invite code",
+                "parameters": [
+                    {
+                        "name": "user-id",
+                        "in": "header",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "package_name",
+                        "in": "query",
+                        "description": "Package Name",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "net.sumra.chat"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success get or generate referrer invite code"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    },
+                    "404": {
+                        "description": "not found"
+                    }
+                }
+            }
+        },
+        "/api/v1/referral/manager/validate/user": {
+            "post": {
+                "tags": [
+                    "Management"
+                ],
+                "summary": "Validate user install app",
+                "description": "Validate user install app",
+                "operationId": "App\\Api\\V1\\Controllers\\ManagementController::validateUser",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "user_id": {
+                                        "description": "Sumra User ID",
+                                        "type": "integer",
+                                        "example": "669"
+                                    },
+                                    "application_id": {
+                                        "description": "Application ID",
+                                        "type": "integer",
+                                        "example": "2"
+                                    },
+                                    "status": {
+                                        "description": "Status (Approve, Reject, etc)",
+                                        "type": "integer",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User successfull validated"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    },
+                    "404": {
+                        "description": "not found"
+                    }
+                }
+            }
+        },
+        "/api/v1/referral/manager/validate/referrer": {
+            "post": {
+                "tags": [
+                    "Management"
+                ],
+                "summary": "Validate referrer",
+                "description": "Validate referrer",
+                "operationId": "App\\Api\\V1\\Controllers\\ManagementController::validateReferrer",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "referrer_id": {
+                                        "description": "Referrer ID",
+                                        "type": "integer",
+                                        "example": "69"
+                                    },
+                                    "application_id": {
+                                        "description": "Application ID",
+                                        "type": "integer",
+                                        "example": "2"
+                                    },
+                                    "status": {
+                                        "description": "Status (Approve, Reject, etc)",
+                                        "type": "integer",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfull validated"
+                    },
+                    "400": {
+                        "description": "Invalid request"
                     }
                 }
             }

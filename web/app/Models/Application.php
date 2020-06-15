@@ -4,8 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Stats extends Model
+class Application extends Model
 {
+    const INSTALLED_OK = 1;
+    const INSTALLED_APPROVE = 2;
+    const INSTALLED_REJECTED = 3;
+
+    const REFERRER_OK = 1;
+    const REFERRER_APPROVE = 2;
+    const REFERRER_REJECTED = 3;
+
     protected $casts = [
         'metadata' => 'json'
     ];
