@@ -146,12 +146,12 @@ class AnalyticsController extends Controller
     }
 
     /**
-     * Get unregistered users by referral code
+     * Get installed app, but is unregistered users (is filter by referral code also)
      *
      * @OA\Get(
      *     path="/api/v1/referral/analytics/unregistered",
      *     summary="Get unregistered users (by referral code)",
-     *     description="Get unregistered users. If send referral code then get list by refcode",
+     *     description="Get installed app, without registered users. If send referral code then get list by refcode",
      *     tags={"Analytics"},
      *
      *     @OA\Parameter(
@@ -174,9 +174,10 @@ class AnalyticsController extends Controller
      * )
      *
      * @param Request $request
+     * @return mixed
      */
     public function unregistered(Request $request){
-        $list = Application::where('is_registered', false)
+        $list = Application::where('user_id', 0)
             ->when($request->has('referrer_code'), function ($q) use ($request) {
                 return $q->where('referrer_code', $request->get('referrer_code'));
             })

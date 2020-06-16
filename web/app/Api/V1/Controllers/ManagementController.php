@@ -7,7 +7,7 @@ use App\Models\Application;
 use App\Models\Device;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Kreait\Firebase\DynamicLink\GetStatisticsForDynamicLink\FailedToGetStatisticsForDynamicLink;
+use Illuminate\Validation\ValidationException;
 
 /**
  * Class ManagementController
@@ -20,8 +20,8 @@ class ManagementController extends Controller
      *
      * @OA\Post(
      *     path="/api/v1/referral/manager/validate/user",
-     *     summary="Validate user install app",
-     *     description="Validate user install app",
+     *     summary="Validate user installed app",
+     *     description="Validate user installed app",
      *     tags={"Management"},
      *
      *     @OA\RequestBody(
@@ -30,7 +30,7 @@ class ManagementController extends Controller
      *             @OA\Property(
      *                 property="user_id",
      *                 type="integer",
-     *                 description="Sumra User ID",
+     *                 description="User ID",
      *                 example="669"
      *             ),
      *             @OA\Property(
@@ -67,8 +67,7 @@ class ManagementController extends Controller
      *
      * @param Request $request
      * @return mixed
-     *
-     * @throws FailedToGetStatisticsForDynamicLink
+     * @throws ValidationException
      */
     public function validateUser(Request $request)
     {
@@ -78,30 +77,39 @@ class ManagementController extends Controller
             'status' => 'required|integer'
         ]);
 
-        $app = Application::find($input['application_id']);
-        $app->user_id = $input['application_id'];
-        $app->installed_status = $input['status'];
-        $app->save();
+        // Change user status
+        try {
+            $app = Application::where('id', $input['application_id'])
+                ->where('user_id', $input['user_id'])
+                ->first();
+            $app->user_status = $input['status'];
+            $app->save();
+        } catch(\Exception $e){
+            // Return error
+            return response()->jsonApi($e, 200);
+        }
 
         /**
          * Add Bonus for downloading the application and registration
          */
-        $array = [
-            'sumra_user_id' => $input['user_id'],
-            'points' => User::INSTALL_POINTS,
-            'subject' => "Bonus for downloading the application {$input['package_name']} and registration"
-        ];
-        PubSub::transaction(function() use ($input, $user) {
-            // Add device to user
-            $device = Device::create([
-                'name' => $input['device_name'],
-                'device_id' => $input['device_id'],
-                'user_id' => $user->id
-            ]);
-        })->publish('sendRewardForInstallEmail', $array, 'mailReferral');
+        if($input['status'] === Application::INSTALLED_APPROVE){
+            $array = [
+                'user_id' => $input['user_id'],
+                'points' => User::INSTALL_POINTS,
+                'subject' => "Bonus for downloading the application {$input['package_name']} and registration"
+            ];
+            PubSub::transaction(function() use ($app) {
+                // Add device to user
+                Device::create([
+                    'name' => $app->device_name,
+                    'device_id' => $app->device_id,
+                    'user_id' => $app->id
+                ]);
+            })->publish('sendRewardForInstallEmail', $array, 'mailReferral');
+        }
 
         // Return response
-        return response()->jsonApi($info, 200);
+        return response()->jsonApi('Operation successful', 200);
     }
 
     /**
@@ -148,13 +156,39 @@ class ManagementController extends Controller
      *
      * @param Request $request
      * @return mixed
+     * @throws ValidationException
      */
     public function validateReferrer(Request $request){
+        $input = $this->validate($request, [
+            'referrer_id' => 'required|integer',
+            'application_id' => 'required|integer',
+            'status' => 'required|integer'
+        ]);
 
-        Application::update();
+        // Change referrer status
+        try {
+            $app = Application::where('id', $input['application_id'])
+                ->where('referrer_id', $input['referrer_id'])
+                ->first();
+            $app->referrer_status = $input['status'];
+            $app->save();
+        } catch(\Exception $e){
+            // Return error
+            return response()->jsonApi($e, 200);
+        }
 
+        /**
+         * Linking users and accruing referral bonus
+         */
+        $array = [
+            'id' => $input['referrer_id'],
+            'points' => User::REFERRER_POINTS,
+            'event' => 'referral_bonus',
+            'note' => 'Accrual of referral bonus for the user ***'
+        ];
+        PubSub::publish('sendRewardForReferralEmail', $array, 'mailReferral');
 
         // Return response
-        return response()->jsonApi($list, 200);
+        return response()->jsonApi('Operation successful', 200);
     }
 }

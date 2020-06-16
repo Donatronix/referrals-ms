@@ -19,7 +19,7 @@ class ReferralBonusListener
     {
         // Update referral status
         try {
-            $link = User::find($data['sumra_user_id']);
+            $link = User::find($data['user_id']);
             $link->status = $data['status'];
             $link->save();
         } catch (\Throwable $e) {
