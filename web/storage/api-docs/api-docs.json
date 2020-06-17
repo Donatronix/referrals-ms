@@ -78,7 +78,7 @@
                     "Analytics"
                 ],
                 "summary": "Get unregistered users (by referral code)",
-                "description": "Get unregistered users. If send referral code then get list by refcode",
+                "description": "Get installed app, without registered users. If send referral code then get list by refcode",
                 "operationId": "App\\Api\\V1\\Controllers\\AnalyticsController::unregistered",
                 "parameters": [
                     {
@@ -108,6 +108,7 @@
                 ],
                 "summary": "List all referrals for user",
                 "description": "List all referrals for user",
+                "operationId": "App\\Api\\V1\\Controllers\\MainController::index",
                 "parameters": [
                     {
                         "name": "user-id",
@@ -140,6 +141,7 @@
                 ],
                 "summary": "Join new user to referrer",
                 "description": "Send encryption data: username - New User Name, * package_name (required) - Package Name, referrer_code - Referrer code, * device_id (required) - User Device ID, * device_name (required) - User Device Name",
+                "operationId": "App\\Api\\V1\\Controllers\\MainController::create",
                 "parameters": [
                     {
                         "name": "user-id",
@@ -196,6 +198,7 @@
                 ],
                 "summary": "Get user invite code",
                 "description": "Get user referrer invite code",
+                "operationId": "App\\Api\\V1\\Controllers\\MainController::invite",
                 "parameters": [
                     {
                         "name": "user-id",
@@ -238,8 +241,8 @@
                 "tags": [
                     "Management"
                 ],
-                "summary": "Validate user install app",
-                "description": "Validate user install app",
+                "summary": "Validate user installed app",
+                "description": "Validate user installed app",
                 "operationId": "App\\Api\\V1\\Controllers\\ManagementController::validateUser",
                 "requestBody": {
                     "required": true,
@@ -248,7 +251,7 @@
                             "schema": {
                                 "properties": {
                                     "user_id": {
-                                        "description": "Sumra User ID",
+                                        "description": "User ID",
                                         "type": "integer",
                                         "example": "669"
                                     },
