@@ -19,7 +19,7 @@ class ManagementController extends Controller
      * Validate user install app
      *
      * @OA\Post(
-     *     path="/api/v1/referral/manager/validate/user",
+     *     path="/v1/referral/manager/validate/user",
      *     summary="Validate user installed app",
      *     description="Validate user installed app",
      *     tags={"Management"},
@@ -116,7 +116,7 @@ class ManagementController extends Controller
      * Validate referrer
      *
      * @OA\Post(
-     *     path="/api/v1/referral/manager/validate/referrer",
+     *     path="/v1/referral/manager/validate/referrer",
      *     summary="Validate referrer",
      *     description="Validate referrer",
      *     tags={"Management"},

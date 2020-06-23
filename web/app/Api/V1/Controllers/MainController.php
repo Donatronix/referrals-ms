@@ -23,7 +23,7 @@ class MainController extends Controller
      * List all referrals for user
      *
      * @OA\Get(
-     *     path="/api/v1/referral",
+     *     path="/v1/referral",
      *     summary="List all referrals for user",
      *     description="List all referrals for user",
      *     tags={"Main"},
@@ -87,7 +87,7 @@ class MainController extends Controller
      * Save data for first start
      *
      * @OA\Post(
-     *     path="/api/v1/referral",
+     *     path="/v1/referral",
      *     summary="Join new user to referrer",
      *     description="Send encryption data: username - New User Name, * package_name (required) - Package Name, referrer_code - Referrer code, * device_id (required) - User Device ID, * device_name (required) - User Device Name",
      *     tags={"Main"},
@@ -200,7 +200,7 @@ class MainController extends Controller
      * Get user referrer invite code
      *
      * @OA\Get(
-     *     path="/api/v1/referral/invite",
+     *     path="/v1/referral/invite",
      *     summary="Get user invite code",
      *     description="Get user referrer invite code",
      *     tags={"Main"},

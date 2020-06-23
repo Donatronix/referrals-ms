@@ -19,7 +19,7 @@ Route::get('/', function () use ($router) {
     return $router->app->version();
 });
 
-Route::get('/api/v1/db-test', function () {
+Route::get(env('API_PREFIX') . '/v1/db-test', function () {
     if (DB::connection()->getDatabaseName()) {
         echo "Connected successfully to database: " . DB::connection()->getDatabaseName();
     }
@@ -27,7 +27,7 @@ Route::get('/api/v1/db-test', function () {
 
 
 
-Route::get('/api/v1/decrypt-android', function () {
+Route::get(env('API_PREFIX') . '/v1/decrypt-android', function () {
 
     $data = 'eyJpdiI6ImdaMStqQklVdlE4eFpQUVNSQWk3NndcdTAwM2RcdTAwM2RcbiIsIm1hYyI6Ik9kcEt0
 Mkg0ekU2UTJrU0Vyc3ZwM0RnQ1ZPdm1YMk9mWjNndVJMZDZoYzhcdTAwM2RcbiIsInZhbHVlcyI6
@@ -45,7 +45,7 @@ V2Q2Y3ptdGw1N1I3cWZLODJZZmNud3diMHUxYU1FR0t2VElRZUdRXHUwMDNkXG4ifQ==';
 
 
 
-Route::get('/api/v1/decrypt-laravel', function () {
+Route::get(env('API_PREFIX') . '/v1/decrypt-laravel', function () {
 
     /*
     $key = base64_decode(config('app.key'));
@@ -67,7 +67,7 @@ JIZjcEL2jN2XO44Xnyg81hw6o4rU/ls1+bmiAuUX4t3gjWo=';
     dd(Illuminate\Support\Facades\Crypt::decrypt($data));
 });
 
-Route::get('/api/v1/encrypt-test', function () {
+Route::get(env('API_PREFIX') . '/v1/encrypt-test', function () {
     $data = json_encode([
         'androidId' => 'ee4d70c80cdac614',
         'applicationID' => 'net.sumra.wallet',
@@ -87,7 +87,7 @@ Route::get('/api/v1/encrypt-test', function () {
 });
 
 Route::group(
-    ['prefix' => 'api/v1'],
+    ['prefix' => env('API_PREFIX') . '/v1'],
     function ($router) {
         include base_path('app/Api/V1/routes.php');
     }

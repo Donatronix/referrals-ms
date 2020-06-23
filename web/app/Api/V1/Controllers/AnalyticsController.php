@@ -10,6 +10,7 @@ use Kreait\Firebase\DynamicLink\GetStatisticsForDynamicLink\FailedToGetStatistic
 
 /**
  * Class AnalyticsController
+ *
  * @package App\Api\V1\Controllers
  */
 class AnalyticsController extends Controller
@@ -18,7 +19,7 @@ class AnalyticsController extends Controller
      * Get analytics for referral link
      *
      * @OA\Get(
-     *     path="/api/v1/referral/analytics/byLink",
+     *     path="/v1/referral/analytics/byLink",
      *     summary="Get analytics for referral link",
      *     description="Get analytics for referral link",
      *     tags={"Analytics"},
@@ -149,7 +150,7 @@ class AnalyticsController extends Controller
      * Get installed app, but is unregistered users (is filter by referral code also)
      *
      * @OA\Get(
-     *     path="/api/v1/referral/analytics/unregistered",
+     *     path="/v1/referral/analytics/unregistered",
      *     summary="Get unregistered users (by referral code)",
      *     description="Get installed app, without registered users. If send referral code then get list by refcode",
      *     tags={"Analytics"},
