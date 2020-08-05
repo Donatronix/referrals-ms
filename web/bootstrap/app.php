@@ -35,8 +35,6 @@ $app->withEloquent();
 | your own bindings here if you like or you can make another file.
 |
 */
-$app->configure('swagger-lume');
-
 $app->singleton(
     Illuminate\Contracts\Debug\ExceptionHandler::class,
     App\Exceptions\Handler::class
@@ -58,9 +56,9 @@ $app->singleton(
 |
 */
 
-// $app->middleware([
-//     App\Http\Middleware\ExampleMiddleware::class
-// ]);
+$app->middleware([
+    \App\Http\Middleware\CorsMiddleware::class
+]);
 
 // $app->routeMiddleware([
 //     'auth' => App\Http\Middleware\Authenticate::class,
@@ -84,20 +82,16 @@ $app->register(App\Providers\EventServiceProvider::class);
 $app->register(VladimirYuldashev\LaravelQueueRabbitMQ\LaravelQueueRabbitMQServiceProvider::class);
 class_alias(\Illuminate\Support\Facades\App::class, 'App');
 
-/* Sumra Services */
+/** Sumra Services */
 $app->register(\Sumra\JsonApi\JsonApiServiceProvider::class);
 $app->register(\Sumra\PubSub\PubSubServiceProvider::class);
 
 /** Swagger */
+$app->configure('swagger-lume');
 $app->register(\SwaggerLume\ServiceProvider::class);
 
 /** Firebase */
 $app->register(Kreait\Laravel\Firebase\ServiceProvider::class);
-
-/**
- * php artisan route:list
- */
-$app->register(Appzcoder\LumenRoutesList\RoutesCommandServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------

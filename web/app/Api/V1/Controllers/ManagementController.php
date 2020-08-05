@@ -6,11 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Models\Application;
 use App\Models\Device;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
 /**
  * Class ManagementController
+ *
  * @package App\Api\V1\Controllers
  */
 class ManagementController extends Controller
@@ -19,7 +21,7 @@ class ManagementController extends Controller
      * Validate user install app
      *
      * @OA\Post(
-     *     path="/v1/referral/manager/validate/user",
+     *     path="/v1/referrals/manager/validate/user",
      *     summary="Validate user installed app",
      *     description="Validate user installed app",
      *     tags={"Management"},
@@ -66,6 +68,7 @@ class ManagementController extends Controller
      * )
      *
      * @param Request $request
+     *
      * @return mixed
      * @throws ValidationException
      */
@@ -84,7 +87,7 @@ class ManagementController extends Controller
                 ->first();
             $app->user_status = $input['status'];
             $app->save();
-        } catch(\Exception $e){
+        } catch (Exception $e) {
             // Return error
             return response()->jsonApi($e, 200);
         }
@@ -92,13 +95,13 @@ class ManagementController extends Controller
         /**
          * Add Bonus for downloading the application and registration
          */
-        if($input['status'] === Application::INSTALLED_APPROVE){
+        if ($input['status'] === Application::INSTALLED_APPROVE) {
             $array = [
                 'user_id' => $input['user_id'],
                 'points' => User::INSTALL_POINTS,
                 'subject' => "Bonus for downloading the application {$input['package_name']} and registration"
             ];
-            PubSub::transaction(function() use ($app) {
+            PubSub::transaction(function () use ($app) {
                 // Add device to user
                 Device::create([
                     'name' => $app->device_name,
@@ -116,7 +119,7 @@ class ManagementController extends Controller
      * Validate referrer
      *
      * @OA\Post(
-     *     path="/v1/referral/manager/validate/referrer",
+     *     path="/v1/referrals/manager/validate/referrer",
      *     summary="Validate referrer",
      *     description="Validate referrer",
      *     tags={"Management"},
@@ -155,10 +158,12 @@ class ManagementController extends Controller
      * )
      *
      * @param Request $request
+     *
      * @return mixed
      * @throws ValidationException
      */
-    public function validateReferrer(Request $request){
+    public function validateReferrer(Request $request)
+    {
         $input = $this->validate($request, [
             'referrer_id' => 'required|integer',
             'application_id' => 'required|integer',
@@ -172,7 +177,7 @@ class ManagementController extends Controller
                 ->first();
             $app->referrer_status = $input['status'];
             $app->save();
-        } catch(\Exception $e){
+        } catch (Exception $e) {
             // Return error
             return response()->jsonApi($e, 200);
         }

@@ -12,7 +12,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
-            CryptoKeysTableSeeder::class
+            ApplicationKeysTableSeeder::class
         ]);
     }
 }

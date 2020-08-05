@@ -19,7 +19,7 @@ class AnalyticsController extends Controller
      * Get analytics for referral link
      *
      * @OA\Get(
-     *     path="/v1/referral/analytics/byLink",
+     *     path="/v1/referrals/analytics/byLink",
      *     summary="Get analytics for referral link",
      *     description="Get analytics for referral link",
      *     tags={"Analytics"},
@@ -84,6 +84,7 @@ class AnalyticsController extends Controller
      * Get analytics for referral link
      *
      * @param Request $request
+     *
      * @return mixed
      *
      * @throws FailedToGetStatisticsForDynamicLink
@@ -99,13 +100,13 @@ class AnalyticsController extends Controller
         // Check Package Name
         $packageName = $request->get('package_name', Link::ANDROID_PACKAGE_NAME);
 
-        if($request->has('dynamic_link')) {
+        if ($request->has('dynamic_link')) {
             $referralLink = $request->get('dynamic_link');
-        }else{
+        } else {
             // Get invite object for user
             $link = Link::where('user_id', $userId)->where('package_name', $packageName)->first();
 
-            if(!$link){
+            if (!$link) {
                 return response()->jsonApi('Dynamic link not found for this user and package', 200);
             }
 
@@ -150,7 +151,7 @@ class AnalyticsController extends Controller
      * Get installed app, but is unregistered users (is filter by referral code also)
      *
      * @OA\Get(
-     *     path="/v1/referral/analytics/unregistered",
+     *     path="/v1/referrals/analytics/unregistered",
      *     summary="Get unregistered users (by referral code)",
      *     description="Get installed app, without registered users. If send referral code then get list by refcode",
      *     tags={"Analytics"},
@@ -175,9 +176,11 @@ class AnalyticsController extends Controller
      * )
      *
      * @param Request $request
+     *
      * @return mixed
      */
-    public function unregistered(Request $request){
+    public function unregistered(Request $request)
+    {
         $list = Application::where('user_id', 0)
             ->when($request->has('referrer_code'), function ($q) use ($request) {
                 return $q->where('referrer_code', $request->get('referrer_code'));

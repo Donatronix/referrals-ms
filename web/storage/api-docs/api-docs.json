@@ -10,7 +10,422 @@
         "version": "1.0"
     },
     "paths": {
-        "/api/v1/referral/analytics/byLink": {
+        "/v1/referrals/applications": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Method for get list all applications for select user",
+                "description": "Get applications",
+                "operationId": "App\\Api\\V1\\Controllers\\ApplicationController::index",
+                "parameters": [
+                    {
+                        "name": "user-id",
+                        "in": "header",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "orderBy",
+                        "in": "query",
+                        "description": "Order By",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "orderDirection",
+                        "in": "query",
+                        "description": "Order Direction",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search keywords",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Number of page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "bulk",
+                        "in": "query",
+                        "description": "Bulk filter",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+        },
+        "/v1/referrals/application-keys": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Method for get list all application keys",
+                "description": "Get application keys",
+                "operationId": "App\\Api\\V1\\Controllers\\ApplicationKeyController::index",
+                "parameters": [
+                    {
+                        "name": "user-id",
+                        "in": "header",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "orderBy",
+                        "in": "query",
+                        "description": "Order By",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "orderDirection",
+                        "in": "query",
+                        "description": "Order Direction",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search keywords",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Number of page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "bulk",
+                        "in": "query",
+                        "description": "Bulk filter",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+        },
+        "/v1/tools/data-encrypt": {
+            "post": {
+                "tags": [
+                    "Tools"
+                ],
+                "summary": "Join new user to referrer",
+                "description": "Send encryption data",
+                "operationId": "App\\Api\\V1\\Controllers\\ToolsController::dataEncrypt",
+                "parameters": [
+                    {
+                        "name": "user-id",
+                        "in": "header",
+                        "description": "New User ID",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "version_key": {
+                                        "description": "Version Key",
+                                        "type": "string",
+                                        "example": "66981685"
+                                    },
+                                    "data": {
+                                        "description": "Encrypt data",
+                                        "type": "text",
+                                        "example": ""
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success send data"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    },
+                    "404": {
+                        "description": "not found"
+                    }
+                }
+            }
+        },
+        "/v1/tools/data-decrypt": {
+            "post": {
+                "tags": [
+                    "Tools"
+                ],
+                "summary": "Join new user to referrer",
+                "description": "Send encryption data",
+                "operationId": "App\\Api\\V1\\Controllers\\ToolsController::dataDecrypt",
+                "parameters": [
+                    {
+                        "name": "user-id",
+                        "in": "header",
+                        "description": "New User ID",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "version_key": {
+                                        "description": "Version Key",
+                                        "type": "string",
+                                        "example": "66981685"
+                                    },
+                                    "data": {
+                                        "description": "Encrypt data",
+                                        "type": "text",
+                                        "example": ""
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success send data"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    },
+                    "404": {
+                        "description": "not found"
+                    }
+                }
+            }
+        },
+        "/v1/referrals/admin-list": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Method for get list all referral users",
+                "description": "Get referral users",
+                "operationId": "App\\Api\\V1\\Controllers\\UsersController::index",
+                "parameters": [
+                    {
+                        "name": "user-id",
+                        "in": "header",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "orderBy",
+                        "in": "query",
+                        "description": "Order By",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "orderDirection",
+                        "in": "query",
+                        "description": "Order Direction",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search keywords",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Number of page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "bulk",
+                        "in": "query",
+                        "description": "Bulk filter",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+        },
+        "/v1/referrals/admin-list/{id}": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Get detail info about user",
+                "description": "Get detail info about user",
+                "operationId": "App\\Api\\V1\\Controllers\\UsersController::show",
+                "parameters": [
+                    {
+                        "name": "user-id",
+                        "in": "header",
+                        "description": "Auth User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Data of user"
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "Get detail info about user",
+                                            "properties": {
+                                                "code": {
+                                                    "description": "code of error",
+                                                    "type": "string"
+                                                },
+                                                "message": {
+                                                    "description": "error message",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/referrals/analytics/byLink": {
             "get": {
                 "tags": [
                     "Analytics"
@@ -72,7 +487,7 @@
                 }
             }
         },
-        "/api/v1/referral/analytics/unregistered": {
+        "/v1/referrals/analytics/unregistered": {
             "get": {
                 "tags": [
                     "Analytics"
@@ -101,7 +516,7 @@
                 }
             }
         },
-        "/api/v1/referral": {
+        "/v1/referrals": {
             "get": {
                 "tags": [
                     "Main"
@@ -191,7 +606,7 @@
                 }
             }
         },
-        "/api/v1/referral/invite": {
+        "/v1/referrals/invite": {
             "get": {
                 "tags": [
                     "Main"
@@ -236,7 +651,7 @@
                 }
             }
         },
-        "/api/v1/referral/manager/validate/user": {
+        "/v1/referrals/manager/validate/user": {
             "post": {
                 "tags": [
                     "Management"
@@ -287,7 +702,7 @@
                 }
             }
         },
-        "/api/v1/referral/manager/validate/referrer": {
+        "/v1/referrals/manager/validate/referrer": {
             "post": {
                 "tags": [
                     "Management"

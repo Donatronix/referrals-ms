@@ -17,4 +17,20 @@ class Link extends Model
         'package_name',
         'referral_link'
     ];
- }
+
+
+    protected $dates = [
+        'created_at',
+        'updated_at',
+
+    ];
+
+    protected $appends = ['resource_url'];
+
+    /* ************************ ACCESSOR ************************* */
+
+    public function getResourceUrlAttribute()
+    {
+        return url('/admin/links/'.$this->getKey());
+    }
+}

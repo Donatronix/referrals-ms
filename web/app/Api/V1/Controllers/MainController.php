@@ -6,15 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Models\Application;
 use App\Models\Link;
 use App\Models\User;
+use App\Services\Crypt;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
-use App\Services\Crypt;
 use Kreait\Firebase\DynamicLink\CreateDynamicLink\FailedToCreateDynamicLink;
 use PubSub;
 use Validator;
 
 /**
  * Class MainController
+ *
  * @package App\Api\V1\Controllers
  */
 class MainController extends Controller
@@ -23,7 +24,7 @@ class MainController extends Controller
      * List all referrals for user
      *
      * @OA\Get(
-     *     path="/v1/referral",
+     *     path="/v1/referrals",
      *     summary="List all referrals for user",
      *     description="List all referrals for user",
      *     tags={"Main"},
@@ -71,7 +72,7 @@ class MainController extends Controller
         $currentUser = User::where('user_id', $userId)->get();
         $username = $request->header('username', null);
 
-        if($currentUser !== $username){
+        if ($currentUser !== $username) {
             $currentUser->user_name = $username;
             $currentUser->save();
         }
@@ -87,7 +88,7 @@ class MainController extends Controller
      * Save data for first start
      *
      * @OA\Post(
-     *     path="/v1/referral",
+     *     path="/v1/referrals",
      *     summary="Join new user to referrer",
      *     description="Send encryption data: username - New User Name, * package_name (required) - Package Name, referrer_code - Referrer code, * device_id (required) - User Device ID, * device_name (required) - User Device Name",
      *     tags={"Main"},
@@ -137,10 +138,9 @@ class MainController extends Controller
      *     )
      * )
      *
-     * @param Request $request
+     * @param \Illuminate\Http\Request $request
      *
-     * @return \Sumra\JsonApi\
-     * @throws \Illuminate\Validation\ValidationException
+     * @return \Illuminate\Http\JsonResponse|mixed
      */
     public function create(Request $request)
     {
@@ -151,32 +151,44 @@ class MainController extends Controller
         }
 
         try {
-            $inputData = Crypt::decrypt($data, $request);
+            $versionKey = $request->get('version_key', 'null');
+
+            $inputData = Crypt::decrypt($data, $versionKey);
         } catch (DecryptException $e) {
             // Return error
             return response()->jsonApi($e, 200);
         }
 
         $validator = Validator::make($inputData, [
-            'referrer_code' => 'nullable|string',
+            'referrer_code' => 'string|nullable',
             'package_name' => [
                 'required',
                 'string',
                 'min:10',
                 'regex:/[a-z0-9.]/'
             ],
-            'device_id' => 'required|string',
-            'device_name' => 'required|string'
+            'device_id' => 'string|required',
+            'device_name' => 'string|required'
         ]);
 
+        // If has errors, then return
         if ($validator->fails()) {
-            return response()->jsonApi([
-                'errors' => $validator->errors(),
+            $messages = [];
+
+            $errors = $validator->errors();
+            foreach ($errors->all() as $field) {
+                $messages[] = $field;
+            }
+
+            return response()->json([
+                'type' => 'danger',
+                'title' => 'Validation Error',
+                'message' => $messages
             ], 422);
         }
 
         // If exist user id in header then join user
-        if($request->headers->has('user-id')){
+        if ($request->headers->has('user-id')) {
             $appUserId = $request->header('user-id');
 
             if ($appUserId === null) {
@@ -187,7 +199,7 @@ class MainController extends Controller
             $inputData['user_name'] = $request->header('username', null);
 
             return $this->registerReferrer($inputData);
-        }else{
+        } else {
             // Remember user application
             $inputData['ip'] = $request->ip();
             $inputData['metadata'] = $request->headers->all();
@@ -197,10 +209,97 @@ class MainController extends Controller
     }
 
     /**
+     * Add referrer to new user by application
+     *
+     * @param array $input
+     *
+     * @return mixed
+     */
+    private function registerReferrer(array $input)
+    {
+        // Check downloaded app
+        $app = Application::where('device_id', $input['device_id'])
+            ->where('package_name', $input['package_name'])
+            ->first();
+        if ($app) {
+            $app->user_status = Application::INSTALLED_OK;
+            $app->user_id = $input['user_id'];
+            $app->save();
+        } else {
+            abort(400, 'Not found installed application');
+        }
+
+        // Check if exist referrer_code, then join referrer to new user
+        $referrerCode = $input['referrer_code'] ?? null;
+        if ($referrerCode !== null) {
+            // Check if new user has referrer already
+            if ($app->referrer_id !== 0) {
+                abort(400, 'You already have an referrer');
+            }
+
+            // Get referrer object
+            $referrer = User::where('referral_code', $referrerCode)->first();
+
+            if ($referrer === null) {
+                abort(404, 'Referrer by code not found');
+            }
+
+            // Save referrer to user app
+            $app->referrer_id = $referrer->user_id;
+            $app->referrer_status = Application::REFERRER_OK;
+            $app->save();
+
+            /**
+             * Push notification to pubsub, what Referrer has been added to user by installed application
+             */
+            $array = [
+                'application' => $app,
+                'referrer_code' => $referrerCode,
+                'note' => 'Referrer has been added to user by installed application'
+            ];
+            PubSub::publish('userReferrerSet', $array, 'admin');
+        }
+
+        // Return response
+        return response()->jsonApi('Process success', 200);
+    }
+
+    /**
+     * Save info about application after downloads and first run
+     *
+     * @param array $input
+     *
+     * @return mixed
+     */
+    private function registerApplication(array $input)
+    {
+        $app = Application::create([
+            'package_name' => $input['package_name'],
+            'device_id' => $input['device_id'],
+            'device_name' => $input['device_name'],
+            'ip' => $input['ip'],
+            'metadata' => $input['metadata'],
+            'referrer_code' => $input['referrer_code'] ?? null,
+        ])->toArray();
+
+        /**
+         * Push notification to pubsub about downloading and installing app
+         */
+        $array = [
+            'application' => $app,
+            'note' => 'User has been installed application'
+        ];
+        PubSub::publish('userInstalledApp', $array, 'admin');
+
+        // Return response
+        return response()->jsonApi('Application saved', 200);
+    }
+
+    /**
      * Get user referrer invite code
      *
      * @OA\Get(
-     *     path="/v1/referral/invite",
+     *     path="/v1/referrals/invite",
      *     summary="Get user invite code",
      *     description="Get user referrer invite code",
      *     tags={"Main"},
@@ -258,7 +357,7 @@ class MainController extends Controller
         // Find user
         $user = User::where('user_id', $userId)->first();
 
-        if(!$user){
+        if (!$user) {
             // create a new invite record
             $user = User::create([
                 'user_id' => $userId,
@@ -272,7 +371,7 @@ class MainController extends Controller
         // Get link by user id and package name
         $link = Link::where('user_id', $user->user_id)->where('package_name', $packageName)->first();
 
-        if(!$link){
+        if (!$link) {
             $referrerData = [
                 //'code' => $user->referral_code,
                 'utm_source' => $user->referral_code,
@@ -350,7 +449,7 @@ class MainController extends Controller
             $link = Link::create([
                 'user_id' => $user->user_id,
                 'package_name' => $packageName,
-                'referral_link' => (string) $shortLink
+                'referral_link' => (string)$shortLink
             ]);
         }
 
@@ -359,89 +458,6 @@ class MainController extends Controller
             'referral_code' => $user->referral_code,
             'referral_link' => $link->referral_link
         ], 200);
-    }
-
-    /**
-     * Save info about application after downloads and first run
-     *
-     * @param array $input
-     * @return mixed
-     */
-    private function registerApplication(Array $input){
-        $app = Application::create([
-            'package_name' => $input['package_name'],
-            'device_id' => $input['device_id'],
-            'device_name' => $input['device_name'],
-            'ip' => $input['ip'],
-            'metadata' => $input['metadata'],
-            'referrer_code' => $input['referrer_code'] ?? null,
-        ])->toArray();
-
-        /**
-         * Push notification to pubsub about downloading and installing app
-         */
-        $array = [
-            'application' => $app,
-            'note' => 'User has been installed application'
-        ];
-        PubSub::publish('userInstalledApp', $array, 'admin');
-
-        // Return response
-        return response()->jsonApi('Application saved', 200);
-    }
-
-    /**
-     * Add referrer to new user by application
-     *
-     * @param array $input
-     * @return mixed
-     */
-    private function registerReferrer(Array $input){
-        // Check downloaded app
-        $app = Application::where('device_id', $input['device_id'])
-            ->where('package_name', $input['package_name'])
-            ->first();
-        if($app){
-            $app->user_status = Application::INSTALLED_OK;
-            $app->user_id = $input['user_id'];
-            $app->save();
-        }else{
-            abort(400, 'Not found installed application');
-        }
-
-        // Check if exist referrer_code, then join referrer to new user
-        $referrerCode = $input['referrer_code'] ?? null;
-        if($referrerCode !== null){
-            // Check if new user has referrer already
-            if($app->referrer_id !== 0){
-                abort(400, 'You already have an referrer');
-            }
-
-            // Get referrer object
-            $referrer = User::where('referral_code', $referrerCode)->first();
-
-            if ($referrer === null) {
-                abort(404, 'Referrer by code not found');
-            }
-
-            // Save referrer to user app
-            $app->referrer_id = $referrer->user_id;
-            $app->referrer_status = Application::REFERRER_OK;
-            $app->save();
-
-            /**
-             * Push notification to pubsub, what Referrer has been added to user by installed application
-             */
-            $array = [
-                'application' => $app,
-                'referrer_code' => $referrerCode,
-                'note' => 'Referrer has been added to user by installed application'
-            ];
-            PubSub::publish('userReferrerSet', $array, 'admin');
-        }
-
-        // Return response
-        return response()->jsonApi('Process success', 200);
     }
 }
 

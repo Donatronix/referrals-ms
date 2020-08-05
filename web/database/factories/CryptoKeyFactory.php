@@ -2,7 +2,7 @@
 
 use Faker\Generator as Faker;
 
-$factory->define(\App\Models\CryptoKey::class, function (Faker $faker) {
+$factory->define(\App\Models\ApplicationKey::class, function (Faker $faker) {
     $cipherList = [
       'AES-128-ECB',
       'AES-256-ECB'

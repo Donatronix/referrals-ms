@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCryptoKeysTable extends Migration
+class CreateApplicationKeysTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateCryptoKeysTable extends Migration
      */
     public function up()
     {
-        Schema::create('crypto_keys', function (Blueprint $table) {
+        Schema::create('application_keys', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->charset = 'utf8';
             $table->collation = 'utf8_general_ci';

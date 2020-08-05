@@ -4,10 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Device extends Model
+class ApplicationKey extends Model
 {
     protected $appends = [
         'resource_url'
+    ];
+
+    protected $fillable = [
+        'version_key',
+        'cipher',
+        'cipher_key'
     ];
 
     protected $dates = [
@@ -15,21 +21,9 @@ class Device extends Model
         'updated_at'
     ];
 
-    protected $fillable = [
-        'name',
-        'device_id',
-        'user_id'
-    ];
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-
     /* ************************ ACCESSOR ************************* */
-
     public function getResourceUrlAttribute()
     {
-        return url('/admin/devices/'.$this->getKey());
+        return url('/admin/application-keys/' . $this->getKey());
     }
 }

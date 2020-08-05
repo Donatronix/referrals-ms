@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class CryptoKeysTableSeeder extends Seeder
+class ApplicationKeysTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -11,6 +11,6 @@ class CryptoKeysTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(\App\Models\CryptoKey::class, 5)->create();
+        factory(\App\Models\ApplicationKey::class, 5)->create();
     }
 }

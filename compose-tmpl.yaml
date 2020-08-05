@@ -13,7 +13,7 @@ services:
     networks:
       - app-tier
     ports:
-      - '8080:8080'
+      - '8091:8080'
     volumes:
 #      - ./conf/nginx.conf:/opt/sumra/nginx/conf/vhosts/vhosts.conf:ro
 #      - ./conf/mime.types:/opt/sumra/nginx/conf/mime.types:ro

@@ -2,36 +2,71 @@
 
 namespace App\Services;
 
-use App\Models\CryptoKey;
-use Illuminate\Http\Request;
+use App\Models\ApplicationKey;
+use Illuminate\Support\Facades\Log;
+use \Exception;
 
+/**
+ * Class Crypt
+ *
+ * @package App\Services
+ */
 class Crypt
 {
-    public static function encrypt($value, Request $request)
+    /**
+     * @param $value
+     *
+     * @return string
+     */
+    public static function encrypt($value)
     {
-        $keyData = self::getKey($request);
+        $keyData = self::getKey(config('app.application_version_key'));
+
+        if($keyData === null){
+            return response()->jsonApi('Cipher Key not found', 404);
+        }
 
         return base64_encode(openssl_encrypt($value, $keyData->cipher, $keyData->cipher_key, OPENSSL_RAW_DATA));
     }
 
-    public static function decrypt($input, Request $request)
+    /**
+     * @param $input
+     * @param $versionKey
+     *
+     * @return false|string
+     */
+    public static function decrypt($input, $versionKey = null)
     {
-        $keyData = self::getKey($request);
+        if(is_null($versionKey) || $versionKey === ''){
+            $versionKey = config('app.application_version_key');
+        }
+
+        $keyData = self::getKey($versionKey);
+        if($keyData === null){
+            return response()->jsonApi('Cipher Key not found', 404);
+        }
 
         $data = openssl_decrypt(base64_decode($input), $keyData->cipher, $keyData->cipher_key, OPENSSL_RAW_DATA);
 
         if(!$data){
-            abort(400, 'Decoded data is wrong');
+            Log::info('Decoded data is wrong');
+
+            return response()->jsonApi('Decoded data is wrong', 404);
         }
 
         return $data;
     }
 
-    private static function getKey(Request $request){
-        $key = CryptoKey::where('version_key', $request->get('version_key', null))->first();
+    /**
+     * @param $versionKey
+     *
+     * @return mixed
+     */
+    private static function getKey($versionKey){
+        $key = ApplicationKey::where('version_key', $versionKey)->first();
 
-        if(!$key){
-            abort(400, 'Cipher Key not found');
+        if(!$key || is_null($key)){
+            Log::info("Cipher Error. Version Key {$versionKey} not found");
         }
 
         return $key;

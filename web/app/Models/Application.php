@@ -16,6 +16,10 @@ class Application extends Model
     const REFERRER_APPROVE = 2;
     const REFERRER_REJECTED = 3;
 
+    protected $appends = [
+        'resource_url'
+    ];
+
     protected $casts = [
         'metadata' => 'json'
     ];
@@ -32,4 +36,16 @@ class Application extends Model
         'referrer_id',
         'referrer_status'
     ];
+
+    protected $dates = [
+        'created_at',
+        'updated_at'
+    ];
+
+    /* ************************ ACCESSOR ************************* */
+
+    public function getResourceUrlAttribute()
+    {
+        return url('/admin/applications/'.$this->getKey());
+    }
 }

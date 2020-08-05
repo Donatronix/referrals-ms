@@ -14,17 +14,37 @@ class User extends Model
     const STATUS_NOT_APPROVED = 2;
     const STATUS_BLOCKED = 3;
 
+    protected $appends = [
+        'resource_url'
+    ];
+
     protected $fillable = [
         'user_id',
         'user_name',
-        'referrer_id',
         'referral_code',
-        'status'
+        'referrer_id',
+        'status',
+        'updated_by'
     ];
 
     protected $dates = [
+        'created_at',
         'updated_at'
     ];
+
+    /**
+     * Indicates if the IDs are auto-incrementing.
+     *
+     * @var bool
+     */
+    public $incrementing = false;
+
+    /**
+     * The primary key associated with the table.
+     *
+     * @var string
+     */
+    protected $primaryKey = 'user_id';
 
     /**
      * Boot the model.
@@ -39,15 +59,24 @@ class User extends Model
             do {
                 // generate a random string using Laravel's str_random helper
                 $referralCode = Str::random(10);
-            }
-            //check if the token already exists and if it does, try again
+            } //check if the token already exists and if it does, try again
             while (User::where('referral_code', $referralCode)->first());
 
-            $obj->referral_code = (string) $referralCode;
+            $obj->referral_code = (string)$referralCode;
         });
     }
 
-    public function devices(){
+    /* ************************ ACCESSOR ************************* */
+
+    public function getResourceUrlAttribute()
+    {
+        return url('/admin/users/' . $this->getKey());
+
+        //return redirect()->route("dashboard.referral-users.bulk-destroy");
+    }
+
+    public function devices()
+    {
         return $this->hasMany(Device::class);
     }
- }
+}
