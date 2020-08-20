@@ -10,7 +10,7 @@
         "version": "1.0"
     },
     "paths": {
-        "/v1/referrals/applications": {
+        "/v1/referrals/admin/applications": {
             "get": {
                 "tags": [
                     "Admin"
@@ -90,7 +90,7 @@
                 }
             }
         },
-        "/v1/referrals/application-keys": {
+        "/v1/referrals/admin/application-keys": {
             "get": {
                 "tags": [
                     "Admin"
@@ -284,7 +284,7 @@
                 }
             }
         },
-        "/v1/referrals/admin-list": {
+        "/v1/referrals/admin/referrals-list": {
             "get": {
                 "tags": [
                     "Admin"
@@ -364,7 +364,7 @@
                 }
             }
         },
-        "/v1/referrals/admin-list/{id}": {
+        "/v1/referrals/admin/referrals-list/{id}": {
             "get": {
                 "tags": [
                     "Admin"

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Api\V1\Controllers;
+namespace App\Api\V1\Controllers\Admin;
 
 use App\Helpers\AdminListing;
 use App\Http\Controllers\Controller;
@@ -20,7 +20,7 @@ class UsersController extends Controller
      * Method for get list all referral users
      *
      * @OA\Get(
-     *     path="/v1/referrals/admin-list",
+     *     path="/v1/referrals/admin/referrals-list",
      *     description="Get referral users",
      *     tags={"Admin"},
      *
@@ -163,7 +163,7 @@ class UsersController extends Controller
      * Get detail info about user
      *
      * @OA\Get(
-     *     path="/v1/referrals/admin-list/{id}",
+     *     path="/v1/referrals/admin/referrals-list/{id}",
      *     summary="Get detail info about user",
      *     description="Get detail info about user",
      *     tags={"Admin"},

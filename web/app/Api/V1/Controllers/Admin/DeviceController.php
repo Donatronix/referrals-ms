@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Api\V1\Controllers;
+namespace App\Api\V1\Controllers\Admin;
 
 use App\Helpers\AdminListing;
 use App\Http\Requests\Admin\Device\BulkDestroyDevice;

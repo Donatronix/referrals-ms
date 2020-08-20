@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Api\V1\Controllers;
+namespace App\Api\V1\Controllers\Admin;
 
 use App\Helpers\AdminListing;
 use App\Http\Controllers\Controller;
@@ -19,7 +19,7 @@ class ApplicationController extends Controller
      * Method for get list all applications for select user
      *
      * @OA\Get(
-     *     path="/v1/referrals/applications",
+     *     path="/v1/referrals/admin/applications",
      *     description="Get applications",
      *     tags={"Admin"},
      *

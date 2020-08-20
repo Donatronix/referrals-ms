@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Api\V1\Controllers;
+namespace App\Api\V1\Controllers\Admin;
 
 use App\Helpers\AdminListing;
 use App\Http\Controllers\Controller;
@@ -19,7 +19,7 @@ class ApplicationKeyController extends Controller
      * Method for get list all application keys
      *
      * @OA\Get(
-     *     path="/v1/referrals/application-keys",
+     *     path="/v1/referrals/admin/application-keys",
      *     description="Get application keys",
      *     tags={"Admin"},
      *
