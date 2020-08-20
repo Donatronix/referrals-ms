@@ -3,20 +3,20 @@
 namespace App\Api\V1\Controllers\Admin;
 
 use App\Helpers\AdminListing;
-use App\Http\Requests\Admin\Device\BulkDestroyDevice;
-use App\Http\Requests\Admin\Device\DestroyDevice;
 use App\Models\Device;
-use Exception;
-use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Contracts\View\Factory;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
+/**
+ * Class DeviceController
+ *
+ * @package App\Api\V1\Controllers\Admin
+ */
 class DeviceController extends Controller
 {
+    use AdminUserCheckTrait;
+
     /**
      * Display a listing of the resource.
      *
@@ -26,6 +26,11 @@ class DeviceController extends Controller
      */
     public function index(Request $request)
     {
+        // admin check
+        if(($response = $this->adminUserCheck($request)) !== true){
+            return $response;
+        }
+
         // Return json items list for ajax
         $validator = Validator::make($request->all(), [
             'orderBy' => 'in:id,name,device_id,user_id|nullable',
@@ -44,14 +49,24 @@ class DeviceController extends Controller
             ], 422);
         }
 
+        // create AdminListing instance for a specific model
         $data = AdminListing::create(Device::class)->processRequestAndGet(
             $request,
 
             // set columns to query
-            ['id', 'name', 'device_id', 'user_id'],
+            [
+                'id',
+                'name',
+                'device_id',
+                'user_id'
+            ],
 
             // set columns to searchIn
-            ['id', 'name', 'device_id']
+            [
+                'id',
+                'name',
+                'device_id'
+            ]
         );
 
         // Return bulk items
@@ -60,6 +75,6 @@ class DeviceController extends Controller
         }
 
         // Return json items list by ajax
-        return $data->toJson();
+        return response()->jsonApi(json_decode($data->toJson()), 200);
     }
 }

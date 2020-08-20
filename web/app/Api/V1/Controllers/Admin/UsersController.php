@@ -5,6 +5,7 @@ namespace App\Api\V1\Controllers\Admin;
 use App\Helpers\AdminListing;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Traits\AdminUserCheckTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -16,6 +17,8 @@ use Illuminate\Support\Facades\Validator;
  */
 class UsersController extends Controller
 {
+    use AdminUserCheckTrait;
+
     /**
      * Method for get list all referral users
      *
@@ -100,11 +103,10 @@ class UsersController extends Controller
      */
     public function index(Request $request)
     {
-//        $userId = $request->header('user-id');
-//
-//        if ($userId === null) {
-//            abort(401, 'Unauthorized');
-//        }
+        // admin check
+        if(($response = $this->adminUserCheck($request)) !== true){
+            return $response;
+        }
 
         if ($request->get('orderBy') == 'id') {
             $request->merge([
@@ -220,7 +222,12 @@ class UsersController extends Controller
      *
      * @return mixed
      */
-    public function show($id){
+    public function show($id, Request $request){
+        // admin check
+        if(($response = $this->adminUserCheck($request)) !== true){
+            return $response;
+        }
+
         // Get user model
         try {
             // Get and return user data
