@@ -74,7 +74,8 @@ class ToolsController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse|mixed
      */
-    public function dataEncrypt(Request $request){
+    public function dataEncrypt(Request $request)
+    {
 
         $data = json_encode([
             'androidId' => 'ee4d70c80cdac614',
@@ -90,7 +91,6 @@ class ToolsController extends Controller
         ]);
 
         $data = Crypt::encrypt($data);
-
 
         return response()->jsonApi($data, 200);
     }
@@ -153,7 +153,8 @@ class ToolsController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse|mixed
      */
-    public function dataDecrypt(Request $request){
+    public function dataDecrypt(Request $request)
+    {
         $data = $request->get('data', null);
 
         if ($data === null) {

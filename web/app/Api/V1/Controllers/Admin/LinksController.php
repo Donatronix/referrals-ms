@@ -4,27 +4,28 @@ namespace App\Api\V1\Controllers\Admin;
 
 use App\Helpers\AdminListing;
 use App\Http\Controllers\Controller;
-use App\Models\Device;
+use App\Models\Link;
 use App\Traits\AdminUserCheckTrait;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 use Illuminate\Support\Facades\Validator;
 
 /**
- * Class DeviceController
+ * Class LinksController
  *
- * @package App\Api\V1\Controllers\Admin
+ * @package App\Http\Controllers
  */
-class DeviceController extends Controller
+class LinksController extends Controller
 {
     use AdminUserCheckTrait;
 
     /**
-     * Method for get list all devices of users
+     * Method for get list all referral links of users
      *
      * @OA\Get(
-     *     path="/v1/referrals/admin/devices",
-     *     description="Get devices list",
+     *     path="/v1/referrals/admin/links",
+     *     description="Get referral links",
      *     tags={"Admin"},
      *
      *     @OA\Parameter(
@@ -104,13 +105,13 @@ class DeviceController extends Controller
     public function index(Request $request)
     {
         // admin check
-        if(($response = $this->adminUserCheck($request)) !== true){
+        if (($response = $this->adminUserCheck($request)) !== true) {
             return $response;
         }
 
         // Return json items list for ajax
         $validator = Validator::make($request->all(), [
-            'orderBy' => 'in:id,name,device_id,user_id|nullable',
+            'orderBy' => 'in:id,user_id,package_name,referral_link|nullable',
             'orderDirection' => 'in:asc,desc|nullable',
             'search' => 'string|nullable',
             'page' => 'integer|nullable',
@@ -127,22 +128,22 @@ class DeviceController extends Controller
         }
 
         // create AdminListing instance for a specific model
-        $data = AdminListing::create(Device::class)->processRequestAndGet(
+        $data = AdminListing::create(Link::class)->processRequestAndGet(
             $request,
 
             // set columns to query
             [
                 'id',
-                'name',
-                'device_id',
-                'user_id'
+                'user_id',
+                'package_name',
+                'referral_link'
             ],
 
             // set columns to searchIn
             [
                 'id',
-                'name',
-                'device_id'
+                'package_name',
+                'referral_link'
             ]
         );
 

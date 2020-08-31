@@ -51,6 +51,16 @@ $router->group([
              */
             $router->get('applications', 'ApplicationController@index');
             $router->get('application-keys', 'ApplicationKeyController@index');
+
+            /**
+             * Devices
+             */
+            $router->get('devices', 'DeviceController@index');
+
+            /**
+             *
+             */
+            $router->get('links', 'LinksController@index');
         });
     });
 });

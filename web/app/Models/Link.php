@@ -18,7 +18,6 @@ class Link extends Model
         'referral_link'
     ];
 
-
     protected $dates = [
         'created_at',
         'updated_at',

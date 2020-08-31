@@ -17,7 +17,7 @@
                 ],
                 "summary": "Method for get list all applications for select user",
                 "description": "Get applications",
-                "operationId": "App\\Api\\V1\\Controllers\\ApplicationController::index",
+                "operationId": "App\\Api\\V1\\Controllers\\Admin\\ApplicationController::index",
                 "parameters": [
                     {
                         "name": "user-id",
@@ -97,7 +97,167 @@
                 ],
                 "summary": "Method for get list all application keys",
                 "description": "Get application keys",
-                "operationId": "App\\Api\\V1\\Controllers\\ApplicationKeyController::index",
+                "operationId": "App\\Api\\V1\\Controllers\\Admin\\ApplicationKeyController::index",
+                "parameters": [
+                    {
+                        "name": "user-id",
+                        "in": "header",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "orderBy",
+                        "in": "query",
+                        "description": "Order By",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "orderDirection",
+                        "in": "query",
+                        "description": "Order Direction",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search keywords",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Number of page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "bulk",
+                        "in": "query",
+                        "description": "Bulk filter",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+        },
+        "/v1/referrals/admin/devices": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Method for get list all devices of users",
+                "description": "Get devices list",
+                "operationId": "App\\Api\\V1\\Controllers\\Admin\\DeviceController::index",
+                "parameters": [
+                    {
+                        "name": "user-id",
+                        "in": "header",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "orderBy",
+                        "in": "query",
+                        "description": "Order By",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "orderDirection",
+                        "in": "query",
+                        "description": "Order Direction",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search keywords",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Number of page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "bulk",
+                        "in": "query",
+                        "description": "Bulk filter",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+        },
+        "/v1/referrals/admin/links": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Method for get list all referral links of users",
+                "description": "Get referral links",
+                "operationId": "App\\Api\\V1\\Controllers\\Admin\\LinksController::index",
                 "parameters": [
                     {
                         "name": "user-id",
@@ -177,7 +337,7 @@
                 ],
                 "summary": "Join new user to referrer",
                 "description": "Send encryption data",
-                "operationId": "App\\Api\\V1\\Controllers\\ToolsController::dataEncrypt",
+                "operationId": "App\\Api\\V1\\Controllers\\Admin\\ToolsController::dataEncrypt",
                 "parameters": [
                     {
                         "name": "user-id",
@@ -234,7 +394,7 @@
                 ],
                 "summary": "Join new user to referrer",
                 "description": "Send encryption data",
-                "operationId": "App\\Api\\V1\\Controllers\\ToolsController::dataDecrypt",
+                "operationId": "App\\Api\\V1\\Controllers\\Admin\\ToolsController::dataDecrypt",
                 "parameters": [
                     {
                         "name": "user-id",
@@ -291,7 +451,7 @@
                 ],
                 "summary": "Method for get list all referral users",
                 "description": "Get referral users",
-                "operationId": "App\\Api\\V1\\Controllers\\UsersController::index",
+                "operationId": "App\\Api\\V1\\Controllers\\Admin\\UsersController::index",
                 "parameters": [
                     {
                         "name": "user-id",
@@ -371,7 +531,7 @@
                 ],
                 "summary": "Get detail info about user",
                 "description": "Get detail info about user",
-                "operationId": "App\\Api\\V1\\Controllers\\UsersController::show",
+                "operationId": "App\\Api\\V1\\Controllers\\Admin\\UsersController::show",
                 "parameters": [
                     {
                         "name": "user-id",

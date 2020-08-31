@@ -11,7 +11,7 @@ use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
 use Kreait\Firebase\DynamicLink\CreateDynamicLink\FailedToCreateDynamicLink;
 use PubSub;
-use Validator;
+use Illuminate\Support\Facades\Validator;
 
 /**
  * Class MainController
