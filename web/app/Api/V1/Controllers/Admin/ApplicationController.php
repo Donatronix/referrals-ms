@@ -26,15 +26,22 @@ class ApplicationController extends Controller
      *     description="Get applications",
      *     tags={"Admin"},
      *
-     *     @OA\Parameter(
-     *         name="user-id",
-     *         description="User ID",
-     *         in="header",
-     *         required=true,
-     *         @OA\Schema(
-     *             type="integer"
-     *         )
-     *     ),
+     *     security={
+     *         "default": {
+     *             "ManagerRead",
+     *             "User",
+     *             "ManagerWrite"
+     *         }
+     *     },
+     *     x={
+     *         "auth-type": "Application & Application User",
+     *         "throttling-tier": "Unlimited",
+     *         "wso2-application-security": {
+     *             "security-types": {"oauth2"},
+     *             "optional": "false"
+     *         }
+     *     },
+     *
      *     @OA\Parameter(
      *         name="orderBy",
      *         description="Order By",

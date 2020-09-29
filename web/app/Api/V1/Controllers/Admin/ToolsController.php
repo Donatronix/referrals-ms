@@ -26,15 +26,22 @@ class ToolsController extends Controller
      *     description="Send encryption data",
      *     tags={"Tools"},
      *
-     *     @OA\Parameter(
-     *         name="user-id",
-     *         description="New User ID",
-     *         in="header",
-     *         required=false,
-     *         @OA\Schema(
-     *             type="number"
-     *         )
-     *     ),
+     *     security={
+     *         "default": {
+     *             "ManagerRead",
+     *             "User",
+     *             "ManagerWrite"
+     *         }
+     *     },
+     *     x={
+     *         "auth-type": "Application & Application User",
+     *         "throttling-tier": "Unlimited",
+     *         "wso2-application-security": {
+     *             "security-types": {"oauth2"},
+     *             "optional": "false"
+     *         }
+     *     },
+     *
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -104,15 +111,21 @@ class ToolsController extends Controller
      *     description="Send encryption data",
      *     tags={"Tools"},
      *
-     *     @OA\Parameter(
-     *         name="user-id",
-     *         description="New User ID",
-     *         in="header",
-     *         required=false,
-     *         @OA\Schema(
-     *             type="number"
-     *         )
-     *     ),
+     *     security={
+     *         "default": {
+     *             "ManagerRead",
+     *             "User",
+     *             "ManagerWrite"
+     *         }
+     *     },
+     *     x={
+     *         "auth-type": "Application & Application User",
+     *         "throttling-tier": "Unlimited",
+     *         "wso2-application-security": {
+     *             "security-types": {"oauth2"},
+     *             "optional": "false"
+     *         }
+     *     },
      *
      *     @OA\RequestBody(
      *         required=true,

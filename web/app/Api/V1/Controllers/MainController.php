@@ -29,15 +29,22 @@ class MainController extends Controller
      *     description="List all referrals for user",
      *     tags={"Main"},
      *
-     *     @OA\Parameter(
-     *         name="user-id",
-     *         description="User ID",
-     *         in="header",
-     *         required=true,
-     *         @OA\Schema(
-     *             type="number"
-     *         )
-     *     ),
+     *     security={
+     *         "default": {
+     *             "ManagerRead",
+     *             "User",
+     *             "ManagerWrite"
+     *         }
+     *     },
+     *     x={
+     *         "auth-type": "Application & Application User",
+     *         "throttling-tier": "Unlimited",
+     *         "wso2-application-security": {
+     *             "security-types": {"oauth2"},
+     *             "optional": "false"
+     *         }
+     *     },
+     *
      *     @OA\Response(
      *         response="200",
      *         description="Success join new user to referrer user"
@@ -93,15 +100,21 @@ class MainController extends Controller
      *     description="Send encryption data: username - New User Name, * package_name (required) - Package Name, referrer_code - Referrer code, * device_id (required) - User Device ID, * device_name (required) - User Device Name",
      *     tags={"Main"},
      *
-     *     @OA\Parameter(
-     *         name="user-id",
-     *         description="New User ID",
-     *         in="header",
-     *         required=false,
-     *         @OA\Schema(
-     *             type="number"
-     *         )
-     *     ),
+     *     security={
+     *         "default": {
+     *             "ManagerRead",
+     *             "User",
+     *             "ManagerWrite"
+     *         }
+     *     },
+     *     x={
+     *         "auth-type": "Application & Application User",
+     *         "throttling-tier": "Unlimited",
+     *         "wso2-application-security": {
+     *             "security-types": {"oauth2"},
+     *             "optional": "false"
+     *         }
+     *     },
      *
      *     @OA\RequestBody(
      *         required=true,
@@ -304,15 +317,22 @@ class MainController extends Controller
      *     description="Get user referrer invite code",
      *     tags={"Main"},
      *
-     *     @OA\Parameter(
-     *         name="user-id",
-     *         description="User ID",
-     *         in="header",
-     *         required=true,
-     *         @OA\Schema(
-     *             type="number"
-     *         )
-     *     ),
+     *     security={
+     *         "default": {
+     *             "ManagerRead",
+     *             "User",
+     *             "ManagerWrite"
+     *         }
+     *     },
+     *     x={
+     *         "auth-type": "Application & Application User",
+     *         "throttling-tier": "Unlimited",
+     *         "wso2-application-security": {
+     *             "security-types": {"oauth2"},
+     *             "optional": "false"
+     *         }
+     *     },
+
      *     @OA\Parameter(
      *         name="package_name",
      *         description="Package Name",

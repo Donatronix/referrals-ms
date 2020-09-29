@@ -27,15 +27,21 @@ class UsersController extends Controller
      *     description="Get referral users",
      *     tags={"Admin"},
      *
-     *     @OA\Parameter(
-     *         name="user-id",
-     *         description="User ID",
-     *         in="header",
-     *         required=true,
-     *         @OA\Schema(
-     *             type="integer"
-     *         )
-     *     ),
+     *     security={
+     *         "default": {
+     *             "ManagerRead",
+     *             "User",
+     *             "ManagerWrite"
+     *         }
+     *     },
+     *     x={
+     *         "auth-type": "Application & Application User",
+     *         "throttling-tier": "Unlimited",
+     *         "wso2-application-security": {
+     *             "security-types": {"oauth2"},
+     *             "optional": "false"
+     *         }
+     *     },
      *     @OA\Parameter(
      *         name="orderBy",
      *         description="Order By",
@@ -170,15 +176,21 @@ class UsersController extends Controller
      *     description="Get detail info about user",
      *     tags={"Admin"},
      *
-     *     @OA\Parameter(
-     *         name="user-id",
-     *         description="Auth User ID",
-     *         in="header",
-     *         required=true,
-     *         @OA\Schema(
-     *             type="integer"
-     *         )
-     *     ),
+     *     security={
+     *         "default": {
+     *             "ManagerRead",
+     *             "User",
+     *             "ManagerWrite"
+     *         }
+     *     },
+     *     x={
+     *         "auth-type": "Application & Application User",
+     *         "throttling-tier": "Unlimited",
+     *         "wso2-application-security": {
+     *             "security-types": {"oauth2"},
+     *             "optional": "false"
+     *         }
+     *     },
      *     @OA\Parameter(
      *         name="id",
      *         in="path",

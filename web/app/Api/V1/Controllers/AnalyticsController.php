@@ -24,15 +24,21 @@ class AnalyticsController extends Controller
      *     description="Get analytics for referral link",
      *     tags={"Analytics"},
      *
-     *     @OA\Parameter(
-     *         name="user-id",
-     *         description="User ID",
-     *         in="header",
-     *         required=true,
-     *         @OA\Schema(
-     *             type="number"
-     *         )
-     *     ),
+     *     security={
+     *         "default": {
+     *             "ManagerRead",
+     *             "User",
+     *             "ManagerWrite"
+     *         }
+     *     },
+     *     x={
+     *         "auth-type": "Application & Application User",
+     *         "throttling-tier": "Unlimited",
+     *         "wso2-application-security": {
+     *             "security-types": {"oauth2"},
+     *             "optional": "false"
+     *         }
+     *     },
      *     @OA\Parameter(
      *         name="package_name",
      *         description="Package Name",
