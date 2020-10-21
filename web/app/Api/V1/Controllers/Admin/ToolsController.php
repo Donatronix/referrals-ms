@@ -21,7 +21,7 @@ class ToolsController extends Controller
      * Save data for first start
      *
      * @OA\Post(
-     *     path="/v1/tools/data-encrypt",
+     *     path="/v1/referrals/tools/data-encrypt",
      *     summary="Join new user to referrer",
      *     description="Send encryption data",
      *     tags={"Tools"},
@@ -106,7 +106,7 @@ class ToolsController extends Controller
      * Save data for first start
      *
      * @OA\Post(
-     *     path="/v1/tools/data-decrypt",
+     *     path="/v1/referrals/tools/data-decrypt",
      *     summary="Join new user to referrer",
      *     description="Send encryption data",
      *     tags={"Tools"},

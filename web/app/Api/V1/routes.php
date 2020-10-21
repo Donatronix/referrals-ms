@@ -8,8 +8,8 @@
 $router->group([
     'namespace' => '\App\Api\V1\Controllers'
 ], function ($router) {
-    $router->post('tools/data-encrypt', 'ToolsController@dataEncrypt');
-    $router->post('tools/data-decrypt', 'ToolsController@dataDecrypt');
+    $router->post('referrals/tools/data-encrypt', 'ToolsController@dataEncrypt');
+    $router->post('referrals/tools/data-decrypt', 'ToolsController@dataDecrypt');
 
     $router->group([
         'prefix' => 'referrals'
