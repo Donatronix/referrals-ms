@@ -5,7 +5,7 @@
         "description": "This is API Microservice Referral Program",
         "contact": {
             "name": "Support Team",
-            "email": "bibrkacity@gmail.com"
+            "email": "admin@sumra.net"
         },
         "version": "1.0"
     },
@@ -20,15 +20,6 @@
                 "operationId": "App\\Api\\V1\\Controllers\\Admin\\ApplicationController::index",
                 "parameters": [
                     {
-                        "name": "user-id",
-                        "in": "header",
-                        "description": "User ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
                         "name": "orderBy",
                         "in": "query",
                         "description": "Order By",
@@ -87,6 +78,23 @@
                     "200": {
                         "description": "Success"
                     }
+                },
+                "security": [
+                    {
+                        "default": [
+                            "ManagerRead",
+                            "User",
+                            "ManagerWrite"
+                        ]
+                    }
+                ],
+                "x-auth-type": "Application & Application User",
+                "x-throttling-tier": "Unlimited",
+                "x-wso2-application-security": {
+                    "security-types": [
+                        "oauth2"
+                    ],
+                    "optional": "false"
                 }
             }
         },
@@ -100,15 +108,6 @@
                 "operationId": "App\\Api\\V1\\Controllers\\Admin\\ApplicationKeyController::index",
                 "parameters": [
                     {
-                        "name": "user-id",
-                        "in": "header",
-                        "description": "User ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
                         "name": "orderBy",
                         "in": "query",
                         "description": "Order By",
@@ -167,6 +166,23 @@
                     "200": {
                         "description": "Success"
                     }
+                },
+                "security": [
+                    {
+                        "default": [
+                            "ManagerRead",
+                            "User",
+                            "ManagerWrite"
+                        ]
+                    }
+                ],
+                "x-auth-type": "Application & Application User",
+                "x-throttling-tier": "Unlimited",
+                "x-wso2-application-security": {
+                    "security-types": [
+                        "oauth2"
+                    ],
+                    "optional": "false"
                 }
             }
         },
@@ -180,15 +196,6 @@
                 "operationId": "App\\Api\\V1\\Controllers\\Admin\\DeviceController::index",
                 "parameters": [
                     {
-                        "name": "user-id",
-                        "in": "header",
-                        "description": "User ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
                         "name": "orderBy",
                         "in": "query",
                         "description": "Order By",
@@ -247,6 +254,23 @@
                     "200": {
                         "description": "Success"
                     }
+                },
+                "security": [
+                    {
+                        "default": [
+                            "ManagerRead",
+                            "User",
+                            "ManagerWrite"
+                        ]
+                    }
+                ],
+                "x-auth-type": "Application & Application User",
+                "x-throttling-tier": "Unlimited",
+                "x-wso2-application-security": {
+                    "security-types": [
+                        "oauth2"
+                    ],
+                    "optional": "false"
                 }
             }
         },
@@ -260,15 +284,6 @@
                 "operationId": "App\\Api\\V1\\Controllers\\Admin\\LinksController::index",
                 "parameters": [
                     {
-                        "name": "user-id",
-                        "in": "header",
-                        "description": "User ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
                         "name": "orderBy",
                         "in": "query",
                         "description": "Order By",
@@ -327,10 +342,27 @@
                     "200": {
                         "description": "Success"
                     }
+                },
+                "security": [
+                    {
+                        "default": [
+                            "ManagerRead",
+                            "User",
+                            "ManagerWrite"
+                        ]
+                    }
+                ],
+                "x-auth-type": "Application & Application User",
+                "x-throttling-tier": "Unlimited",
+                "x-wso2-application-security": {
+                    "security-types": [
+                        "oauth2"
+                    ],
+                    "optional": "false"
                 }
             }
         },
-        "/v1/tools/data-encrypt": {
+        "/v1/referrals/tools/data-encrypt": {
             "post": {
                 "tags": [
                     "Tools"
@@ -338,17 +370,6 @@
                 "summary": "Join new user to referrer",
                 "description": "Send encryption data",
                 "operationId": "App\\Api\\V1\\Controllers\\Admin\\ToolsController::dataEncrypt",
-                "parameters": [
-                    {
-                        "name": "user-id",
-                        "in": "header",
-                        "description": "New User ID",
-                        "required": false,
-                        "schema": {
-                            "type": "number"
-                        }
-                    }
-                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -384,10 +405,27 @@
                     "404": {
                         "description": "not found"
                     }
+                },
+                "security": [
+                    {
+                        "default": [
+                            "ManagerRead",
+                            "User",
+                            "ManagerWrite"
+                        ]
+                    }
+                ],
+                "x-auth-type": "Application & Application User",
+                "x-throttling-tier": "Unlimited",
+                "x-wso2-application-security": {
+                    "security-types": [
+                        "oauth2"
+                    ],
+                    "optional": "false"
                 }
             }
         },
-        "/v1/tools/data-decrypt": {
+        "/v1/referrals/tools/data-decrypt": {
             "post": {
                 "tags": [
                     "Tools"
@@ -395,17 +433,6 @@
                 "summary": "Join new user to referrer",
                 "description": "Send encryption data",
                 "operationId": "App\\Api\\V1\\Controllers\\Admin\\ToolsController::dataDecrypt",
-                "parameters": [
-                    {
-                        "name": "user-id",
-                        "in": "header",
-                        "description": "New User ID",
-                        "required": false,
-                        "schema": {
-                            "type": "number"
-                        }
-                    }
-                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -441,6 +468,23 @@
                     "404": {
                         "description": "not found"
                     }
+                },
+                "security": [
+                    {
+                        "default": [
+                            "ManagerRead",
+                            "User",
+                            "ManagerWrite"
+                        ]
+                    }
+                ],
+                "x-auth-type": "Application & Application User",
+                "x-throttling-tier": "Unlimited",
+                "x-wso2-application-security": {
+                    "security-types": [
+                        "oauth2"
+                    ],
+                    "optional": "false"
                 }
             }
         },
@@ -454,15 +498,6 @@
                 "operationId": "App\\Api\\V1\\Controllers\\Admin\\UsersController::index",
                 "parameters": [
                     {
-                        "name": "user-id",
-                        "in": "header",
-                        "description": "User ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
                         "name": "orderBy",
                         "in": "query",
                         "description": "Order By",
@@ -521,6 +556,23 @@
                     "200": {
                         "description": "Success"
                     }
+                },
+                "security": [
+                    {
+                        "default": [
+                            "ManagerRead",
+                            "User",
+                            "ManagerWrite"
+                        ]
+                    }
+                ],
+                "x-auth-type": "Application & Application User",
+                "x-throttling-tier": "Unlimited",
+                "x-wso2-application-security": {
+                    "security-types": [
+                        "oauth2"
+                    ],
+                    "optional": "false"
                 }
             }
         },
@@ -533,15 +585,6 @@
                 "description": "Get detail info about user",
                 "operationId": "App\\Api\\V1\\Controllers\\Admin\\UsersController::show",
                 "parameters": [
-                    {
-                        "name": "user-id",
-                        "in": "header",
-                        "description": "Auth User ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
                     {
                         "name": "id",
                         "in": "path",
@@ -582,6 +625,23 @@
                             }
                         }
                     }
+                },
+                "security": [
+                    {
+                        "default": [
+                            "ManagerRead",
+                            "User",
+                            "ManagerWrite"
+                        ]
+                    }
+                ],
+                "x-auth-type": "Application & Application User",
+                "x-throttling-tier": "Unlimited",
+                "x-wso2-application-security": {
+                    "security-types": [
+                        "oauth2"
+                    ],
+                    "optional": "false"
                 }
             }
         },
@@ -593,15 +653,6 @@
                 "summary": "Get analytics for referral link",
                 "description": "Get analytics for referral link",
                 "parameters": [
-                    {
-                        "name": "user-id",
-                        "in": "header",
-                        "description": "User ID",
-                        "required": true,
-                        "schema": {
-                            "type": "number"
-                        }
-                    },
                     {
                         "name": "package_name",
                         "in": "query",
@@ -644,6 +695,23 @@
                     "404": {
                         "description": "not found"
                     }
+                },
+                "security": [
+                    {
+                        "default": [
+                            "ManagerRead",
+                            "User",
+                            "ManagerWrite"
+                        ]
+                    }
+                ],
+                "x-auth-type": "Application & Application User",
+                "x-throttling-tier": "Unlimited",
+                "x-wso2-application-security": {
+                    "security-types": [
+                        "oauth2"
+                    ],
+                    "optional": "false"
                 }
             }
         },
@@ -673,6 +741,23 @@
                     "400": {
                         "description": "Invalid request"
                     }
+                },
+                "security": [
+                    {
+                        "default": [
+                            "ManagerRead",
+                            "User",
+                            "ManagerWrite"
+                        ]
+                    }
+                ],
+                "x-auth-type": "Application & Application User",
+                "x-throttling-tier": "Unlimited",
+                "x-wso2-application-security": {
+                    "security-types": [
+                        "oauth2"
+                    ],
+                    "optional": "false"
                 }
             }
         },
@@ -684,17 +769,6 @@
                 "summary": "List all referrals for user",
                 "description": "List all referrals for user",
                 "operationId": "App\\Api\\V1\\Controllers\\MainController::index",
-                "parameters": [
-                    {
-                        "name": "user-id",
-                        "in": "header",
-                        "description": "User ID",
-                        "required": true,
-                        "schema": {
-                            "type": "number"
-                        }
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "Success join new user to referrer user"
@@ -708,6 +782,23 @@
                     "404": {
                         "description": "not found"
                     }
+                },
+                "security": [
+                    {
+                        "default": [
+                            "ManagerRead",
+                            "User",
+                            "ManagerWrite"
+                        ]
+                    }
+                ],
+                "x-auth-type": "Application & Application User",
+                "x-throttling-tier": "Unlimited",
+                "x-wso2-application-security": {
+                    "security-types": [
+                        "oauth2"
+                    ],
+                    "optional": "false"
                 }
             },
             "post": {
@@ -717,17 +808,6 @@
                 "summary": "Join new user to referrer",
                 "description": "Send encryption data: username - New User Name, * package_name (required) - Package Name, referrer_code - Referrer code, * device_id (required) - User Device ID, * device_name (required) - User Device Name",
                 "operationId": "App\\Api\\V1\\Controllers\\MainController::create",
-                "parameters": [
-                    {
-                        "name": "user-id",
-                        "in": "header",
-                        "description": "New User ID",
-                        "required": false,
-                        "schema": {
-                            "type": "number"
-                        }
-                    }
-                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -763,6 +843,23 @@
                     "404": {
                         "description": "not found"
                     }
+                },
+                "security": [
+                    {
+                        "default": [
+                            "ManagerRead",
+                            "User",
+                            "ManagerWrite"
+                        ]
+                    }
+                ],
+                "x-auth-type": "Application & Application User",
+                "x-throttling-tier": "Unlimited",
+                "x-wso2-application-security": {
+                    "security-types": [
+                        "oauth2"
+                    ],
+                    "optional": "false"
                 }
             }
         },
@@ -775,15 +872,6 @@
                 "description": "Get user referrer invite code",
                 "operationId": "App\\Api\\V1\\Controllers\\MainController::invite",
                 "parameters": [
-                    {
-                        "name": "user-id",
-                        "in": "header",
-                        "description": "User ID",
-                        "required": true,
-                        "schema": {
-                            "type": "number"
-                        }
-                    },
                     {
                         "name": "package_name",
                         "in": "query",
@@ -808,6 +896,23 @@
                     "404": {
                         "description": "not found"
                     }
+                },
+                "security": [
+                    {
+                        "default": [
+                            "ManagerRead",
+                            "User",
+                            "ManagerWrite"
+                        ]
+                    }
+                ],
+                "x-auth-type": "Application & Application User",
+                "x-throttling-tier": "Unlimited",
+                "x-wso2-application-security": {
+                    "security-types": [
+                        "oauth2"
+                    ],
+                    "optional": "false"
                 }
             }
         },
@@ -859,6 +964,23 @@
                     "404": {
                         "description": "not found"
                     }
+                },
+                "security": [
+                    {
+                        "default": [
+                            "ManagerRead",
+                            "User",
+                            "ManagerWrite"
+                        ]
+                    }
+                ],
+                "x-auth-type": "Application & Application User",
+                "x-throttling-tier": "Unlimited",
+                "x-wso2-application-security": {
+                    "security-types": [
+                        "oauth2"
+                    ],
+                    "optional": "false"
                 }
             }
         },
@@ -903,6 +1025,41 @@
                     },
                     "400": {
                         "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "default": [
+                            "ManagerRead",
+                            "User",
+                            "ManagerWrite"
+                        ]
+                    }
+                ],
+                "x-auth-type": "Application & Application User",
+                "x-throttling-tier": "Unlimited",
+                "x-wso2-application-security": {
+                    "security-types": [
+                        "oauth2"
+                    ],
+                    "optional": "false"
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "default": {
+                "type": "oauth2",
+                "description": "Auth Scheme",
+                "flows": {
+                    "implicit": {
+                        "authorizationUrl": "https://is.sumra.net/oauth2",
+                        "scopes": {
+                            "ManagerRead": "Manager can read",
+                            "User": "User access",
+                            "ManagerWrite": "Manager can write"
+                        }
                     }
                 }
             }

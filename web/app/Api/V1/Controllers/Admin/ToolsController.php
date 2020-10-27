@@ -26,13 +26,13 @@ class ToolsController extends Controller
      *     description="Send encryption data",
      *     tags={"Tools"},
      *
-     *     security={
+     *     security={{
      *         "default": {
      *             "ManagerRead",
      *             "User",
      *             "ManagerWrite"
      *         }
-     *     },
+     *     }},
      *     x={
      *         "auth-type": "Application & Application User",
      *         "throttling-tier": "Unlimited",
@@ -111,13 +111,13 @@ class ToolsController extends Controller
      *     description="Send encryption data",
      *     tags={"Tools"},
      *
-     *     security={
+     *     security={{
      *         "default": {
      *             "ManagerRead",
      *             "User",
      *             "ManagerWrite"
      *         }
-     *     },
+     *     }},
      *     x={
      *         "auth-type": "Application & Application User",
      *         "throttling-tier": "Unlimited",

@@ -27,13 +27,13 @@ class UsersController extends Controller
      *     description="Get referral users",
      *     tags={"Admin"},
      *
-     *     security={
+     *     security={{
      *         "default": {
      *             "ManagerRead",
      *             "User",
      *             "ManagerWrite"
      *         }
-     *     },
+     *     }},
      *     x={
      *         "auth-type": "Application & Application User",
      *         "throttling-tier": "Unlimited",
@@ -42,6 +42,7 @@ class UsersController extends Controller
      *             "optional": "false"
      *         }
      *     },
+     *
      *     @OA\Parameter(
      *         name="orderBy",
      *         description="Order By",
@@ -176,13 +177,13 @@ class UsersController extends Controller
      *     description="Get detail info about user",
      *     tags={"Admin"},
      *
-     *     security={
+     *     security={{
      *         "default": {
      *             "ManagerRead",
      *             "User",
      *             "ManagerWrite"
      *         }
-     *     },
+     *     }},
      *     x={
      *         "auth-type": "Application & Application User",
      *         "throttling-tier": "Unlimited",
@@ -191,6 +192,7 @@ class UsersController extends Controller
      *             "optional": "false"
      *         }
      *     },
+     *
      *     @OA\Parameter(
      *         name="id",
      *         in="path",

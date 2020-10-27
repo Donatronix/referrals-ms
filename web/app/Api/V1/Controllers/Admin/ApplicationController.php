@@ -26,13 +26,13 @@ class ApplicationController extends Controller
      *     description="Get applications",
      *     tags={"Admin"},
      *
-     *     security={
+     *     security={{
      *         "default": {
      *             "ManagerRead",
      *             "User",
      *             "ManagerWrite"
      *         }
-     *     },
+     *     }},
      *     x={
      *         "auth-type": "Application & Application User",
      *         "throttling-tier": "Unlimited",

@@ -24,13 +24,13 @@ class AnalyticsController extends Controller
      *     description="Get analytics for referral link",
      *     tags={"Analytics"},
      *
-     *     security={
+     *     security={{
      *         "default": {
      *             "ManagerRead",
      *             "User",
      *             "ManagerWrite"
      *         }
-     *     },
+     *     }},
      *     x={
      *         "auth-type": "Application & Application User",
      *         "throttling-tier": "Unlimited",
@@ -39,6 +39,7 @@ class AnalyticsController extends Controller
      *             "optional": "false"
      *         }
      *     },
+     *
      *     @OA\Parameter(
      *         name="package_name",
      *         description="Package Name",
@@ -161,6 +162,22 @@ class AnalyticsController extends Controller
      *     summary="Get unregistered users (by referral code)",
      *     description="Get installed app, without registered users. If send referral code then get list by refcode",
      *     tags={"Analytics"},
+     *
+     *     security={{
+     *         "default": {
+     *             "ManagerRead",
+     *             "User",
+     *             "ManagerWrite"
+     *         }
+     *     }},
+     *     x={
+     *         "auth-type": "Application & Application User",
+     *         "throttling-tier": "Unlimited",
+     *         "wso2-application-security": {
+     *             "security-types": {"oauth2"},
+     *             "optional": "false"
+     *         }
+     *     },
      *
      *     @OA\Parameter(
      *         name="referrer_code",
