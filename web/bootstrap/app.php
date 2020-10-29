@@ -60,9 +60,11 @@ $app->middleware([
     \App\Http\Middleware\CorsMiddleware::class
 ]);
 
-// $app->routeMiddleware([
-//     'auth' => App\Http\Middleware\Authenticate::class,
-// ]);
+$app->routeMiddleware([
+    'checkUser' => App\Http\Middleware\CheckUserMiddleware::class,
+    'checkAdmin' => App\Http\Middleware\CheckAdminMiddleware::class
+    //'auth' => App\Http\Middleware\Authenticate::class
+]);
 
 /*
 |--------------------------------------------------------------------------

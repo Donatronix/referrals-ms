@@ -98,12 +98,6 @@ class AnalyticsController extends Controller
      */
     public function index(Request $request)
     {
-        $userId = $request->header('user-id');
-
-        if ($userId === null) {
-            abort(401, 'Unauthorized');
-        }
-
         // Check Package Name
         $packageName = $request->get('package_name', Link::ANDROID_PACKAGE_NAME);
 
@@ -111,10 +105,16 @@ class AnalyticsController extends Controller
             $referralLink = $request->get('dynamic_link');
         } else {
             // Get invite object for user
-            $link = Link::where('user_id', $userId)->where('package_name', $packageName)->first();
+            $link = Link::where('user_id', $request->header('user-id'))
+                ->where('package_name', $packageName)
+                ->first();
 
             if (!$link) {
-                return response()->jsonApi('Dynamic link not found for this user and package', 200);
+                return response()->jsonApi([
+                    'type' => 'error',
+                    'title' => 'Data Not Found',
+                    'message' => 'Dynamic link not found for this user and package'
+                ], 400);
             }
 
             $referralLink = $link->referral_link;

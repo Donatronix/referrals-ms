@@ -5,7 +5,6 @@ namespace App\Api\V1\Controllers\Admin;
 use App\Helpers\AdminListing;
 use App\Http\Controllers\Controller;
 use App\Models\Application;
-use App\Traits\AdminUserCheckTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -16,8 +15,6 @@ use Illuminate\Support\Facades\Validator;
  */
 class ApplicationController extends Controller
 {
-    use AdminUserCheckTrait;
-
     /**
      * Method for get list all applications for select user
      *
@@ -109,11 +106,7 @@ class ApplicationController extends Controller
      */
     public function index(Request $request)
     {
-        // admin check
-        if(($response = $this->adminUserCheck($request)) !== true){
-            return $response;
-        }
-
+        // Validate data
         $validator = Validator::make($request->all(), [
             'orderBy' => 'in:device_id,device_name,id,ip,metadata,package_name,referrer_code,referrer_id,referrer_status,user_id,user_status|nullable',
             'orderDirection' => 'in:asc,desc|nullable',

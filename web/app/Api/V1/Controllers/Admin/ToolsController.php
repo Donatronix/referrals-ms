@@ -4,7 +4,6 @@ namespace App\Api\V1\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Services\Crypt;
-use App\Traits\AdminUserCheckTrait;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
 
@@ -15,8 +14,6 @@ use Illuminate\Http\Request;
  */
 class ToolsController extends Controller
 {
-    use AdminUserCheckTrait;
-
     /**
      * Save data for first start
      *
@@ -171,7 +168,11 @@ class ToolsController extends Controller
         $data = $request->get('data', null);
 
         if ($data === null) {
-            abort(401, 'Required data');
+            return response()->jsonApi([
+                'type' => 'error',
+                'title' => 'Invalid request',
+                'message' => 'Required data'
+            ], 400);
         }
 
         try {

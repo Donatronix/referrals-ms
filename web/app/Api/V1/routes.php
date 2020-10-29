@@ -12,7 +12,8 @@ $router->group([
     $router->post('referrals/tools/data-decrypt', 'ToolsController@dataDecrypt');
 
     $router->group([
-        'prefix' => 'referrals'
+        'prefix' => 'referrals',
+        'middleware' => 'checkUser'
     ], function ($router) {
         /**
          * Common
@@ -38,7 +39,8 @@ $router->group([
          */
         $router->group([
             'prefix' => 'admin',
-            'namespace' => 'Admin'
+            'namespace' => 'Admin',
+            'middleware' => 'checkAdmin'
         ], function ($router) {
             /**
              * Refferals

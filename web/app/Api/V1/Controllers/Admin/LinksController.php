@@ -5,10 +5,7 @@ namespace App\Api\V1\Controllers\Admin;
 use App\Helpers\AdminListing;
 use App\Http\Controllers\Controller;
 use App\Models\Link;
-use App\Traits\AdminUserCheckTrait;
-use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
 use Illuminate\Support\Facades\Validator;
 
 /**
@@ -18,8 +15,6 @@ use Illuminate\Support\Facades\Validator;
  */
 class LinksController extends Controller
 {
-    use AdminUserCheckTrait;
-
     /**
      * Method for get list all referral links of users
      *
@@ -111,12 +106,7 @@ class LinksController extends Controller
      */
     public function index(Request $request)
     {
-        // admin check
-        if (($response = $this->adminUserCheck($request)) !== true) {
-            return $response;
-        }
-
-        // Return json items list for ajax
+        // Validate data
         $validator = Validator::make($request->all(), [
             'orderBy' => 'in:id,user_id,package_name,referral_link|nullable',
             'orderDirection' => 'in:asc,desc|nullable',

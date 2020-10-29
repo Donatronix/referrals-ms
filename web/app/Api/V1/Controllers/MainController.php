@@ -71,10 +71,6 @@ class MainController extends Controller
     {
         $userId = $request->header('user-id');
 
-        if ($userId === null) {
-            abort(401, 'Unauthorized');
-        }
-
         // Check & update username
         $currentUser = User::where('user_id', $userId)->get();
         $username = $request->header('username', null);
@@ -160,7 +156,11 @@ class MainController extends Controller
         $data = $request->get('data', null);
 
         if ($data === null) {
-            abort(401, 'Required data');
+            return response()->jsonApi([
+                'type' => 'error',
+                'title' => 'Invalid request',
+                'message' => 'Required data'
+            ], 400);
         }
 
         try {
@@ -193,7 +193,7 @@ class MainController extends Controller
                 $messages[] = $field;
             }
 
-            return response()->json([
+            return response()->jsonApi([
                 'type' => 'danger',
                 'title' => 'Validation Error',
                 'message' => $messages
@@ -202,13 +202,7 @@ class MainController extends Controller
 
         // If exist user id in header then join user
         if ($request->headers->has('user-id')) {
-            $appUserId = $request->header('user-id');
-
-            if ($appUserId === null) {
-                abort(401, 'Unauthorized');
-            }
-
-            $inputData['user_id'] = $appUserId;
+            $inputData['user_id'] = $request->header('user-id');
             $inputData['user_name'] = $request->header('username', null);
 
             return $this->registerReferrer($inputData);
@@ -239,7 +233,11 @@ class MainController extends Controller
             $app->user_id = $input['user_id'];
             $app->save();
         } else {
-            abort(400, 'Not found installed application');
+            return response()->jsonApi([
+                'type' => 'error',
+                'title' => 'Not found data',
+                'message' => 'Not found installed application'
+            ], 400);
         }
 
         // Check if exist referrer_code, then join referrer to new user
@@ -247,14 +245,22 @@ class MainController extends Controller
         if ($referrerCode !== null) {
             // Check if new user has referrer already
             if ($app->referrer_id !== 0) {
-                abort(400, 'You already have an referrer');
+                return response()->jsonApi([
+                    'type' => 'error',
+                    'title' => 'Referrer exist',
+                    'message' => 'You already have an referrer'
+                ], 400);
             }
 
             // Get referrer object
             $referrer = User::where('referral_code', $referrerCode)->first();
 
             if ($referrer === null) {
-                abort(404, 'Referrer by code not found');
+                return response()->jsonApi([
+                    'type' => 'error',
+                    'title' => 'Not found data',
+                    'message' => 'Referrer by code not found'
+                ], 400);
             }
 
             // Save referrer to user app
@@ -369,10 +375,6 @@ class MainController extends Controller
     public function invite(Request $request)
     {
         $userId = $request->header('user-id');
-
-        if ($userId === null) {
-            abort(401, 'Unauthorized');
-        }
 
         // Find user
         $user = User::where('user_id', $userId)->first();
