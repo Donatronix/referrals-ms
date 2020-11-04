@@ -18,7 +18,8 @@ class CheckAdminMiddleware
     public function handle(Request $request, Closure $next)
     {
         $adminUsers = explode(',', env('SUMRA_ADMIN_USERS', ''));
-        if(empty($adminUsers) || !in_array($request->header('user-id'), $adminUsers)){
+
+        if(empty($adminUsers) || !in_array(Auth::user()->getAuthIdentifier(), $adminUsers)){
             return response()->jsonApi([
                 'type' => 'error',
                 'title' => 'Access error',

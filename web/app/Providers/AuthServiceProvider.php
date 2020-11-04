@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Auth\GenericUser;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -24,5 +25,13 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->app['auth']->viaRequest('api', function ($request) {
+            return new GenericUser([
+                'id' => $request->header('user-id'),
+                'username' => $request->header('username', null)
+            ]);
+        });
+
+        Gate::policy('App\Model\Advert', 'App\Policies\AdvertPolicy');
     }
 }

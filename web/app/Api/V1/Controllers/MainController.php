@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Services\Crypt;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Kreait\Firebase\DynamicLink\CreateDynamicLink\FailedToCreateDynamicLink;
 use PubSub;
 use Illuminate\Support\Facades\Validator;
@@ -69,19 +70,18 @@ class MainController extends Controller
      */
     public function index(Request $request)
     {
-        $userId = $request->header('user-id');
+        $currentUserId = Auth::user()->getAuthIdentifier();
 
         // Check & update username
-        $currentUser = User::where('user_id', $userId)->get();
-        $username = $request->header('username', null);
-
-        if ($currentUser !== $username) {
+        $currentUser = User::where('user_id', $currentUserId)->get();
+        $username = Auth::user()->username;
+        if ($currentUser->user_name !== $username) {
             $currentUser->user_name = $username;
             $currentUser->save();
         }
 
         // Get list all referrals by user id
-        $list = User::where('referrer_id', $userId)->get();
+        $list = User::where('referrer_id', $currentUserId)->get();
 
         // Return response
         return response()->jsonApi($list, 200);
@@ -201,9 +201,10 @@ class MainController extends Controller
         }
 
         // If exist user id in header then join user
+        // @todo 04/11/2020 Need review logic and replace user-id !!!
         if ($request->headers->has('user-id')) {
-            $inputData['user_id'] = $request->header('user-id');
-            $inputData['user_name'] = $request->header('username', null);
+            $inputData['user_id'] = Auth::user()->getAuthIdentifier();
+            $inputData['user_name'] = Auth::user()->username;
 
             return $this->registerReferrer($inputData);
         } else {
@@ -374,16 +375,14 @@ class MainController extends Controller
      */
     public function invite(Request $request)
     {
-        $userId = $request->header('user-id');
+        $currentUserId = Auth::user()->getAuthIdentifier();
 
-        // Find user
-        $user = User::where('user_id', $userId)->first();
-
+        // Find user and if not exist, then create a new user
+        $user = User::where('user_id', $currentUserId)->first();
         if (!$user) {
-            // create a new invite record
             $user = User::create([
-                'user_id' => $userId,
-                'user_name' => $request->header('username', null)
+                'user_id' => $currentUserId,
+                'user_name' => Auth::user()->username
             ]);
         }
 

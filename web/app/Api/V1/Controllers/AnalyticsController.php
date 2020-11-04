@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Application;
 use App\Models\Link;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Kreait\Firebase\DynamicLink\GetStatisticsForDynamicLink\FailedToGetStatisticsForDynamicLink;
 
 /**
@@ -105,7 +106,7 @@ class AnalyticsController extends Controller
             $referralLink = $request->get('dynamic_link');
         } else {
             // Get invite object for user
-            $link = Link::where('user_id', $request->header('user-id'))
+            $link = Link::where('user_id', Auth::user()->getAuthIdentifier())
                 ->where('package_name', $packageName)
                 ->first();
 
