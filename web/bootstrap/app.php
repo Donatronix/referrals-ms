@@ -62,7 +62,7 @@ $app->middleware([
 
 $app->routeMiddleware([
     'checkUser' => App\Http\Middleware\CheckUserMiddleware::class,
-    'checkAdmin' => App\Http\Middleware\CheckAdminMiddleware::class
+    'checkAdmin' => App\Http\Middleware\CheckAdminMiddleware::class,
     //'auth' => App\Http\Middleware\Authenticate::class
 ]);
 
