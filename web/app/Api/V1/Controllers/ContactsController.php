@@ -17,19 +17,6 @@ use Illuminate\Support\Facades\Auth;
 class ContactsController extends Controller
 {
 
-    public function test_neo4j()
-        {
-            $client = ClientBuilder::create()
-                ->addConnection('default', env('NEO_DEFAULT_URL','http://neo4j:kanku@localhost:7474')) // Example for HTTP connection configuration (port is optional)
-                ->addConnection('bolt', env('NEO_BOLT_URL','bolt://neo4j:kanku@localhost:7687')) // Example for BOLT connection configuration (port is optional)
-                ->build();
-
-            $query = 'CREATE (ee:Person { name: "Emil", from: "Ukraine", klout: 55 })';
-
-            $client->run($query);
-        }
-
-
     public function store(Request $request)
     {
 
@@ -103,7 +90,35 @@ class ContactsController extends Controller
 
 private function save($userID,$json)
  {
-        return 'tt';
+     $client = ClientBuilder::create()
+         ->addConnection('default', env('NEO_DEFAULT_URL','http://neo4j:kanku@localhost:7474')) // Example for HTTP connection configuration (port is optional)
+         ->addConnection('bolt', env('NEO_BOLT_URL','bolt://neo4j:kanku@localhost:7687')) // Example for BOLT connection configuration (port is optional)
+         ->build();
+
+
+     //Look for a user id= $userID. If not found, create such a user.
+     $query = "MERGE (person:User {  id:$userID })
+RETURN person";
+
+     $client->run($query);
+
+     foreach($json as $one)
+     {
+         $arr = (array)$one;
+         foreach($arr as $key=>$value)
+         {
+             $name = $key;
+             $text = $value;
+
+            $query = "MATCH (person:User) WHERE person.id = $userID
+            CREATE (ct:Contact {name: \"$name\", text:\"".$text."\"}),
+            (person)-[:LISTEN]->(ct)
+            ";
+             $client->run($query);
+         }
+     }
+
+    return 'Ok';
  }
 
 
