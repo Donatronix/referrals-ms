@@ -13,6 +13,8 @@ $router->group([
     $router->post('tools/data-encrypt', 'Admin\ToolsController@dataEncrypt');
     $router->post('tools/data-decrypt', 'Admin\ToolsController@dataDecrypt');
 
+
+
     /**
      * Common
      */
@@ -31,6 +33,8 @@ $router->group([
      */
     $router->get('analytics/byLink', 'AnalyticsController@index');
     $router->get('analytics/unregistered', 'AnalyticsController@unregistered');
+
+    $router->post('contacts', 'ContactsController@store');
 
     /**
      * ADMIN PANEL

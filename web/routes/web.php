@@ -30,3 +30,6 @@ Route::group(
         include base_path('app/Api/V1/routes.php');
     }
 );
+
+if( file_exists(__DIR__.'/tests.php') )
+    require_once(__DIR__.'/tests.php');

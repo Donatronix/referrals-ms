@@ -19,7 +19,8 @@
         "sumra/pubsub": "*",
         "vladimir-yuldashev/laravel-queue-rabbitmq": "~9",
         "zircote/swagger-php": "~3",
-        "ext-openssl": "*"
+        "ext-openssl": "*",
+        "graphaware/neo4j-php-client": "4.8.5"
     },
     "require-dev": {
         "fzaninotto/faker": "~1",

@@ -88,12 +88,18 @@ class_alias(\Illuminate\Support\Facades\App::class, 'App');
 $app->register(\Sumra\JsonApi\JsonApiServiceProvider::class);
 $app->register(\Sumra\PubSub\PubSubServiceProvider::class);
 
+
 /** Swagger */
 $app->configure('swagger-lume');
 $app->register(\SwaggerLume\ServiceProvider::class);
 
 /** Firebase */
 $app->register(Kreait\Laravel\Firebase\ServiceProvider::class);
+
+// Neo4j
+$app->configure('app');
+$app->configure('database');
+
 
 /*
 |--------------------------------------------------------------------------
