@@ -13,8 +13,6 @@ $router->group([
     $router->post('tools/data-encrypt', 'Admin\ToolsController@dataEncrypt');
     $router->post('tools/data-decrypt', 'Admin\ToolsController@dataDecrypt');
 
-
-
     /**
      * Common
      */

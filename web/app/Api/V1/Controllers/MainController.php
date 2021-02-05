@@ -68,7 +68,7 @@ class MainController extends Controller
      *
      * @return \Sumra\JsonApi\
      */
-    public function index(Request $request)
+    public function index()
     {
         $currentUserId = Auth::user()->getAuthIdentifier();
 

@@ -15,9 +15,19 @@
    T E S T S
 -------------------------- */
 
-$router->get('/tests/referrals/', '\App\Http\Controllers\PagesController@index');
+Route::group(
+    ['prefix' => env('API_PREFIX') . '/tests'],
+    function ($router) {
+        $router->get('db-test', function () {
+            if (DB::connection()->getDatabaseName()) {
+                echo "Connected successfully to database: " . DB::connection()->getDatabaseName();
+            }
+        });
 
-$router->get('/tests/referrals/contacts/store', function () {
-    return \App\Http\Controllers\TestController::viewMake("tests.contacts.store");
-});
+        $router->get('referrals', '\App\Http\Controllers\PagesController@index');
 
+        $router->get('referrals/contacts/store', function () {
+            return \App\Http\Controllers\TestController::viewMake("tests.contacts.store");
+        });
+    }
+);
