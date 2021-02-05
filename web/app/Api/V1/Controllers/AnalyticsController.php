@@ -209,7 +209,8 @@ class AnalyticsController extends Controller
             ->when($request->has('referrer_code'), function ($q) use ($request) {
                 return $q->where('referrer_code', $request->get('referrer_code'));
             })
-            ->get()->toArray();
+            ->get()
+            ->toArray();
 
         // Return response
         return response()->jsonApi($list, 200);

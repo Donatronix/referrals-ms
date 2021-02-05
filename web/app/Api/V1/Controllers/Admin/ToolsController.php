@@ -80,7 +80,6 @@ class ToolsController extends Controller
      */
     public function dataEncrypt(Request $request)
     {
-
         $data = json_encode([
             'androidId' => 'ee4d70c80cdac614',
             'applicationID' => 'net.sumra.wallet',

@@ -5,12 +5,14 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": "^7.2",
+        "php": "^7.2|8.0",
         "ext-bcmath": "*",
         "ext-json": "*",
+        "ext-openssl": "*",
+        "appzcoder/lumen-routes-list": "~1",
         "darkaonline/swagger-lume": "~6",
         "doctrine/dbal": "~2",
-        "flipbox/lumen-generator": "~6",
+        "graphaware/neo4j-php-client": "~4",
         "guzzlehttp/guzzle": "~6",
         "kreait/laravel-firebase": "~2",
         "laravel/lumen-framework": "~6",
@@ -18,14 +20,12 @@
         "sumra/json-api": "*",
         "sumra/pubsub": "*",
         "vladimir-yuldashev/laravel-queue-rabbitmq": "~9",
-        "zircote/swagger-php": "~3",
-        "ext-openssl": "*",
-        "graphaware/neo4j-php-client": "4.8.5"
+        "zircote/swagger-php": "~3"
     },
     "require-dev": {
-        "fzaninotto/faker": "~1",
-        "phpunit/phpunit": "~8",
-        "mockery/mockery": "~1"
+        "fakerphp/faker": "~1",
+        "mockery/mockery": "~1",
+        "phpunit/phpunit": "~9"
     },
     "autoload": {
         "classmap": [
