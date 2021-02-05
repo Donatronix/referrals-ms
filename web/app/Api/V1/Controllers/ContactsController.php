@@ -14,6 +14,73 @@ use Illuminate\Support\Facades\Auth;
  *
  * @package App\Api\V1\Controllers
  */
+
+
+/**
+ * Save contact data
+ *
+ * @OA\Post(
+ *     path="/v1/referrals/contacts",
+ *     summary="Save contact data in Neo4j",
+ *     description="Save contact data in Neo4j",
+ *     tags={"Contacts"},
+ *
+ *     security={{
+ *         "default": {
+ *             "ManagerRead",
+ *             "User",
+ *             "ManagerWrite"
+ *         }
+ *     }},
+ *     x={
+ *         "auth-type": "Application & Application User",
+ *         "throttling-tier": "Unlimited",
+ *         "wso2-application-security": {
+ *             "security-types": {"oauth2"},
+ *             "optional": "false"
+ *         }
+ *     },
+ *
+ *     @OA\Parameter(
+ *         name="userID",
+ *         description="user id",
+ *         required=true,
+ *         in="query",
+ *          @OA\Schema (
+ *              type="integer"
+ *          )
+ *     ),
+ *     @OA\Parameter(
+ *         name="contacts",
+ *         description="Contacts in JSON",
+ *         required=true,
+ *         in="query",
+ *          @OA\Schema (
+ *              type="string"
+ *          )
+ *     ),
+ *     @OA\Response(
+ *         response="200",
+ *         description="Success send data"
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="Unauthorized"
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Invalid request"
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="not found"
+ *     )
+ * )
+ *
+ * @param \Illuminate\Http\Request $request
+ *
+ * @return \Illuminate\Http\JsonResponse|mixed
+ */
 class ContactsController extends Controller
 {
 
@@ -49,7 +116,6 @@ class ContactsController extends Controller
         }
 
     }
-
 
  /***********************************
   *  P R I V A T E
