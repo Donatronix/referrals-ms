@@ -18,12 +18,6 @@ Route::get('/', function () use ($router) {
     return $router->app->version();
 });
 
-Route::get(env('API_PREFIX') . '/db-test', function () {
-    if (DB::connection()->getDatabaseName()) {
-        echo "Connected successfully to database: " . DB::connection()->getDatabaseName();
-    }
-});
-
 Route::group(
     ['prefix' => env('API_PREFIX') . '/v1'],
     function ($router) {
