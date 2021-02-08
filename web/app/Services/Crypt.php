@@ -54,6 +54,10 @@ class Crypt
             return response()->jsonApi('Decoded data is wrong', 404);
         }
 
+        if(is_string($data)){
+            $data = json_decode($data, true);
+        }
+
         return $data;
     }
 

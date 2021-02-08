@@ -10,9 +10,10 @@ use App\Services\Crypt;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use Kreait\Firebase\DynamicLink\CreateDynamicLink\FailedToCreateDynamicLink;
 use PubSub;
-use Illuminate\Support\Facades\Validator;
+use Sumra\JsonApi\JsonApiResponse;
 
 /**
  * Class MainController
@@ -64,24 +65,14 @@ class MainController extends Controller
      *     )
      * )
      *
-     * @param Request $request
-     *
-     * @return \Sumra\JsonApi\
+     * @return \Sumra\JsonApi\JsonApiResponse
      */
-    public function index()
+    public function index(): JsonApiResponse
     {
-        $currentUserId = Auth::user()->getAuthIdentifier();
-
-        // Check & update username
-        $currentUser = User::where('user_id', $currentUserId)->get();
-        $username = Auth::user()->username;
-        if ($currentUser->user_name !== $username) {
-            $currentUser->user_name = $username;
-            $currentUser->save();
-        }
+        $user = $this->getUser();
 
         // Get list all referrals by user id
-        $list = User::where('referrer_id', $currentUserId)->get();
+        $list = User::where('referrer_id', $user->id)->get();
 
         // Return response
         return response()->jsonApi($list, 200);
@@ -229,6 +220,7 @@ class MainController extends Controller
         $app = Application::where('device_id', $input['device_id'])
             ->where('package_name', $input['package_name'])
             ->first();
+
         if ($app) {
             $app->user_status = Application::INSTALLED_OK;
             $app->user_id = $input['user_id'];
@@ -339,7 +331,6 @@ class MainController extends Controller
      *             "optional": "false"
      *         }
      *     },
-
      *     @OA\Parameter(
      *         name="package_name",
      *         description="Package Name",
@@ -375,16 +366,7 @@ class MainController extends Controller
      */
     public function invite(Request $request)
     {
-        $currentUserId = Auth::user()->getAuthIdentifier();
-
-        // Find user and if not exist, then create a new user
-        $user = User::where('user_id', $currentUserId)->first();
-        if (!$user) {
-            $user = User::create([
-                'user_id' => $currentUserId,
-                'user_name' => Auth::user()->username
-            ]);
-        }
+        $user = $this->getUser();
 
         // Check Package Name
         $packageName = $request->get('package_name', Link::ANDROID_PACKAGE_NAME);
@@ -402,65 +384,70 @@ class MainController extends Controller
             ];
 
             // Create dynamic link from google firebase service
-            $websiteUrl = 'https://sumra.net/discover?referrer=' . $user->referral_code;
-            $googlePlayUrl = 'https://play.google.com/store/apps/details?id=' . $packageName . '&referrer=' . urlencode(http_build_query($referrerData));
+            try {
+                $parameters = [
+                    'dynamicLinkInfo' => [
+                        'domainUriPrefix' => config('firebase.dynamic_links.default_domain'),
 
-            $parameters = [
-                'dynamicLinkInfo' => [
-                    'domainUriPrefix' => config('dynamic_links.default_domain'),
-                    'link' => $websiteUrl,
-                    'socialMetaTagInfo' => [
-                        'socialTitle' => 'Sumra Net',
-                        'socialDescription' => 'Follow me on Sumra network',
-                        'socialImageLink' => 'https://sumra.net/css/logo.svg'
-                    ],
-                    'navigationInfo' => [
-                        'enableForcedRedirect' => true,
-                    ],
-                    'analyticsInfo' => [
-                        'googlePlayAnalytics' => [
-                            'utmSource' => $user->referral_code,
-                            'utmMedium' => Link::MEDIUM,
-                            'utmCampaign' => Link::CAMPAIGN,
-                            'utmContent' => $packageName,
+                        'link' => sprintf("%s?referrer=%s", config('firebase.app_urls.website'), $user->referral_code),
+
+                        'socialMetaTagInfo' => [
+                            'socialTitle' => 'Sumra Net',
+                            'socialDescription' => 'Follow me on Sumra network',
+                            'socialImageLink' => 'https://sumra.net/css/logo.svg'
+                        ],
+                        'navigationInfo' => [
+                            'enableForcedRedirect' => true,
+                        ],
+                        'analyticsInfo' => [
+                            'googlePlayAnalytics' => [
+                                'utmSource' => $user->referral_code,
+                                'utmMedium' => Link::MEDIUM,
+                                'utmCampaign' => Link::CAMPAIGN,
+                                'utmContent' => $packageName,
+                                /*
+                                'utmTerm' => 'utmTerm',
+                                'gclid' => 'gclid'
+                                */
+                            ],
                             /*
-                            'utmTerm' => 'utmTerm',
-                            'gclid' => 'gclid'
+                              'itunesConnectAnalytics' => [
+                                'at' => 'affiliateToken',
+                                'ct' => 'campaignToken',
+                                'mt' => '8',
+                                'pt' => 'providerToken'
+                              ]
                             */
                         ],
+                        'androidInfo' => [
+                            'androidPackageName' => $packageName,
+                            'androidFallbackLink' => sprintf(
+                                "%s?id=%s&referrer=%s",
+                                config('firebase.app_urls.apple_store'),
+                                $packageName,
+                                urlencode(http_build_query($referrerData))
+                            ),
+
+                            //'androidMinPackageVersionCode' => Link::ANDROID_MIN_PACKAGE_VERSION
+                        ],
                         /*
-                          'itunesConnectAnalytics' => [
-                            'at' => 'affiliateToken',
-                            'ct' => 'campaignToken',
-                            'mt' => '8',
-                            'pt' => 'providerToken'
-                          ]
+                        'iosInfo' => [
+                          'iosBundleId' => 'net.sumra.ios',
+                          'iosFallbackLink' => 'https://fallback.domain.tld',
+                          'iosCustomScheme' => 'customScheme',
+                          'iosIpadFallbackLink' => 'https://ipad-fallback.domain.tld',
+                          'iosIpadBundleId' => 'iPadBundleId',
+                          'iosAppStoreId' => 'appStoreId'
+                        ],
                         */
                     ],
-                    'androidInfo' => [
-                        'androidPackageName' => $packageName,
-                        'androidFallbackLink' => $googlePlayUrl,
-                        //'androidMinPackageVersionCode' => Link::DEFAULT_ANDROID_MIN_PACKAGE_VERSION
-                    ],
-                    /*
-                    'iosInfo' => [
-                      'iosBundleId' => 'net.sumra.ios',
-                      'iosFallbackLink' => 'https://fallback.domain.tld',
-                      'iosCustomScheme' => 'customScheme',
-                      'iosIpadFallbackLink' => 'https://ipad-fallback.domain.tld',
-                      'iosIpadBundleId' => 'iPadBundleId',
-                      'iosAppStoreId' => 'appStoreId'
-                    ],
-                    */
-                ],
-                'suffix' => [
-                    'option' => 'SHORT'
-                ]
-            ];
+                    'suffix' => [
+                        'option' => 'SHORT'
+                    ]
+                ];
 
-            $dynamicLinks = app('firebase.dynamic_links');
+                $dynamicLinks = app('firebase.dynamic_links');
 
-            try {
                 $shortLink = $dynamicLinks->createDynamicLink($parameters);
             } catch (FailedToCreateDynamicLink $e) {
                 return response()->jsonApi($e->getMessage());
@@ -479,6 +466,32 @@ class MainController extends Controller
             'referral_code' => $user->referral_code,
             'referral_link' => $link->referral_link
         ], 200);
+    }
+
+    /**
+     * @return mixed
+     */
+    private function getUser()
+    {
+        $currentUserId = Auth::user()->getAuthIdentifier();
+
+        // Find user and if not exist, then create a new user
+        $user = User::where('user_id', $currentUserId)->first();
+
+        if (!$user) {
+            $user = User::create([
+                'user_id' => $currentUserId,
+                'user_name' => Auth::user()->username
+            ]);
+        } else {
+            $username = Auth::user()->username;
+            if ($user->user_name !== $username) {
+                $user->user_name = $username;
+                $user->save();
+            }
+        }
+
+        return $user;
     }
 }
 
