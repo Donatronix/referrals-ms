@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use App\Models\ApplicationKey;
 
 class ApplicationKeysTableSeeder extends Seeder
 {
@@ -11,6 +12,6 @@ class ApplicationKeysTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(\App\Models\ApplicationKey::class, 5)->create();
+        factory(ApplicationKey::class, 5)->create();
     }
 }

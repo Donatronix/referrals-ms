@@ -362,132 +362,6 @@
                 }
             }
         },
-        "/v1/referrals/tools/data-encrypt": {
-            "post": {
-                "tags": [
-                    "Tools"
-                ],
-                "summary": "Join new user to referrer",
-                "description": "Send encryption data",
-                "operationId": "App\\Api\\V1\\Controllers\\Admin\\ToolsController::dataEncrypt",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "version_key": {
-                                        "description": "Version Key",
-                                        "type": "string",
-                                        "example": "66981685"
-                                    },
-                                    "data": {
-                                        "description": "Encrypt data",
-                                        "type": "text",
-                                        "example": ""
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Success send data"
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "400": {
-                        "description": "Invalid request"
-                    },
-                    "404": {
-                        "description": "not found"
-                    }
-                },
-                "security": [
-                    {
-                        "default": [
-                            "ManagerRead",
-                            "User",
-                            "ManagerWrite"
-                        ]
-                    }
-                ],
-                "x-auth-type": "Application & Application User",
-                "x-throttling-tier": "Unlimited",
-                "x-wso2-application-security": {
-                    "security-types": [
-                        "oauth2"
-                    ],
-                    "optional": "false"
-                }
-            }
-        },
-        "/v1/referrals/tools/data-decrypt": {
-            "post": {
-                "tags": [
-                    "Tools"
-                ],
-                "summary": "Join new user to referrer",
-                "description": "Send encryption data",
-                "operationId": "App\\Api\\V1\\Controllers\\Admin\\ToolsController::dataDecrypt",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "version_key": {
-                                        "description": "Version Key",
-                                        "type": "string",
-                                        "example": "66981685"
-                                    },
-                                    "data": {
-                                        "description": "Encrypt data",
-                                        "type": "text",
-                                        "example": ""
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Success send data"
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "400": {
-                        "description": "Invalid request"
-                    },
-                    "404": {
-                        "description": "not found"
-                    }
-                },
-                "security": [
-                    {
-                        "default": [
-                            "ManagerRead",
-                            "User",
-                            "ManagerWrite"
-                        ]
-                    }
-                ],
-                "x-auth-type": "Application & Application User",
-                "x-throttling-tier": "Unlimited",
-                "x-wso2-application-security": {
-                    "security-types": [
-                        "oauth2"
-                    ],
-                    "optional": "false"
-                }
-            }
-        },
         "/v1/referrals/admin/referrals-list": {
             "get": {
                 "tags": [
@@ -1025,6 +899,132 @@
                     },
                     "400": {
                         "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "default": [
+                            "ManagerRead",
+                            "User",
+                            "ManagerWrite"
+                        ]
+                    }
+                ],
+                "x-auth-type": "Application & Application User",
+                "x-throttling-tier": "Unlimited",
+                "x-wso2-application-security": {
+                    "security-types": [
+                        "oauth2"
+                    ],
+                    "optional": "false"
+                }
+            }
+        },
+        "/tests/tools/data-encrypt": {
+            "post": {
+                "tags": [
+                    "Tools"
+                ],
+                "summary": "Join new user to referrer",
+                "description": "Send encryption data",
+                "operationId": "App\\Http\\Controllers\\ToolsController::dataEncrypt",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "version_key": {
+                                        "description": "Version Key",
+                                        "type": "string",
+                                        "example": "66981685"
+                                    },
+                                    "data": {
+                                        "description": "Encrypt data",
+                                        "type": "text",
+                                        "example": ""
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success send data"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    },
+                    "404": {
+                        "description": "not found"
+                    }
+                },
+                "security": [
+                    {
+                        "default": [
+                            "ManagerRead",
+                            "User",
+                            "ManagerWrite"
+                        ]
+                    }
+                ],
+                "x-auth-type": "Application & Application User",
+                "x-throttling-tier": "Unlimited",
+                "x-wso2-application-security": {
+                    "security-types": [
+                        "oauth2"
+                    ],
+                    "optional": "false"
+                }
+            }
+        },
+        "/tests/tools/data-decrypt": {
+            "post": {
+                "tags": [
+                    "Tools"
+                ],
+                "summary": "Join new user to referrer",
+                "description": "Send encryption data",
+                "operationId": "App\\Http\\Controllers\\ToolsController::dataDecrypt",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "version_key": {
+                                        "description": "Version Key",
+                                        "type": "string",
+                                        "example": "66981685"
+                                    },
+                                    "data": {
+                                        "description": "Encrypt data",
+                                        "type": "text",
+                                        "example": ""
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success send data"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    },
+                    "404": {
+                        "description": "not found"
                     }
                 },
                 "security": [

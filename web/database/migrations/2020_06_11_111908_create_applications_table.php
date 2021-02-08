@@ -30,6 +30,7 @@ class CreateApplicationsTable extends Migration
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');
             $table->integer('user_status')->default(\App\Models\Application::INSTALLED_NO);
+
             $table->integer('referrer_id')->default(0);
             $table->integer('referrer_status')->default(\App\Models\Application::REFERRER_NO);
 

@@ -109,7 +109,7 @@
 
                     errorMessage += (obj.message != undefined) ? obj.message : obj.error;
 
-                    let txt = '<span style="color:red">Error '+errorMessage;
+                    let txt = '<span style="color:#ff0000">Error '+errorMessage;
                     txt += '</span>';
 
                     $('#response').html(txt);

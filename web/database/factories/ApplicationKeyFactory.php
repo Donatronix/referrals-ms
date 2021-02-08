@@ -1,8 +1,9 @@
 <?php
 
 use Faker\Generator as Faker;
+use App\Models\ApplicationKey;
 
-$factory->define(\App\Models\ApplicationKey::class, function (Faker $faker) {
+$factory->define(ApplicationKey::class, function (Faker $faker) {
     $cipherList = [
       'AES-128-ECB',
       'AES-256-ECB'
