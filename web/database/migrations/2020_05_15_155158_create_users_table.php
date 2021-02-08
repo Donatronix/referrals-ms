@@ -20,10 +20,11 @@ class CreateUsersTable extends Migration
 
             $table->unsignedBigInteger('user_id')->primary()->unique();
             $table->string('user_name', 20)->index()->nullable();
-            $table->integer('referrer_id')->default(0);
+
             $table->string('referral_code', 10)->unique()->nullable();
-            $table->integer('status')->default(0);
-            $table->integer('updated_by')->nullable();
+            $table->unsignedBigInteger('referrer_id')->nullable()->default(0);
+
+            $table->tinyInteger('status')->default(0);
             $table->timestamps();
         });
     }

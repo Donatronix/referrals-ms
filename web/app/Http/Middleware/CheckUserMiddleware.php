@@ -18,7 +18,7 @@ class CheckUserMiddleware
     public function handle(Request $request, Closure $next)
     {
         // Check exist user-id and it not null
-        if ($request->header('user-id', null) === null) {
+        if (empty($request->header('user-id', null))) {
             return response()->jsonApi([
                 'type' => 'error',
                 'title' => 'Auth error',

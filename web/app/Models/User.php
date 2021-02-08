@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
 class User extends Model
@@ -23,8 +24,7 @@ class User extends Model
         'user_name',
         'referral_code',
         'referrer_id',
-        'status',
-        'updated_by'
+        'status'
     ];
 
     protected $dates = [
@@ -60,7 +60,7 @@ class User extends Model
                 // generate a random string using Laravel's str_random helper
                 $referralCode = Str::random(10);
             } //check if the token already exists and if it does, try again
-            while (User::where('referral_code', $referralCode)->first());
+            while (self::where('referral_code', $referralCode)->first());
 
             $obj->referral_code = (string)$referralCode;
         });
@@ -68,14 +68,14 @@ class User extends Model
 
     /* ************************ ACCESSOR ************************* */
 
-    public function getResourceUrlAttribute()
+    public function getResourceUrlAttribute(): string
     {
         return url('/admin/users/' . $this->getKey());
 
         //return redirect()->route("dashboard.referral-users.bulk-destroy");
     }
 
-    public function devices()
+    public function devices(): HasMany
     {
         return $this->hasMany(Device::class);
     }
