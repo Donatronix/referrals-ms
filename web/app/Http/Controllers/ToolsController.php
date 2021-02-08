@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Api\V1\Controllers\Admin;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Services\Crypt;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
@@ -18,7 +17,7 @@ class ToolsController extends Controller
      * Save data for first start
      *
      * @OA\Post(
-     *     path="/v1/referrals/tools/data-encrypt",
+     *     path="/tests/tools/data-encrypt",
      *     summary="Join new user to referrer",
      *     description="Send encryption data",
      *     tags={"Tools"},
@@ -81,16 +80,10 @@ class ToolsController extends Controller
     public function dataEncrypt(Request $request)
     {
         $data = json_encode([
-            'androidId' => 'ee4d70c80cdac614',
-            'applicationID' => 'net.sumra.wallet',
-            'deviceBootloader' => 'unknown',
-            'deviceBrand' => 'google',
-            'deviceManufactured' => 'Google',
-            'deviceModel' => 'Android SDK built for x86',
-            'deviceSerialNumber' => 'EMULATOR30X0X12X0',
-            'packageName' => 'net.sumra.wallet',
-            'versionCode' => '1',
-            'versionName' => '0.0.245'
+            'referrer_code' => 'OvwW7Gtq83',
+            'device_id' => 'ee4d70c80cdac614',
+            'device_name' => 'Android SDK built for x86',
+            'package_name' => 'net.sumra.wallet'
         ]);
 
         $data = Crypt::encrypt($data);
@@ -102,7 +95,7 @@ class ToolsController extends Controller
      * Save data for first start
      *
      * @OA\Post(
-     *     path="/v1/referrals/tools/data-decrypt",
+     *     path="/tests/tools/data-decrypt",
      *     summary="Join new user to referrer",
      *     description="Send encryption data",
      *     tags={"Tools"},
