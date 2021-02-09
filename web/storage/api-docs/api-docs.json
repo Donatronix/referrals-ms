@@ -761,6 +761,66 @@
                 }
             }
         },
+        "/v1/referrals/contacts": {
+            "post": {
+                "tags": [
+                    "Contacts"
+                ],
+                "summary": "Save contact data in Neo4j",
+                "description": "Save contact data in Neo4j",
+                "parameters": [
+                    {
+                        "name": "userID",
+                        "in": "query",
+                        "description": "user id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "contacts",
+                        "in": "query",
+                        "description": "Contacts in JSON",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success send data"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    },
+                    "404": {
+                        "description": "not found"
+                    }
+                },
+                "security": [
+                    {
+                        "default": [
+                            "ManagerRead",
+                            "User",
+                            "ManagerWrite"
+                        ]
+                    }
+                ],
+                "x-auth-type": "Application & Application User",
+                "x-throttling-tier": "Unlimited",
+                "x-wso2-application-security": {
+                    "security-types": [
+                        "oauth2"
+                    ],
+                    "optional": "false"
+                }
+            }
+        },
         "/v1/referrals": {
             "get": {
                 "tags": [
