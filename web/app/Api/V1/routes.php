@@ -33,6 +33,7 @@ $router->group([
     $router->get('analytics/unregistered', 'AnalyticsController@unregistered');
 
     $router->post('contacts', 'ContactsController@store');
+    $router->delete('contacts', 'ContactsController@destroy');
 
     /**
      * ADMIN PANEL
