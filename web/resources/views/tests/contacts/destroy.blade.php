@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>test for store contacts</title>
+    <title>test for destroy contacts</title>
 
     <style type="text/css">
 
@@ -61,7 +61,7 @@
 
             var user_id = document.getElementById('user_id').value;
 
-            let parms = [ 'userID', 'contacts' ,'deleteAbsent'];
+            let parms = [ 'userID', 'contacts' ];
 
             let _post = {};
 
@@ -84,7 +84,7 @@
 
             let url = '/v1/referrals/contacts';
 
-            let curl = 'curl -X POST -H "user-id:'+user_id+'" -d "'+arr+'" {{$http}}://{{ $host }}'+url;
+            let curl = 'curl -X DELETE -H "user-id:'+user_id+'" -d "'+arr+'" {{$http}}://{{ $host }}'+url;
 
             let curl_decode = curl.replace(/&c/g,'&amp;c');
 
@@ -92,7 +92,7 @@
 
             $.ajax({
                 url: url,
-                type: 'post',
+                type: 'delete',
                 headers: {
                     'user-id': user_id
                 },
@@ -111,7 +111,7 @@
 
                     errorMessage += (obj.message != undefined) ? obj.message : obj.error;
 
-                    let txt = '<span style="color:#ff0000">Error '+errorMessage;
+                    let txt = '<span style="color:red">Error '+errorMessage;
                     txt += '</span>';
 
                     $('#response').html(txt);
@@ -126,14 +126,13 @@
 </head>
 <body>
 <p><a href="/tests/referrals">Tests contents</a></p>
-<h1>Test for store contacts</h1>
+<h1>Test for delete contacts</h1>
 
 <table>
  <tr><td>user-id (to header)<span style="color:red;font-size:16pt">*</span></td><td> <input type="number" id="user_id" value="8" /></td></tr>
 
 <tr><td>userID<span style="color:red;font-size:16pt">*</span></td><td> <input type="number" id="userID" value="1" /></td></tr>
-<tr><td>contacts<span style="color:red;font-size:16pt">*</span><br /></td><td> <textarea id="contacts" rows="3" cols="30"></textarea></td></tr>
-<tr><td>deleteAbsent<span style="color:red;font-size:16pt">*</span><br /></td><td> <input type="text" id="deleteAbsent" value="" /></td></tr>
+    <tr><td>contacts<span style="color:red;font-size:16pt">*</span><br /></td><td> <textarea id="contacts" rows="3" cols="30"></textarea></td></tr>
 
 </table>
 <p> <input type="button" value="Test" onclick="store_contacts()" /> </p>
