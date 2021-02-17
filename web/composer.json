@@ -16,6 +16,7 @@
         "guzzlehttp/guzzle": "~6",
         "kreait/laravel-firebase": "~2",
         "laravel/lumen-framework": "~6",
+        "robbrazier/piwik": "~4",
         "sumra/baum": "*",
         "sumra/json-api": "*",
         "sumra/pubsub": "*",

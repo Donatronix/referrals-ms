@@ -19,7 +19,10 @@ class CreateLinksTable extends Migration
             $table->collation = 'utf8_general_ci';
 
             $table->bigIncrements('id');
-            $table->integer('user_id');
+
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+
             $table->string('package_name', 20);
             $table->string('referral_link', 35)->unique();
 

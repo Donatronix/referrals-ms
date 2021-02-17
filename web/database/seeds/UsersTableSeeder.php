@@ -19,7 +19,7 @@ class UsersTableSeeder extends Seeder
                 $users = User::all();
 
                 if ($users->count() > 0) {
-                    $id = $users->random()->user_id;
+                    $id = $users->random()->id;
                 }
             }
 

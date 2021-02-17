@@ -20,7 +20,7 @@ class User extends Model
     ];
 
     protected $fillable = [
-        'user_id',
+        'id',
         'user_name',
         'referral_code',
         'referrer_id',
@@ -38,13 +38,6 @@ class User extends Model
      * @var bool
      */
     public $incrementing = false;
-
-    /**
-     * The primary key associated with the table.
-     *
-     * @var string
-     */
-    protected $primaryKey = 'user_id';
 
     /**
      * Boot the model.
@@ -75,8 +68,19 @@ class User extends Model
         //return redirect()->route("dashboard.referral-users.bulk-destroy");
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function devices(): HasMany
     {
         return $this->hasMany(Device::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function applications(): HasMany
+    {
+        return $this->hasMany(Application::class);
     }
 }

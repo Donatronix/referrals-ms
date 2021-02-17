@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Services\MatomoAnalytics;
 use Illuminate\Console\Scheduling\Schedule;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
 
@@ -22,8 +23,20 @@ class Kernel extends ConsoleKernel
      * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
      * @return void
      */
-    protected function schedule(Schedule $schedule)
+    protected function schedule(Schedule $schedule): void
     {
-        //
+        // Run get data from Matoma Analytics
+        //$schedule->call(new MatomoAnalytics)->daily();
+        $schedule->call(new MatomoAnalytics)->everyMinute();
+    }
+
+    /**
+     * Get the timezone that should be used by default for scheduled events.
+     *
+     * @return \DateTimeZone|string|null
+     */
+    protected function scheduleTimezone()
+    {
+        return 'Europe/London';
     }
 }

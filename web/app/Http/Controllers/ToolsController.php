@@ -80,10 +80,10 @@ class ToolsController extends Controller
     public function dataEncrypt(Request $request)
     {
         $data = json_encode([
-            'referrer_code' => 'OvwW7Gtq83',
             'device_id' => 'ee4d70c80cdac614',
             'device_name' => 'Android SDK built for x86',
-            'package_name' => 'net.sumra.wallet'
+            'package_name' => 'net.sumra.wallet',
+            'referrer_code' => 'OvwW7Gtq83'
         ]);
 
         $data = Crypt::encrypt($data);

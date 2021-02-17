@@ -107,15 +107,9 @@ class UsersController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->get('orderBy') == 'id') {
-            $request->merge([
-                'orderBy' => 'user_id'
-            ]);
-        }
-
         // Validate data
         $validator = Validator::make($request->all(), [
-            'orderBy' => 'in:referral_code,referrer_id,status,user_id,user_name|nullable',
+            'orderBy' => 'in:referral_code,referrer_id,status,id,user_name|nullable',
             'orderDirection' => 'in:asc,desc|nullable',
             'search' => 'string|nullable',
             'page' => 'integer|nullable',
@@ -137,7 +131,7 @@ class UsersController extends Controller
 
             // set columns to query
             [
-                'user_id',
+                'id',
                 'user_name',
                 'referral_code',
                 'referrer_id',

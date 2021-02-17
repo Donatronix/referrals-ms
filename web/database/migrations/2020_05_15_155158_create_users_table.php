@@ -18,7 +18,7 @@ class CreateUsersTable extends Migration
             $table->charset = 'utf8';
             $table->collation = 'utf8_general_ci';
 
-            $table->unsignedBigInteger('user_id')->primary()->unique();
+            $table->unsignedBigInteger('id')->primary()->unique();
             $table->string('user_name', 20)->index()->nullable();
 
             $table->string('referral_code', 10)->unique()->nullable();

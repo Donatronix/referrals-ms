@@ -19,7 +19,7 @@ class ReferralBonusListener
     {
         // Update referral status
         try {
-            $user = User::where('user_id', $data['user_id']);
+            $user = User::find($data['user_id']);
             $user->status = $data['status'];
             $user->save();
         } catch (\Throwable $e) {
