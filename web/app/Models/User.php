@@ -21,7 +21,7 @@ class User extends Model
 
     protected $fillable = [
         'id',
-        'user_name',
+        'username',
         'referral_code',
         'referrer_id',
         'status'

@@ -642,6 +642,76 @@
                 ],
                 "summary": "Save contact data in Neo4j",
                 "description": "Save contact data in Neo4j",
+                "operationId": "App\\Api\\V1\\Controllers\\ContactsController::store",
+                "parameters": [
+                    {
+                        "name": "userID",
+                        "in": "query",
+                        "description": "user id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "contacts",
+                        "in": "query",
+                        "description": "Contacts in JSON",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "deleteAbsent",
+                        "in": "query",
+                        "description": "Delete contacts, absent in JSON, or not",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 0
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success send data"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    },
+                    "404": {
+                        "description": "not found"
+                    }
+                },
+                "security": [
+                    {
+                        "default": [
+                            "ManagerRead",
+                            "User",
+                            "ManagerWrite"
+                        ]
+                    }
+                ],
+                "x-auth-type": "Application & Application User",
+                "x-throttling-tier": "Unlimited",
+                "x-wso2-application-security": {
+                    "security-types": [
+                        "oauth2"
+                    ],
+                    "optional": "false"
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Contacts"
+                ],
+                "summary": "Save contact data in Neo4j",
+                "description": "Save contact data in Neo4j",
+                "operationId": "App\\Api\\V1\\Controllers\\ContactsController::destroy",
                 "parameters": [
                     {
                         "name": "userID",
@@ -820,47 +890,6 @@
                 "responses": {
                     "200": {
                         "description": "Success get or generate referrer invite code"
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "400": {
-                        "description": "Invalid request"
-                    },
-                    "404": {
-                        "description": "not found"
-                    }
-                },
-                "security": [
-                    {
-                        "default": [
-                            "ManagerRead",
-                            "User",
-                            "ManagerWrite"
-                        ]
-                    }
-                ],
-                "x-auth-type": "Application & Application User",
-                "x-throttling-tier": "Unlimited",
-                "x-wso2-application-security": {
-                    "security-types": [
-                        "oauth2"
-                    ],
-                    "optional": "false"
-                }
-            }
-        },
-        "/v1/referrals/mamoto": {
-            "get": {
-                "tags": [
-                    "Main"
-                ],
-                "summary": "List all referrals for user",
-                "description": "List all referrals for user",
-                "operationId": "App\\Api\\V1\\Controllers\\MamotoController::index",
-                "responses": {
-                    "200": {
-                        "description": "Success join new user to referrer user"
                     },
                     "401": {
                         "description": "Unauthorized"

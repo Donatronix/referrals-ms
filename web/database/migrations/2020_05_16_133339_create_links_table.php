@@ -23,7 +23,7 @@ class CreateLinksTable extends Migration
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
-            $table->string('package_name', 20);
+            $table->string('package_name', 30);
             $table->string('referral_link', 35)->unique();
 
             $table->unique(['user_id', 'package_name']);

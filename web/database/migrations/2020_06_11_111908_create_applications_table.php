@@ -20,7 +20,7 @@ class CreateApplicationsTable extends Migration
             $table->collation = 'utf8_general_ci';
 
             $table->bigIncrements('id');
-            $table->string('package_name', 20)->index();
+            $table->string('package_name', 35)->index();
             $table->string('device_id')->index();
             $table->string('device_name')->index();
             $table->ipAddress('ip')->index();

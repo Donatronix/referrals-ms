@@ -10,7 +10,7 @@ class ApplicationKeysTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         factory(ApplicationKey::class, 5)->create();
     }

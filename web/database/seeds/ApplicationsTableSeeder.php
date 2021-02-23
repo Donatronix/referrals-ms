@@ -10,11 +10,10 @@ class ApplicationsTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
-
         factory(Application::class, 5)->create([
-            'referrer_id' => $id
+          //  'referrer_id' => ''//$id
         ]);
     }
 }

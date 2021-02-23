@@ -25,9 +25,14 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // Run get data from Matoma Analytics
+        // Run get data from Matomo Analytics
         //$schedule->call(new MatomoAnalytics)->daily();
-        $schedule->call(new MatomoAnalytics)->everyMinute();
+
+//        $schedule->call(new MatomoAnalytics, ['method' => 'UserId.getUsers'])->everyMinute();
+//        $schedule->call(new MatomoAnalytics, ['method' => 'Live.getMostRecentVisitorId'])->everyMinute();
+        $schedule->call(new MatomoAnalytics, ['method' => 'Actions.getPageUrls'])->everyMinute();
+
+
     }
 
     /**

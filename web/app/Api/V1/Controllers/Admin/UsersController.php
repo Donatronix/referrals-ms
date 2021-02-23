@@ -109,7 +109,7 @@ class UsersController extends Controller
     {
         // Validate data
         $validator = Validator::make($request->all(), [
-            'orderBy' => 'in:referral_code,referrer_id,status,id,user_name|nullable',
+            'orderBy' => 'in:referral_code,referrer_id,status,id,username|nullable',
             'orderDirection' => 'in:asc,desc|nullable',
             'search' => 'string|nullable',
             'page' => 'integer|nullable',
@@ -132,7 +132,7 @@ class UsersController extends Controller
             // set columns to query
             [
                 'id',
-                'user_name',
+                'username',
                 'referral_code',
                 'referrer_id',
                 'status'
@@ -141,7 +141,7 @@ class UsersController extends Controller
             // set columns to searchIn
             [
                 'referral_code',
-                'user_name'
+                'username'
             ]
         );
 

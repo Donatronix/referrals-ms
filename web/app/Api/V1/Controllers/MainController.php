@@ -404,12 +404,13 @@ class MainController extends Controller
         if (!$user) {
             $user = User::create([
                 'id' => $currentUserId,
-                'user_name' => Auth::user()->username
+                'username' => Auth::user()->username
             ]);
         } else {
+            // Update username, if not exist
             $username = Auth::user()->username;
-            if ($user->user_name !== $username) {
-                $user->user_name = $username;
+            if ($user->username !== $username) {
+                $user->username = $username;
                 $user->save();
             }
         }

@@ -2,6 +2,9 @@
 
 use App\Models\Link;
 use Illuminate\Database\Seeder;
+use App\Models\User;
+use App\Services\Firebase;
+use App\Models\Application;
 
 class LinksTableSeeder extends Seeder
 {
@@ -10,11 +13,23 @@ class LinksTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
+        // Get all users
+        $users = User::all();
 
-        factory(Link::class, 5)->create([
-            'referrer_id' => $id
-        ]);
+        foreach($users as $user){
+            // Get all applications
+            $applications = Application::where('user_id', $user->id)->get();
+
+            foreach($applications as $app){
+                factory(Link::class)->create([
+                    'package_name' => $app->package_name,
+                    'user_id' => $user->id,
+                    'referral_link' => Firebase::linkGenerate($user->referral_code, $app->package_name)
+                ]);
+            }
+
+        }
     }
 }
