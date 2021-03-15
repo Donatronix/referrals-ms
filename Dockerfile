@@ -11,8 +11,8 @@ LABEL maintainer "Eduard <ed@dev-ops.engineer>"
 
 WORKDIR /app
 COPY ./web /app
-COPY ./pubsub /pubsub 
-COPY ./json-api /json-api 
+COPY ./pubsub /pubsub
+COPY ./json-api /json-api
 COPY ./baum /baum
 
 RUN apk update && apk add php7-intl icu-dev gmp-dev
@@ -33,6 +33,7 @@ RUN chown -R www-data:www-data /app \
     && a2enmod rewrite ssl headers
 RUN /usr/local/bin/docker-php-ext-install pdo pdo_mysql intl sockets bcmath gmp
 RUN pecl install xdebug-2.9.6
+
 #RUN /usr/local/bin/docker-php-ext-configure xdebug
 RUN /usr/local/bin/docker-php-ext-enable xdebug
 #RUN cd /app && php artisan l5-swagger:generate
