@@ -5,7 +5,7 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": "^7.2|8.0",
+        "php": "^7.3|^8.0",
         "ext-bcmath": "*",
         "ext-json": "*",
         "ext-openssl": "*",
@@ -16,6 +16,7 @@
         "guzzlehttp/guzzle": "~6",
         "kreait/laravel-firebase": "~2",
         "laravel/lumen-framework": "~6",
+        "robbrazier/piwik": "~4",
         "sumra/baum": "*",
         "sumra/json-api": "*",
         "sumra/pubsub": "*",

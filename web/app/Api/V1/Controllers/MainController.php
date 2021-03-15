@@ -7,12 +7,13 @@ use App\Models\Application;
 use App\Models\Link;
 use App\Models\User;
 use App\Services\Crypt;
+use App\Services\Firebase;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Kreait\Firebase\DynamicLink\CreateDynamicLink\FailedToCreateDynamicLink;
-use PubSub;
 use Illuminate\Support\Facades\Validator;
+use PubSub;
+use Sumra\JsonApi\JsonApiResponse;
 
 /**
  * Class MainController
@@ -64,24 +65,14 @@ class MainController extends Controller
      *     )
      * )
      *
-     * @param Request $request
-     *
-     * @return \Sumra\JsonApi\
+     * @return \Sumra\JsonApi\JsonApiResponse
      */
-    public function index()
+    public function index(): JsonApiResponse
     {
-        $currentUserId = Auth::user()->getAuthIdentifier();
-
-        // Check & update username
-        $currentUser = User::where('user_id', $currentUserId)->get();
-        $username = Auth::user()->username;
-        if ($currentUser->user_name !== $username) {
-            $currentUser->user_name = $username;
-            $currentUser->save();
-        }
+        $user = $this->getUser();
 
         // Get list all referrals by user id
-        $list = User::where('referrer_id', $currentUserId)->get();
+        $list = User::where('referrer_id', $user->id)->get();
 
         // Return response
         return response()->jsonApi($list, 200);
@@ -200,19 +191,15 @@ class MainController extends Controller
             ], 422);
         }
 
+        // Remember user application
+        $inputData['ip'] = $request->ip();
+        $inputData['metadata'] = $request->headers->all();
+        $this->registerApplication($inputData);
+
         // If exist user id in header then join user
         // @todo 04/11/2020 Need review logic and replace user-id !!!
         if ($request->headers->has('user-id')) {
-            $inputData['user_id'] = Auth::user()->getAuthIdentifier();
-            $inputData['user_name'] = Auth::user()->username;
-
-            return $this->registerReferrer($inputData);
-        } else {
-            // Remember user application
-            $inputData['ip'] = $request->ip();
-            $inputData['metadata'] = $request->headers->all();
-
-            return $this->registerApplication($inputData);
+            $this->registerReferrer($inputData);
         }
     }
 
@@ -229,9 +216,10 @@ class MainController extends Controller
         $app = Application::where('device_id', $input['device_id'])
             ->where('package_name', $input['package_name'])
             ->first();
+
         if ($app) {
             $app->user_status = Application::INSTALLED_OK;
-            $app->user_id = $input['user_id'];
+            $app->user_id = Auth::user()->getAuthIdentifier();
             $app->save();
         } else {
             return response()->jsonApi([
@@ -265,7 +253,7 @@ class MainController extends Controller
             }
 
             // Save referrer to user app
-            $app->referrer_id = $referrer->user_id;
+            $app->referrer_id = $referrer->id;
             $app->referrer_status = Application::REFERRER_OK;
             $app->save();
 
@@ -339,7 +327,6 @@ class MainController extends Controller
      *             "optional": "false"
      *         }
      *     },
-
      *     @OA\Parameter(
      *         name="package_name",
      *         description="Package Name",
@@ -375,100 +362,23 @@ class MainController extends Controller
      */
     public function invite(Request $request)
     {
-        $currentUserId = Auth::user()->getAuthIdentifier();
-
-        // Find user and if not exist, then create a new user
-        $user = User::where('user_id', $currentUserId)->first();
-        if (!$user) {
-            $user = User::create([
-                'user_id' => $currentUserId,
-                'user_name' => Auth::user()->username
-            ]);
-        }
+        $user = $this->getUser();
 
         // Check Package Name
         $packageName = $request->get('package_name', Link::ANDROID_PACKAGE_NAME);
 
         // Get link by user id and package name
-        $link = Link::where('user_id', $user->user_id)->where('package_name', $packageName)->first();
+        $link = Link::where('user_id', $user->id)
+            ->where('package_name', $packageName)
+            ->first();
 
         if (!$link) {
-            $referrerData = [
-                //'code' => $user->referral_code,
-                'utm_source' => $user->referral_code,
-                'utm_medium' => Link::MEDIUM,
-                'utm_campaign' => Link::CAMPAIGN,
-                'utm_content' => $packageName
-            ];
-
             // Create dynamic link from google firebase service
-            $websiteUrl = 'https://sumra.net/discover?referrer=' . $user->referral_code;
-            $googlePlayUrl = 'https://play.google.com/store/apps/details?id=' . $packageName . '&referrer=' . urlencode(http_build_query($referrerData));
-
-            $parameters = [
-                'dynamicLinkInfo' => [
-                    'domainUriPrefix' => config('dynamic_links.default_domain'),
-                    'link' => $websiteUrl,
-                    'socialMetaTagInfo' => [
-                        'socialTitle' => 'Sumra Net',
-                        'socialDescription' => 'Follow me on Sumra network',
-                        'socialImageLink' => 'https://sumra.net/css/logo.svg'
-                    ],
-                    'navigationInfo' => [
-                        'enableForcedRedirect' => true,
-                    ],
-                    'analyticsInfo' => [
-                        'googlePlayAnalytics' => [
-                            'utmSource' => $user->referral_code,
-                            'utmMedium' => Link::MEDIUM,
-                            'utmCampaign' => Link::CAMPAIGN,
-                            'utmContent' => $packageName,
-                            /*
-                            'utmTerm' => 'utmTerm',
-                            'gclid' => 'gclid'
-                            */
-                        ],
-                        /*
-                          'itunesConnectAnalytics' => [
-                            'at' => 'affiliateToken',
-                            'ct' => 'campaignToken',
-                            'mt' => '8',
-                            'pt' => 'providerToken'
-                          ]
-                        */
-                    ],
-                    'androidInfo' => [
-                        'androidPackageName' => $packageName,
-                        'androidFallbackLink' => $googlePlayUrl,
-                        //'androidMinPackageVersionCode' => Link::DEFAULT_ANDROID_MIN_PACKAGE_VERSION
-                    ],
-                    /*
-                    'iosInfo' => [
-                      'iosBundleId' => 'net.sumra.ios',
-                      'iosFallbackLink' => 'https://fallback.domain.tld',
-                      'iosCustomScheme' => 'customScheme',
-                      'iosIpadFallbackLink' => 'https://ipad-fallback.domain.tld',
-                      'iosIpadBundleId' => 'iPadBundleId',
-                      'iosAppStoreId' => 'appStoreId'
-                    ],
-                    */
-                ],
-                'suffix' => [
-                    'option' => 'SHORT'
-                ]
-            ];
-
-            $dynamicLinks = app('firebase.dynamic_links');
-
-            try {
-                $shortLink = $dynamicLinks->createDynamicLink($parameters);
-            } catch (FailedToCreateDynamicLink $e) {
-                return response()->jsonApi($e->getMessage());
-            }
+            $shortLink = Firebase::linkGenerate($user->referral_code, $packageName);
 
             // Add
             $link = Link::create([
-                'user_id' => $user->user_id,
+                'user_id' => $user->id,
                 'package_name' => $packageName,
                 'referral_link' => (string)$shortLink
             ]);
@@ -479,6 +389,33 @@ class MainController extends Controller
             'referral_code' => $user->referral_code,
             'referral_link' => $link->referral_link
         ], 200);
+    }
+
+    /**
+     * @return mixed
+     */
+    private function getUser()
+    {
+        $currentUserId = Auth::user()->getAuthIdentifier();
+
+        // Find user and if not exist, then create a new user
+        $user = User::find($currentUserId);
+
+        if (!$user) {
+            $user = User::create([
+                'id' => $currentUserId,
+                'username' => Auth::user()->username
+            ]);
+        } else {
+            // Update username, if not exist
+            $username = Auth::user()->username;
+            if ($user->username !== $username) {
+                $user->username = $username;
+                $user->save();
+            }
+        }
+
+        return $user;
     }
 }
 

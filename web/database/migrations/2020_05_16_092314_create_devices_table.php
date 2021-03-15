@@ -21,7 +21,10 @@ class CreateDevicesTable extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->string('device_id');
-            $table->integer('user_id');
+
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+
             $table->timestamps();
         });
     }

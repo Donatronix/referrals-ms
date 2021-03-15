@@ -64,6 +64,9 @@ $app->configure('app');
 // Neo4j
 $app->configure('database');
 
+// Matomo analytics
+$app->configure('matomo-analytics');
+
 /*
 |--------------------------------------------------------------------------
 | Register Middleware

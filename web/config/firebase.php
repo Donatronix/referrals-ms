@@ -111,4 +111,10 @@ return [
 
     'cache_store' => env('FIREBASE_CACHE_STORE', 'file'),
 
+    'app_urls' => [
+        'website' => env('FIREBASE_APP_WEBSITE_URL', 'https://sumra.net/discover'),
+        'google_play' => env('FIREBASE_APP_ANDROID_URL', 'https://play.google.com/store/apps/details'),
+        'apple_store' => env('FIREBASE_APP_IOS_URL', '')
+    ]
+
 ];
