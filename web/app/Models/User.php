@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
 class User extends Model
 {
+    use HasFactory;
+
     const REFERRER_POINTS = 3;
     const INSTALL_POINTS = 5;
 

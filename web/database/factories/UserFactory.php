@@ -1,12 +1,30 @@
 <?php
 
-use Faker\Generator as Faker;
-use App\Models\User;
+namespace Database\Factories;
 
-$factory->define(User::class, function (Faker $faker) {
-    return [
-        'id' => $faker->unique()->numberBetween(1, 100),
-        'username' => mb_strtolower($faker->firstName),
-        'status' => 1
-    ];
-});
+use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+class UserFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = User::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'id' => $this->faker->unique()->numberBetween(1, 100),
+            'username' => mb_strtolower($this->faker->firstName),
+            'status' => 1
+        ];
+    }
+}

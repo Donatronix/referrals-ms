@@ -12,7 +12,7 @@
 </head>
 <body>
 
-<h1>test pages </h1>
+<h1>Test pages </h1>
 
 <ul>
     @foreach ($urls as $url)
