@@ -1,26 +1,24 @@
 {
-    "name": "laravel/lumen",
-    "description": "The Laravel Lumen Framework.",
-    "keywords": ["framework", "laravel", "lumen"],
-    "license": "MIT",
+    "name": "sumra/referrals",
+    "description": "Ulta Infinity Cards Microservice",
     "type": "project",
+    "private": true,
     "require": {
         "php": "^7.3|^8.0",
+        "darkaonline/swagger-lume": "~8",
+        "doctrine/dbal": "~2",
         "ext-bcmath": "*",
         "ext-json": "*",
         "ext-openssl": "*",
-        "appzcoder/lumen-routes-list": "~1",
-        "darkaonline/swagger-lume": "~6",
-        "doctrine/dbal": "~2",
         "graphaware/neo4j-php-client": "~4",
         "guzzlehttp/guzzle": "~6",
         "kreait/laravel-firebase": "~2",
-        "laravel/lumen-framework": "~6",
+        "laravel/lumen-framework": "~8",
         "robbrazier/piwik": "~4",
         "sumra/baum": "*",
         "sumra/json-api": "*",
         "sumra/pubsub": "*",
-        "vladimir-yuldashev/laravel-queue-rabbitmq": "~9",
+        "vladimir-yuldashev/laravel-queue-rabbitmq": "~11",
         "zircote/swagger-php": "~3"
     },
     "require-dev": {
@@ -29,12 +27,10 @@
         "phpunit/phpunit": "~9"
     },
     "autoload": {
-        "classmap": [
-            "database/seeds",
-            "database/factories"
-        ],
         "psr-4": {
-            "App\\": "app/"
+            "App\\": "app/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
             "app/helpers.php"
@@ -43,11 +39,6 @@
     "autoload-dev": {
         "classmap": [
             "tests/"
-        ]
-    },
-    "scripts": {
-        "post-root-package-install": [
-            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
         ]
     },
     "config": {
@@ -59,8 +50,8 @@
     "prefer-stable": true,
     "repositories": [
         {
-            "type" : "path",
-            "url" : "../pubsub",
+            "type": "path",
+            "url": "../pubsub",
             "options": {
                 "symlink": false
             }
@@ -79,5 +70,10 @@
                 "symlink": false
             }
         }
-    ]
+    ],
+    "scripts": {
+        "post-root-package-install": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ]
+    }
 }
