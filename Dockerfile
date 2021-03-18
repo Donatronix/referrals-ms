@@ -9,7 +9,7 @@ WORKDIR /app
 COPY ./web /app
 COPY ./pubsub /pubsub
 COPY ./json-api /json-api
-COPY ./baum /baum
+#COPY ./baum /baum
 
 RUN apk update && apk add php7-intl icu-dev gmp-dev
 #RUN /usr/local/bin/docker-php-ext-configure intl
