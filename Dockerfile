@@ -11,7 +11,7 @@ COPY ./pubsub /pubsub
 COPY ./json-api /json-api
 #COPY ./baum /baum
 
-RUN apk update && apk add php7-intl icu-dev gmp-dev
+RUN apk update && apk add php8-intl icu-dev gmp-dev
 #RUN /usr/local/bin/docker-php-ext-configure intl
 RUN /usr/local/bin/docker-php-ext-install intl sockets bcmath gmp
 
