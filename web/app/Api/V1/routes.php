@@ -18,6 +18,25 @@ $router->group([
     $router->group(
         ['middleware' => 'checkUser'],
         function ($router) {
+            /*
+             * Templates
+             * */
+            $router->get('/landingpage', 'LandingpageController@index');
+            $router->post('/landingpage/{id:[\d+]}', 'LandingpageController@save');
+
+            /*
+             * Refcode
+             * */
+            $router->get('/refcode', 'RefcodeController@index');
+            $router->post('/refcode', 'RefcodeController@generate');
+
+            /*
+             * Contacts
+             * */
+            $router->get('/contacts', 'UserController@contacts');
+            $router->post('/contacts/vcard', 'UserController@addvcard');
+            $router->post('/contacts/google', 'UserController@addgoogle');
+
             /**
              * Common
              */
@@ -36,8 +55,8 @@ $router->group([
             $router->get('analytics/byLink', 'AnalyticsController@index');
             $router->get('analytics/unregistered', 'AnalyticsController@unregistered');
 
-    $router->post('contacts', 'ContactsController@store');
-    $router->delete('contacts', 'ContactsController@destroy');
+            $router->post('contacts', 'ContactsController@store');
+            $router->delete('contacts', 'ContactsController@destroy');
 
             /**
              * ADMIN PANEL
@@ -47,6 +66,14 @@ $router->group([
                 'namespace' => 'Admin',
                 'middleware' => 'checkAdmin'
             ], function ($router) {
+                /*
+                 * Templates
+                 * */
+                $router->get('/template', 'TemplateController@index');
+                $router->post('/template/{id:[\d*]}', 'TemplateController@save');
+
+
+
                 /**
                  * Refferals
                  */
