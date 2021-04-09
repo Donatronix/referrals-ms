@@ -5,10 +5,11 @@ namespace App\Api\V1\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Helpers\Vcards;
+use App\Helpers\Vcard;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Contact;
 
 class UserController extends Controller
 {
@@ -103,7 +104,7 @@ class UserController extends Controller
      *     },
      *
      *     @OA\Parameter(
-     *         name="vcard",
+     *         name="vcards",
      *         description="vCard text",
      *         required=true,
      *         in="query",
@@ -137,11 +138,31 @@ class UserController extends Controller
     public function addvcard(Request $request)
     {
         $user_id = intval(Auth::user()->getAuthIdentifier());
-        $user = User::find($user_id);
         $vcards = new Vcard();
-        $vcard->fromString($request->vcard);
+        $cards = $vcards->fromText($request->vcards);
+        $contacts = [];
         try {
-            $contacts = $user->contacts();
+            foreach($cards as $c) {
+                $contact = Contact::create([
+                    'user_id' => $user_id,
+                    'firstname' => $c['N'][0]['value'][1][0],
+                    'lastname' => $c['N'][0]['value'][0][0],
+                    'middlename' => $c['N'][0]['value'][2][0],
+                    'prefix' => $c['N'][0]['value'][3][0],
+                    'suffix' => $c['N'][0]['value'][4][0],
+                    'nickname' => $c['NICKNAME'][0]['value'][0][0],
+                    'adrextend' => $c['ADR'][0]['value'][0][0],
+                    'adrstreet' => $c['ADR'][0]['value'][2][0]."\n".$c['ADR'][0]['value'][1][0],
+                    'adrcity' => $c['ADR'][0]['value'][3][0],
+                    'adrstate' => $c['ADR'][0]['value'][4][0],
+                    'adrzip' => $c['ADR'][0]['value'][5][0],
+                    'adrcountry' => $c['ADR'][0]['value'][6][0],
+                    'tel1' => $c['TEL'][0]['value'][0][0],
+                    'email' => $c['EMAIL'][0]['value'][0][0]
+                ]);
+                $contact->save();
+                $contacts[] = $contact;
+            }
         } catch (Exception $e) {
             return response()->json([
                 'success' => false,
@@ -216,11 +237,37 @@ class UserController extends Controller
     public function addgoogle(Request $request)
     {
         $user_id = intval(Auth::user()->getAuthIdentifier());
-        $user = User::find($user_id);
-        $vcards = new Vcard();
-        $vcard->fromString($request->vcard);
+        $googlecsv = $request['googleexport'];
+        $googles = $this->parse_csv($googlecsv);
+        $header = array_shift($googles);
+        $header[] = "tmp";
+        $gcontacts = [];
+        foreach($googles as $s) {
+            $gcontacts[] = array_combine($header, $s);
+        }
+        $contacts = [];
         try {
-            $contacts = $user->contacts();
+            foreach($gcontacts as $c) {
+                $contact = Contact::create([
+                    'user_id' => $user_id,
+                    'firstname' => $c['First Name'],
+                    'lastname' => $c['Last Name'],
+                    'middlename' => $c['Middle Name'],
+                    'prefix' => $c['Title'],
+                    'suffix' => $c['Suffix'],
+                    'nickname' => '',
+                    'adrextend' => $c['Home Address PO Box'],
+                    'adrstreet' => $c['Home Street']."\n".$c['Home Street2']."\n".$c['Home Street3'],
+                    'adrcity' => $c['Home City'],
+                    'adrstate' => $c['Home State'],
+                    'adrzip' => $c['Home Postal Code'],
+                    'adrcountry' => $c['Home Country'],
+                    'tel1' => $c['Other Phone']??$c['Primary Phone']??$c['Home Phone']??$c['Home Phone 2']??$c['Mobile Phone'],
+                    'email' => $c['E-mail Address']
+                ]);
+                $contact->save();
+                $contacts[] = $contact;
+            }
         } catch (Exception $e) {
             return response()->json([
                 'success' => false,
@@ -233,6 +280,31 @@ class UserController extends Controller
             'data' => $contacts
         ], 200);
 
+    }
+
+    function parse_csv($str)
+    {
+        $str = preg_replace_callback('/([^"]*)("((""|[^"])*)"|$)/s',
+            function ($matches) {
+                $str = str_replace("\r", "\rR", $matches[3]);
+                $str = str_replace("\n", "\rN", $str);
+                $str = str_replace('""', "\rQ", $str);
+                $str = str_replace(',', "\rC", $str);
+                return preg_replace('/\r\n?/', "\n", $matches[1]) . $str;
+            },
+            $str);
+        $str = preg_replace('/\n$/', '', $str);
+        return array_map(function ($line) {
+            return array_map(function ($field) {
+                $field = str_replace("\rC", ',', $field);
+                $field = str_replace("\rQ", '"', $field);
+                $field = str_replace("\rN", "\n", $field);
+                $field = str_replace("\rR", "\r", $field);
+                return $field;
+            },
+                explode(',', $line));
+        },
+            explode("\n", $str));
     }
 
 }
