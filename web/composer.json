@@ -1,6 +1,6 @@
 {
     "name": "sumra/referrals",
-    "description": "Ulta Infinity Cards Microservice",
+    "description": "Referral Programm Microservice",
     "type": "project",
     "private": true,
     "require": {
