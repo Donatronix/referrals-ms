@@ -2,32 +2,17 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Str;
+use OpenApi\Annotations\Contact;
 
 class User extends Model
 {
-    use HasFactory;
-
-    const REFERRER_POINTS = 3;
-    const INSTALL_POINTS = 5;
-
-    const STATUS_APPROVED = 1;
-    const STATUS_NOT_APPROVED = 2;
-    const STATUS_BLOCKED = 3;
-
-    protected $appends = [
-        'resource_url'
-    ];
-
     protected $fillable = [
         'id',
-        'username',
-        'referral_code',
-        'referrer_id',
-        'status'
+        'tier',    // enum of ['basic', 'bronze', 'silver', 'gold']
+        'regstate', // enum of ['new','registered','kyc']
+        'isbustedtime', // true if reach Tier::BURSTED_MIN_HOURS
+        'isbustedmoney', // true if reach Tier::BURSTED_MIN_MONEY
     ];
 
     protected $dates = [
@@ -42,48 +27,8 @@ class User extends Model
      */
     public $incrementing = false;
 
-    /**
-     * Boot the model.
-     *
-     * @return  void
-     */
-    protected static function boot()
+    public function contacts()
     {
-        parent::boot();
-
-        static::creating(function ($obj) {
-            do {
-                // generate a random string using Laravel's str_random helper
-                $referralCode = Str::random(10);
-            } //check if the token already exists and if it does, try again
-            while (self::where('referral_code', $referralCode)->first());
-
-            $obj->referral_code = (string)$referralCode;
-        });
-    }
-
-    /* ************************ ACCESSOR ************************* */
-
-    public function getResourceUrlAttribute(): string
-    {
-        return url('/admin/users/' . $this->getKey());
-
-        //return redirect()->route("dashboard.referral-users.bulk-destroy");
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function devices(): HasMany
-    {
-        return $this->hasMany(Device::class);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function applications(): HasMany
-    {
-        return $this->hasMany(Application::class);
+        return $this->hasMany(Contact::class);
     }
 }

@@ -19,12 +19,10 @@ class CreateUsersTable extends Migration
             $table->collation = 'utf8_general_ci';
 
             $table->unsignedBigInteger('id')->primary()->unique();
-            $table->string('username', 20)->index()->nullable();
-
-            $table->string('referral_code', 10)->unique()->nullable();
-            $table->unsignedBigInteger('referrer_id')->nullable()->default(0);
-
-            $table->tinyInteger('status')->default(0);
+            $table->enum('tier', ['basic', 'bronze', 'silver', 'gold'])->default('basic');
+            $table->enum('regstate', ['new','registered','kyc'])->default('new');
+            $table->boolean('isbustedtime')->default(false);
+            $table->boolean('isbustedmoney')->default(false);
             $table->timestamps();
         });
     }
