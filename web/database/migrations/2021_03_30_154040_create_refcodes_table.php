@@ -19,7 +19,7 @@ class CreateRefcodesTable extends Migration
             $table->char('code', 6)->default('');
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users');
+//            $table->foreign('user_id')->references('id')->on('users');
             $table->unique('code');
         });
     }

@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use PubSub;
 use Sumra\JsonApi\JsonApiResponse;
+use function Psy\debug;
 
 /**
  * Class MainController

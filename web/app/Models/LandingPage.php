@@ -6,7 +6,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Landingpage extends Model
+class LandingPage extends Model
 {
     protected $fillable = [
         'user_id',
@@ -18,13 +18,6 @@ class Landingpage extends Model
         'created_at',
         'updated_at'
     ];
-
-    /**
-     * Indicates if the IDs are auto-incrementing.
-     *
-     * @var bool
-     */
-    public $incrementing = true;
 
     public function template()
     {
