@@ -38,10 +38,6 @@ class LandingpageController extends Controller
      *         }
      *     },
      *
-     *     @OA\RequestBody(
-     *         required=false
-     *         )
-     *     ),
      *     @OA\Response(
      *         response="200",
      *         description="List of all landingpages"
@@ -125,15 +121,7 @@ class LandingpageController extends Controller
      *             type="string"
      *         )
      *     ),
-     *     @OA\Parameter(
-     *         name="jsonarray",
-     *         description="Array of user's texts",
-     *         required=true,
-     *         in="query",
-     *         @OA\Schema (
-     *             type="array"
-     *         )
-     *     ),
+
      *     @OA\Response(
      *         response="200",
      *         description="Save successfull"

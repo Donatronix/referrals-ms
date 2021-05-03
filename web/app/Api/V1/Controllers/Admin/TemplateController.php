@@ -37,10 +37,27 @@ class TemplateController extends Controller
      *         }
      *     },
      *
-     *     @OA\RequestBody(
-     *         required=false
+     *     @OA\Parameter(
+     *         name="limit",
+     *         description="count ot cards in return",
+     *         in="query",
+     *         required=false,
+     *         @OA\Schema(
+     *              type="integer",
+     *              default = 20,
      *         )
      *     ),
+     *     @OA\Parameter(
+     *         name="page",
+     *         description="page of list",
+     *         in="query",
+     *         required=false,
+     *         @OA\Schema(
+     *              type="integer",
+     *              default = 1,
+     *         )
+     *     ),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="List of all templates"
@@ -127,15 +144,7 @@ class TemplateController extends Controller
      *             type="string"
      *         )
      *     ),
-     *     @OA\Parameter(
-     *         name="jsonarray",
-     *         description="Array of changeable default texts",
-     *         required=true,
-     *         in="query",
-     *         @OA\Schema (
-     *             type="array"
-     *         )
-     *     ),
+
      *     @OA\Response(
      *         response="200",
      *         description="Save successfull"

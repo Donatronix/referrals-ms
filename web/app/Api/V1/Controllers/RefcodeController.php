@@ -40,10 +40,7 @@ class RefcodeController extends Controller
      *         }
      *     },
      *
-     *     @OA\RequestBody(
-     *         required=false
-     *         )
-     *     ),
+
      *     @OA\Response(
      *         response="200",
      *         description="List of all refcodes"
@@ -110,10 +107,7 @@ class RefcodeController extends Controller
      *         }
      *     },
      *
-     *     @OA\RequestBody(
-     *         required=false
-     *         )
-     *     ),
+
      *     @OA\Response(
      *         response="200",
      *         description="Save successfull"
