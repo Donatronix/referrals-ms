@@ -117,34 +117,30 @@ class TemplateController extends Controller
      *         }
      *     },
      *
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         description="Template ID. Empty for new template",
-     *         required=false,
-     *         @OA\Schema(
-     *             type="string"
-     *         )
+     *     @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(
+     *              @OA\Property (
+     *                  property="id",
+     *                  type="integer",
+     *                  description="Template ID. Empty for new template",
+     *                  example="1"
+     *              ),
+     *              @OA\Property (
+     *                  property="title",
+     *                  type="string",
+     *                  description="Template title",
+     *                  example="test1"
+     *              ),
+     *              @OA\Property (
+     *                  property="html",
+     *                  type="string",
+     *                  description="Template html",
+     *                  example="test2"
+     *              ),
+     *          ),
      *     ),
-     *     @OA\Parameter(
-     *         name="title",
-     *         description="Template title",
-     *         required=true,
-     *         in="query",
-     *         @OA\Schema (
-     *             type="string"
-     *         )
-     *     ),
-     *     @OA\Parameter(
-     *         name="html",
-     *         description="Template html",
-     *         required=true,
-     *         in="query",
-     *         @OA\Schema (
-     *             type="string"
-     *         )
-     *     ),
-
+     *
      *     @OA\Response(
      *         response="200",
      *         description="Save successfull"
