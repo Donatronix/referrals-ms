@@ -38,34 +38,30 @@ class ContactsController extends Controller
      *         }
      *     },
      *
-     *     @OA\Parameter(
-     *         name="userID",
-     *         description="user id",
+     *     @OA\RequestBody(
      *         required=true,
-     *         in="query",
-     *          @OA\Schema (
-     *              type="integer"
-     *          )
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="user_id",
+     *                 type="integer",
+     *                 description="User ID",
+     *                 example="124"
+     *             ),
+     *             @OA\Property(
+     *                 property="contacts",
+     *                 type="text",
+     *                 description="Contacts in JSON",
+     *                 example=""
+     *             ),
+     *            @OA\Property(
+     *                 property="deleteAbsent",
+     *                 type="integer",
+     *                 description="Delete contacts, absent in JSON, or not",
+     *                 example="0"
+     *             )
+     *         )
      *     ),
-     *     @OA\Parameter(
-     *         name="contacts",
-     *         description="Contacts in JSON",
-     *         required=true,
-     *         in="query",
-     *          @OA\Schema (
-     *              type="string"
-     *          )
-     *     ),
-     *     @OA\Parameter(
-     *         name="deleteAbsent",
-     *         description="Delete contacts, absent in JSON, or not",
-     *         required=false,
-     *         in="query",
-     *          @OA\Schema (
-     *              type="integer",
-     *              default = 0
-     *          )
-     *     ),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="Success send data"

@@ -54,5 +54,4 @@ class Tier extends Model
     static function getBurstedMinMoney() {
         return self::BURSTED_MIN_MONEY;
     }
-
 }

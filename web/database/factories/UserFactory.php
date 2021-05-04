@@ -24,7 +24,7 @@ class UserFactory extends Factory
         return [
             'id' => $this->faker->unique()->numberBetween(1, 100),
             'username' => mb_strtolower($this->faker->firstName),
-            'status' => 1
+            'status' => $this->faker->boolean()
         ];
     }
 }
