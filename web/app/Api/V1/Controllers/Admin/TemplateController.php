@@ -19,7 +19,7 @@ class TemplateController extends Controller
      * @OA\Get(
      *     path="/v1/referrals/admin/template",
      *     description="Get templates",
-     *     tags={"Template Controller"},
+     *     tags={"Template"},
      *
      *     security={{
      *         "default": {
@@ -99,7 +99,7 @@ class TemplateController extends Controller
      * @OA\Post(
      *     path="/v1/referrals/admin/template/{id:[\d*]}",
      *     description="Save template",
-     *     tags={"Template Controller"},
+     *     tags={"Template"},
      *
      *     security={{
      *         "default": {
