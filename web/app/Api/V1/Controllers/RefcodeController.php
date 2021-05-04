@@ -110,7 +110,22 @@ class RefcodeController extends Controller
      *         }
      *     },
      *
-
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\Property (
+     *              property="user_id",
+     *              type="integer",
+     *              description="",
+     *              example="100"
+     *          ),
+     *          @OA\Property (
+     *              property="code",
+     *              type="integeer",
+     *              description="",
+     *              example=""
+     *          ),
+     *      ),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="Save successfull"
