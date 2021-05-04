@@ -104,7 +104,6 @@ class LandingpageController extends Controller
      *     },
      *
      *     @OA\RequestBody(
-     *          required="true",
      *          @OA\JsonContent(
      *              @OA\Property (
      *                  property="id",
@@ -118,7 +117,7 @@ class LandingpageController extends Controller
      *                  description="Template id for new page",
      *                  example=""
      *              ),
-     *          )
+     *          ),
      *     ),
 
      *     @OA\Response(
