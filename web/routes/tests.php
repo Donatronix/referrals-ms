@@ -29,5 +29,15 @@ Route::group(
         $router->get('referrals/contacts/store', function () {
             return \App\Http\Controllers\TestController::viewMake("tests.contacts.store");
         });
+
+        $router->get('referrals/contacts/destroy', function () {
+            return \App\Http\Controllers\TestController::viewMake("tests.contacts.destroy");
+        });
+
+        /**
+         * Tools for encrypt / decrypt test
+         */
+        $router->post('tools/data-encrypt', '\App\Http\Controllers\ToolsController@dataEncrypt');
+        $router->post('tools/data-decrypt', '\App\Http\Controllers\ToolsController@dataDecrypt');
     }
 );

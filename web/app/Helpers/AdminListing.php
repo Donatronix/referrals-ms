@@ -235,15 +235,7 @@ class AdminListing
      */
     private function searchLike($query, $column, $token): void
     {
-        // MySQL and SQLite uses 'like' pattern matching operator that is case insensitive
-        $likeOperator = 'like';
-
-        // but PostgreSQL uses 'ilike' pattern matching operator for this same functionality
-        if (DB::connection()->getDriverName() == 'pgsql') {
-            $likeOperator = 'ilike';
-        }
-
-        $query->orWhere($this->materializeColumnName($column), $likeOperator, '%' . $token . '%');
+        $query->orWhere($this->materializeColumnName($column), 'like', '%' . $token . '%');
     }
 
     /**

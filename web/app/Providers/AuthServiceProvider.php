@@ -31,7 +31,5 @@ class AuthServiceProvider extends ServiceProvider
                 'username' => $request->header('username', null)
             ]);
         });
-
-        Gate::policy('App\Model\Advert', 'App\Policies\AdvertPolicy');
     }
 }

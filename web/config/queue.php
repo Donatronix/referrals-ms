@@ -70,13 +70,9 @@ return [
         'rabbitmq' => [
 
             'driver' => 'rabbitmq',
+            'queue' => env('RABBITMQ_QUEUE', 'default'),
 
-            /*
-             * Set to "horizon" if you wish to use Laravel Horizon.
-             */
-            'worker' => env('RABBITMQ_WORKER', 'default'),
-
-            'dsn' => env('RABBITMQ_DSN', null),
+            //'dsn' => env('RABBITMQ_DSN', null),
 
             /*
              * Could be one a class that implements \Interop\Amqp\AmqpConnectionFactory for example:
@@ -84,19 +80,21 @@ return [
              *  - \EnqueueAmqpLib\AmqpConnectionFactory if you install enqueue/amqp-lib
              *  - \EnqueueAmqpBunny\AmqpConnectionFactory if you install enqueue/amqp-bunny
              */
-            'factory_class' => Enqueue\AmqpLib\AmqpConnectionFactory::class,
+            //'factory_class' => Enqueue\AmqpLib\AmqpConnectionFactory::class,
 
-            'host' => env('RABBITMQ_HOST', '127.0.0.1'),
-            'port' => env('RABBITMQ_PORT', 5672),
+            'connection' => PhpAmqpLib\Connection\AMQPLazyConnection::class,
 
-            'vhost' => env('RABBITMQ_VHOST', '/'),
-            'login' => env('RABBITMQ_LOGIN', 'guest'),
-            'password' => env('RABBITMQ_PASSWORD', 'guest'),
-
-            'queue' => env('RABBITMQ_QUEUE', 'default'),
+            'hosts' => [
+                [
+                    'host' => env('RABBITMQ_HOST', '127.0.0.1'),
+                    'port' => env('RABBITMQ_PORT', 5672),
+                    'user' => env('RABBITMQ_USER', 'guest'),
+                    'password' => env('RABBITMQ_PASSWORD', 'guest'),
+                    'vhost' => env('RABBITMQ_VHOST', '/'),
+                ],
+            ],
 
             'options' => [
-
                 'exchange' => [
 
                     'name' => env('RABBITMQ_EXCHANGE_NAME'),
@@ -109,7 +107,7 @@ return [
                     /**
                      * Read more about possible values at https://www.rabbitmq.com/tutorials/amqp-concepts.html
                      */
-                    'type' => env('RABBITMQ_EXCHANGE_TYPE', \Interop\Amqp\AmqpTopic::TYPE_DIRECT),
+                  //  'type' => env('RABBITMQ_EXCHANGE_TYPE', \Interop\Amqp\AmqpTopic::TYPE_DIRECT),
                     'passive' => env('RABBITMQ_EXCHANGE_PASSIVE', false),
                     'durable' => env('RABBITMQ_EXCHANGE_DURABLE', true),
                     'auto_delete' => env('RABBITMQ_EXCHANGE_AUTODELETE', false),
@@ -117,6 +115,7 @@ return [
                 ],
 
                 'queue' => [
+                    'job' => VladimirYuldashev\LaravelQueueRabbitMQ\Queue\Jobs\RabbitMQJob::class,
 
                     /**
                      * Determine if queue should be created if it does not exist.
@@ -137,6 +136,19 @@ return [
                     'auto_delete' => env('RABBITMQ_QUEUE_AUTODELETE', false),
                     'arguments' => env('RABBITMQ_QUEUE_ARGUMENTS'),
                 ],
+
+                /*
+                 * Optional SSL params if an SSL connection is used
+                 * Using an SSL connection will also require to configure your RabbitMQ to enable SSL. More details can be founds here: https://www.rabbitmq.com/ssl.html
+                 */
+                'ssl_options' => [
+                    'ssl_on' => env('RABBITMQ_SSL', false),
+                    'cafile' => env('RABBITMQ_SSL_CAFILE', null),
+                    'local_cert' => env('RABBITMQ_SSL_LOCALCERT', null),
+                    'local_key' => env('RABBITMQ_SSL_LOCALKEY', null),
+                    'verify_peer' => env('RABBITMQ_SSL_VERIFY_PEER', true),
+                    'passphrase' => env('RABBITMQ_SSL_PASSPHRASE', null),
+                ],
             ],
 
             /*
@@ -146,17 +158,9 @@ return [
             'sleep_on_error' => env('RABBITMQ_ERROR_SLEEP', 5),
 
             /*
-             * Optional SSL params if an SSL connection is used
-             * Using an SSL connection will also require to configure your RabbitMQ to enable SSL. More details can be founds here: https://www.rabbitmq.com/ssl.html
+             * Set to "horizon" if you wish to use Laravel Horizon.
              */
-            'ssl_params' => [
-                'ssl_on' => env('RABBITMQ_SSL', false),
-                'cafile' => env('RABBITMQ_SSL_CAFILE', null),
-                'local_cert' => env('RABBITMQ_SSL_LOCALCERT', null),
-                'local_key' => env('RABBITMQ_SSL_LOCALKEY', null),
-                'verify_peer' => env('RABBITMQ_SSL_VERIFY_PEER', true),
-                'passphrase' => env('RABBITMQ_SSL_PASSPHRASE', null),
-            ],
+            'worker' => env('RABBITMQ_WORKER', 'default'),
         ],
     ],
 

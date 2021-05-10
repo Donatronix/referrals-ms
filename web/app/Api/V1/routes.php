@@ -7,61 +7,95 @@
 /* Referral's route */
 $router->group([
     'prefix' => 'referrals',
-    'namespace' => '\App\Api\V1\Controllers',
-    'middleware' => 'checkUser'
+    'namespace' => '\App\Api\V1\Controllers'
 ], function ($router) {
-    $router->post('tools/data-encrypt', 'Admin\ToolsController@dataEncrypt');
-    $router->post('tools/data-decrypt', 'Admin\ToolsController@dataDecrypt');
-
-    /**
-     * Common
-     */
-    $router->get('/', 'MainController@index');
+    // Register new user
     $router->post('/', 'MainController@create');
-    $router->get('invite', 'MainController@invite');
-
-    /**
-     * Management
-     */
-    $router->get('manager/validate/user', 'ManagementController@validateUser');
-    $router->get('manager/validate/referrer', 'ManagementController@validateReferrer');
-
-    /**
-     * Analytics
-     */
-    $router->get('analytics/byLink', 'AnalyticsController@index');
-    $router->get('analytics/unregistered', 'AnalyticsController@unregistered');
-
-    $router->post('contacts', 'ContactsController@store');
 
     /**
      * ADMIN PANEL
      */
-    $router->group([
-        'prefix' => 'admin',
-        'namespace' => 'Admin',
-        'middleware' => 'checkAdmin'
-    ], function ($router) {
-        /**
-         * Refferals
-         */
-        $router->get('referrals-list', 'UsersController@index');
-        $router->get('referrals-list/{id:[\d]+}', 'UsersController@show');
+    $router->group(
+        ['middleware' => 'checkUser'],
+        function ($router) {
+            /*
+             * Templates
+             * */
+            $router->get('/landingpage', 'LandingpageController@index');
+            $router->post('/landingpage/{id:[\d+]}', 'LandingpageController@save');
 
-        /**
-         * Applications
-         */
-        $router->get('applications', 'ApplicationController@index');
-        $router->get('application-keys', 'ApplicationKeyController@index');
+            /*
+             * Refcode
+             * */
+            $router->get('/refcode', 'RefcodeController@index');
+            $router->post('/refcode', 'RefcodeController@generate');
 
-        /**
-         * Devices
-         */
-        $router->get('devices', 'DeviceController@index');
+            /*
+             * Contacts
+             * */
+            $router->get('/contacts', 'UserController@contacts');
+            $router->post('/contacts/vcard', 'UserController@addvcard');
+            $router->post('/contacts/google', 'UserController@addgoogle');
 
-        /**
-         *
-         */
-        $router->get('links', 'LinksController@index');
-    });
+            /**
+             * Common
+             */
+            $router->get('/', 'MainController@index');
+            $router->get('invite', 'MainController@invite');
+
+            /**
+             * Management
+             */
+            $router->get('manager/validate/user', 'ManagementController@validateUser');
+            $router->get('manager/validate/referrer', 'ManagementController@validateReferrer');
+
+            /**
+             * Analytics
+             */
+            $router->get('analytics/byLink', 'AnalyticsController@index');
+            $router->get('analytics/unregistered', 'AnalyticsController@unregistered');
+
+            $router->post('contacts', 'ContactsController@store');
+            $router->delete('contacts', 'ContactsController@destroy');
+
+            /**
+             * ADMIN PANEL
+             */
+            $router->group([
+                'prefix' => 'admin',
+                'namespace' => 'Admin',
+                'middleware' => 'checkAdmin'
+            ], function ($router) {
+                /*
+                 * Templates
+                 * */
+                $router->get('/template', 'TemplateController@index');
+                $router->post('/template/{id:[\d*]}', 'TemplateController@save');
+
+
+
+                /**
+                 * Refferals
+                 */
+                $router->get('referrals-list', 'UsersController@index');
+                $router->get('referrals-list/{id:[\d]+}', 'UsersController@show');
+
+                /**
+                 * Applications
+                 */
+                $router->get('applications', 'ApplicationController@index');
+                $router->get('application-keys', 'ApplicationKeyController@index');
+
+                /**
+                 * Devices
+                 */
+                $router->get('devices', 'DeviceController@index');
+
+                /**
+                 *
+                 */
+                $router->get('links', 'LinksController@index');
+            });
+        }
+    );
 });

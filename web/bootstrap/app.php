@@ -64,6 +64,9 @@ $app->configure('app');
 // Neo4j
 $app->configure('database');
 
+// Matomo analytics
+$app->configure('matomo-analytics');
+
 /*
 |--------------------------------------------------------------------------
 | Register Middleware
@@ -111,9 +114,6 @@ $app->register(\Sumra\JsonApi\JsonApiServiceProvider::class);
 /** Swagger */
 $app->configure('swagger-lume');
 $app->register(\SwaggerLume\ServiceProvider::class);
-
-/** Route List */
-$app->register(Appzcoder\LumenRoutesList\RoutesCommandServiceProvider::class);
 
 /** Firebase */
 $app->register(Kreait\Laravel\Firebase\ServiceProvider::class);
