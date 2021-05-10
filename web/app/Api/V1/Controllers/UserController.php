@@ -20,7 +20,7 @@ class UserController extends Controller
      *     path="/v1/referrals/contacts",
      *     summary="Load user's contact list",
      *     description="Load user's contact list",
-     *     tags={"UserContacts"},
+     *     tags={"User contacts"},
      *
      *     security={{
      *         "default": {

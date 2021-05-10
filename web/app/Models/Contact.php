@@ -71,5 +71,4 @@ class Contact extends Model
         }
         return parent::save($options);
     }
-
 }

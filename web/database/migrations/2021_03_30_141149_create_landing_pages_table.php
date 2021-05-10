@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateLandingpagesTable extends Migration
+class CreateLandingPagesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateLandingpagesTable extends Migration
      */
     public function up()
     {
-        Schema::create('landingpages', function (Blueprint $table) {
+        Schema::create('landing_pages', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger("user_id")->default(0);
-            $table->bigInteger("template_id")->default(0);
+            $table->unsignedBigInteger("user_id")->default(0);
+            $table->unsignedBigInteger("template_id")->default(0);
             $table->longText("json");
             $table->timestamps();
 
@@ -32,6 +32,6 @@ class CreateLandingpagesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('landingpages');
+        Schema::dropIfExists('landing_pages');
     }
 }

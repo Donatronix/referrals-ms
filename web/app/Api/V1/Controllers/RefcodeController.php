@@ -14,10 +14,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
+/**
+ * Referral code Controller
+ *
+ * @package App\Api\V1\Controllers
+ */
 class RefcodeController extends Controller
 {
     /**
-     * Refcode Controller
+     * Get referral code
      *
      * @OA\Get(
      *     path="/v1/referrals/refcode",
@@ -39,11 +44,6 @@ class RefcodeController extends Controller
      *             "optional": "false"
      *         }
      *     },
-     *
-     *     @OA\RequestBody(
-     *         required=false
-     *         )
-     *     ),
      *     @OA\Response(
      *         response="200",
      *         description="List of all refcodes"
@@ -51,7 +51,7 @@ class RefcodeController extends Controller
      *     @OA\Response(
      *         response=401,
      *         description="Unauthorized"
-     *     ),
+     *     )
      * )
      *
      * @param Request $request
@@ -61,7 +61,7 @@ class RefcodeController extends Controller
      */
     public function index() : JsonResponse
     {
-        $user_id = intval(Auth::user()->getAuthIdentifier());
+        $user_id = (int) Auth::user()->getAuthIdentifier();
         try {
             $refcodes = Refcode::where('user_id', $user_id);
             $codes = [];
@@ -110,10 +110,22 @@ class RefcodeController extends Controller
      *         }
      *     },
      *
-     *     @OA\RequestBody(
-     *         required=false
-     *         )
-     *     ),
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\Property (
+     *              property="user_id",
+     *              type="integer",
+     *              description="",
+     *              example="100"
+     *          ),
+     *          @OA\Property (
+     *              property="code",
+     *              type="integeer",
+     *              description="",
+     *              example=""
+     *          ),
+     *      ),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="Save successfull"
@@ -131,7 +143,7 @@ class RefcodeController extends Controller
      */
     public function save() : JsonResponse
     {
-        $user_id = intval(Auth::user()->getAuthIdentifier());
+        $user_id = (int)Auth::user()->getAuthIdentifier();
         try {
             $code = new Refcode();
             $code->generate($user_id);
@@ -141,11 +153,11 @@ class RefcodeController extends Controller
                 'error' => $e->getMessage()
             ], 400);
         }
+
         // Return response
         return response()->json([
             'success' => true,
             'data' => $code->code
         ], 200);
     }
-
 }

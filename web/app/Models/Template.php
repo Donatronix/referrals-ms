@@ -18,13 +18,4 @@ class Template extends Model
         'created_at',
         'updated_at'
     ];
-
-    /**
-     * Indicates if the IDs are auto-incrementing.
-     *
-     * @var bool
-     */
-    public $incrementing = true;
-
-
 }
