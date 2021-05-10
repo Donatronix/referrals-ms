@@ -1,5 +1,7 @@
 <?php
 
+use App\Api\V1\Controllers\TariffController;
+
 /** @var \Laravel\Lumen\Routing\Router $router */
 
 /*
@@ -12,6 +14,8 @@
 | and give it the Closure to call when that URI is requested.
 |
 */
+
+$router->get('/tariff', 'TariffController@index');
 
 Route::get('/', function () use ($router) {
     return $router->app->version();
