@@ -5,6 +5,8 @@ namespace App\Api\V1\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\ReferalCode;
+use Illuminate\Support\Facades\Redirect;
+use MongoDB\Driver\Session;
 
 class ReferalCodeController extends Controller
 {
@@ -106,7 +108,11 @@ class ReferalCodeController extends Controller
      */
     public function destroy($id)
     {
+        $refcode = ReferalCode::find($id);
+        $refcode->delete();
 
+        Session::flash('message', 'Successfully deleted the link');
+        //return Redirect::to('index');
     }
 
     private function validation($request)
