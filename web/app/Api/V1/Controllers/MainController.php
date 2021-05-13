@@ -4,7 +4,6 @@ namespace App\Api\V1\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Application;
-use App\Models\Link;
 use App\Models\ReferalCode;
 use App\Models\User;
 use App\Services\Crypt;
@@ -367,10 +366,10 @@ class MainController extends Controller
         $user = $this->getUser();
 
         // Check Package Name
-        $packageName = $request->get('package_name', Link::ANDROID_PACKAGE_NAME);
+        $packageName = $request->get('package_name', ReferalCode::ANDROID_PACKAGE_NAME);
 
         // Get link by user id and package name
-        $link = Link::where('user_id', $user->id)
+        $link = ReferalCode::where('user_id', $user->id)
             ->where('package_name', $packageName)
             ->first();
 
@@ -379,7 +378,7 @@ class MainController extends Controller
             $shortLink = Firebase::linkGenerate($user->referral_code, $packageName);
 
             // Add
-            $link = Link::create([
+            $link = ReferalCode::create([
                 'user_id' => $user->id,
                 'package_name' => $packageName,
                 'referral_link' => (string)$shortLink
