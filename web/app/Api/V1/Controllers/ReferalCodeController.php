@@ -36,11 +36,7 @@ class ReferalCodeController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'user_id' => 'integer',
-            'package_name' => 'required|string|max:30',
-            'referral_link' => 'required|string|max:35'
-        ]);
+        $this->validation($request);
 
         try
         {
@@ -63,7 +59,8 @@ class ReferalCodeController extends Controller
      */
     public function show($id)
     {
-        //
+        $refcode = ReferalCode::find($id);
+        return dump($refcode);
     }
 
     /**
@@ -74,7 +71,8 @@ class ReferalCodeController extends Controller
      */
     public function edit($id)
     {
-        //
+        $refcode = ReferalCode::find($id);
+        return dump($refcode);
     }
 
     /**
@@ -86,7 +84,18 @@ class ReferalCodeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->validation($request);
+
+        try{
+            ReferalCode::where('user_id', $request->user_id)->update('id', $id)->firstOrFail();
+        }
+        catch (\Exception $e){
+            return  response()->jsonApi([
+                'type' => 'error',
+                'title' => 'Referrals link not found',
+                'message' => "Referrals link #{$id} not found"
+            ], 404);
+        }
     }
 
     /**
@@ -97,6 +106,15 @@ class ReferalCodeController extends Controller
      */
     public function destroy($id)
     {
-        //
+
+    }
+
+    private function validation($request)
+    {
+        return $this->validate($request, [
+            'user_id' => 'integer',
+            'package_name' => 'required|string|max:30',
+            'referral_link' => 'required|string|max:35'
+        ]);
     }
 }
