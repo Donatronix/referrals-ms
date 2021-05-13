@@ -7,6 +7,7 @@ namespace App\Api\V1\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Landingpage;
 use App\Models\Refcode;
+use App\Models\ReferalCode;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
@@ -63,7 +64,7 @@ class RefcodeController extends Controller
     {
         $user_id = (int) Auth::user()->getAuthIdentifier();
         try {
-            $refcodes = Refcode::where('user_id', $user_id);
+            $refcodes = ReferalCode::where('user_id', $user_id);
             $codes = [];
             foreach($refcodes as $p) {
                 $codes[] = [
@@ -145,7 +146,7 @@ class RefcodeController extends Controller
     {
         $user_id = (int)Auth::user()->getAuthIdentifier();
         try {
-            $code = new Refcode();
+            $code = new ReferalCode();
             $code->generate($user_id);
         } catch (Exception $e) {
             return response()->json([

@@ -5,6 +5,7 @@ namespace App\Api\V1\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Application;
 use App\Models\Link;
+use App\Models\ReferalCode;
 use App\Models\User;
 use App\Services\Crypt;
 use App\Services\Firebase;
