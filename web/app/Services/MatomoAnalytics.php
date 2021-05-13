@@ -18,7 +18,6 @@ class MatomoAnalytics
     public function __invoke($method = null)
     {
         $this->getData($method);
-
     }
 
     /**

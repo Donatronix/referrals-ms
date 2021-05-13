@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use OpenApi\Annotations\Contact;
 
 class User extends Model
 {
@@ -26,9 +25,4 @@ class User extends Model
      * @var bool
      */
     public $incrementing = false;
-
-    public function contacts()
-    {
-        return $this->hasMany(Contact::class);
-    }
 }

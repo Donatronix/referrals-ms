@@ -22,9 +22,9 @@ return [
                 'driver' => 'mysql',
                 'host'   => env('DB_HOST', 'localhost'),
                 'port'   => env('DB_PORT', '3306'),
-                'database' => env('DB_DATABASE', 'stats'),
-                'username' => env('DB_USERNAME', null),
-                'password' => env('DB_PASSWORD', null),
+                'database' => env('DB_DATABASE', 'referrals'),
+                'username' => env('DB_USERNAME', 'sumra'),
+                'password' => env('DB_PASSWORD', '123Qwe456#@!'),
             ]
     ],
 ];

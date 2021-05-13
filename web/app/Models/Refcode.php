@@ -18,13 +18,6 @@ class Refcode extends Model
         'updated_at'
     ];
 
-    /**
-     * Indicates if the IDs are auto-incrementing.
-     *
-     * @var bool
-     */
-    public $incrementing = true;
-
     public function generate($user_id)
     {
         $exists = true;
@@ -40,10 +33,12 @@ class Refcode extends Model
                     $code .= chr($r+0x61-36);
                 }
             }
+
             if($this->codeNotExists($code)) {
                 $exists = false;
             }
         } while($exists);
+
         $this->user_id = $user_id;
         $this->code = $code;
         $this->save();
@@ -57,5 +52,4 @@ class Refcode extends Model
         }
         return true;
     }
-
 }
