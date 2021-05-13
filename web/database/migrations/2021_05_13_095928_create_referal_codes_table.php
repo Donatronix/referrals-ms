@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateLinkcodesTable extends Migration
+class CreateReferalCodesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,15 @@ class CreateLinkcodesTable extends Migration
      */
     public function up()
     {
+        $table_name = "referal_codes";
 
-        $table_name = "linkcodes";
-
-        Schema::create('linkcodes', function (Blueprint $table) {
+        Schema::create('referal_codes', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->charset = 'utf8';
             $table->collation = 'utf8_general_ci';
 
             $table->bigIncrements('id');
+            $table->unsignedBigInteger('user_id')->nullable();
 
             $table->string('package_name', 30);
             $table->string('referral_link', 35)->unique();
@@ -32,7 +32,6 @@ class CreateLinkcodesTable extends Migration
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
-
     }
 
     /**
@@ -42,6 +41,6 @@ class CreateLinkcodesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('linkcodes');
+        Schema::dropIfExists('referal_codes');
     }
 }
