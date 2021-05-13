@@ -4,6 +4,7 @@
 namespace App\Api\V1\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\ReferalCode;
 
 class ReferalCodeController extends Controller
 {
@@ -40,6 +41,18 @@ class ReferalCodeController extends Controller
             'package_name' => 'required|string|max:30',
             'referral_link' => 'required|string|max:35'
         ]);
+
+        try
+        {
+            ReferalCode::create([
+                'user_id' => $request->get('user_id'),
+                'package_name' => $request->get('package_name'),
+                'referral_link' => $request->get('referral_link')
+            ]);
+        }
+        catch (\Exception $e){
+            dump($e->getMessage());
+        }
     }
 
     /**
