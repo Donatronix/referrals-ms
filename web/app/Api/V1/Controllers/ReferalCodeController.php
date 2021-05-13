@@ -36,7 +36,9 @@ class ReferalCodeController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-
+            'user_id' => 'integer',
+            'package_name' => 'required|string|max:30',
+            'referral_link' => 'required|string|max:35'
         ]);
     }
 
