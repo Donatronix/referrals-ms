@@ -26,14 +26,6 @@ Route::group(
 
         $router->get('referrals', '\App\Http\Controllers\PagesController@index');
 
-        $router->get('referrals/contacts/store', function () {
-            return \App\Http\Controllers\TestController::viewMake("tests.contacts.store");
-        });
-
-        $router->get('referrals/contacts/destroy', function () {
-            return \App\Http\Controllers\TestController::viewMake("tests.contacts.destroy");
-        });
-
         /**
          * Tools for encrypt / decrypt test
          */

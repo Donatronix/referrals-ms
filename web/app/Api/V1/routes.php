@@ -30,13 +30,6 @@ $router->group([
             $router->get('/refcode', 'RefcodeController@index');
             $router->post('/refcode', 'RefcodeController@generate');
 
-            /*
-             * Contacts
-             * */
-            $router->get('/contacts', 'UserController@contacts');
-            $router->post('/contacts/vcard', 'UserController@addvcard');
-            $router->post('/contacts/google', 'UserController@addgoogle');
-
             /**
              * Common
              */
@@ -54,9 +47,6 @@ $router->group([
              */
             $router->get('analytics/byLink', 'AnalyticsController@index');
             $router->get('analytics/unregistered', 'AnalyticsController@unregistered');
-
-            $router->post('contacts', 'ContactsController@store');
-            $router->delete('contacts', 'ContactsController@destroy');
 
             /**
              * ADMIN PANEL
