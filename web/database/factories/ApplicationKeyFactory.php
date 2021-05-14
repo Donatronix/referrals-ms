@@ -1,19 +1,37 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
+
 use App\Models\ApplicationKey;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(ApplicationKey::class, function (Faker $faker) {
-    $cipherList = [
-      'AES-128-ECB',
-      'AES-256-ECB'
-    ];
+class ApplicationKeyFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = ApplicationKey::class;
 
-    $cipher = $faker->randomElement($cipherList);
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        $cipherList = [
+            'AES-128-ECB',
+            'AES-256-ECB'
+        ];
 
-    return [
-        'version_key' => $faker->unique()->randomNumber(9),
-        'cipher' => $cipher,
-        'cipher_key' => $cipher === 'AES-128-ECB' ? hash('md5', $faker->text) : hash('sha256', $faker->text),
-    ];
-});
+        $cipher = $this->faker->randomElement($cipherList);
+
+        return [
+            'version_key' => $this->faker->unique()->randomNumber(9),
+            'cipher' => $cipher,
+            'cipher_key' => $cipher === 'AES-128-ECB' ? hash('md5', $this->faker->text) : hash('sha256', $this->faker->text),
+        ];
+    }
+}
