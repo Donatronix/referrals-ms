@@ -17,7 +17,7 @@ class ReferralCodeController extends Controller
      */
     public function index()
     {
-        //
+        return 123456;
     }
 
     /**
@@ -114,6 +114,7 @@ class ReferralCodeController extends Controller
         Session::flash('message', 'Successfully deleted the link');
         //return Redirect::to('index');
     }
+
 
     private function validation($request)
     {

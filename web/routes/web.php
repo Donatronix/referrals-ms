@@ -1,5 +1,7 @@
 <?php
 
+use App\Api\V1\Controllers\ReferralCodeController;
+
 /** @var \Laravel\Lumen\Routing\Router $router */
 
 /*
@@ -13,9 +15,15 @@
 |
 */
 
+$router->get('/ref/edit/{id}', 'ReferralCodeController@edit');
+$router->put('/ref/update/{id}', 'ReferralCodeController@update');
+$router->delete('/ref/delete/{id}', 'ReferralCodeController@delete');
+
+$router->get('/', 'ReferralCodeController@index');
+/*
 Route::get('/', function () use ($router) {
     return $router->app->version();
-});
+});*/
 
 Route::group(
     ['prefix' => env('API_PREFIX') . '/v1'],
