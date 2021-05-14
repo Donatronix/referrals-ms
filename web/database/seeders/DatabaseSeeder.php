@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             UsersTableSeeder::class,
             ApplicationsTableSeeder::class,
             LinksTableSeeder::class,
+            ReferralCodeSeeder::class
         ]);
     }
 }

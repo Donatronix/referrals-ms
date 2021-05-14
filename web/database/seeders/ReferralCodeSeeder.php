@@ -4,7 +4,6 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use function DI\factory;
 use App\Models\ReferalCode;
 
 

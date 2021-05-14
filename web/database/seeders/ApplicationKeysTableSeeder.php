@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use App\Models\ApplicationKey;
 
@@ -10,8 +12,8 @@ class ApplicationKeysTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run(): void
+    public function run()
     {
-        factory(ApplicationKey::class, 5)->create();
+        ApplicationKey::factory()->count(5)->create();
     }
 }

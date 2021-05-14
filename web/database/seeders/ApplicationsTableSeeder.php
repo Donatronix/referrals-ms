@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use App\Models\Application;
 
@@ -12,8 +14,6 @@ class ApplicationsTableSeeder extends Seeder
      */
     public function run(): void
     {
-        factory(Application::class, 5)->create([
-          //  'referrer_id' => ''//$id
-        ]);
+        Application::factory()->count(5)->create();
     }
 }
