@@ -1,22 +1,42 @@
 <?php
 
+namespace Database\Factories;
+
 use App\Models\Application;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\User;
 
-$factory->define(Application::class, function (Faker $faker) {
-    return [
-        'package_name' => str_replace('-', '.', $faker->slug(3, false)),
-        'device_id' => uniqid('', false),
-        'device_name' => $faker->words(3, true),
+class ApplicationFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Application::class;
 
-        'user_id' => \App\Models\User::all()->random()->id,
-        'referrer_code' => '',
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
 
-        'user_status' => Application::INSTALLED_NO,
-        'referrer_id' => 0,
-        'referrer_status' => Application::REFERRER_NO,
+        return [
+            'package_name' => str_replace('-', '.', $this->faker->slug(3, false)),
+            'device_id' => uniqid('', false),
+            'device_name' => $this->faker->words(3, true),
 
-        'ip' => $faker->ipv4(),
-        'metadata' => '',
-    ];
-});
+            'user_id' => User::all()->random()->id,
+            'referrer_code' => '',
+
+            'user_status' => Application::INSTALLED_NO,
+            'referrer_id' => 0,
+            'referrer_status' => Application::REFERRER_NO,
+
+            'ip' => $this->faker->ipv4(),
+            'metadata' => '',
+        ];
+    }
+}

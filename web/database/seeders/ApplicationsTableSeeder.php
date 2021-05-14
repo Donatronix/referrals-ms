@@ -14,6 +14,6 @@ class ApplicationsTableSeeder extends Seeder
      */
     public function run(): void
     {
-        Application::factory()->count(5)->create();
+        Application::factory()->count(3)->create();
     }
 }
