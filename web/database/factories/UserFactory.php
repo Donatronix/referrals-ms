@@ -23,8 +23,8 @@ class UserFactory extends Factory
     {
         return [
             'id' => $this->faker->unique()->numberBetween(1, 100),
-            'username' => mb_strtolower($this->faker->firstName),
-            'status' => $this->faker->boolean()
+            'tier' => $this->faker->randomElement(['basic', 'bronze', 'silver', 'gold']),
+            'regstate' => $this->faker->randomElement(['new','registered','kyc']),
         ];
     }
 }
