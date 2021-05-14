@@ -4,11 +4,11 @@
 namespace App\Api\V1\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\ReferalCode;
+use App\Models\ReferralCode;
 use Illuminate\Support\Facades\Redirect;
 use MongoDB\Driver\Session;
 
-class ReferalCodeController extends Controller
+class ReferralCodeController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -42,7 +42,7 @@ class ReferalCodeController extends Controller
 
         try
         {
-            ReferalCode::create([
+            ReferralCode::create([
                 'user_id' => $request->get('user_id'),
                 'package_name' => $request->get('package_name'),
                 'referral_link' => $request->get('referral_link')
@@ -61,7 +61,7 @@ class ReferalCodeController extends Controller
      */
     public function show($id)
     {
-        $refcode = ReferalCode::find($id);
+        $refcode = ReferralCode::find($id);
         return dump($refcode);
     }
 
@@ -73,7 +73,7 @@ class ReferalCodeController extends Controller
      */
     public function edit($id)
     {
-        $refcode = ReferalCode::find($id);
+        $refcode = ReferralCode::find($id);
         return dump($refcode);
     }
 
@@ -89,7 +89,7 @@ class ReferalCodeController extends Controller
         $this->validation($request);
 
         try{
-            ReferalCode::where('user_id', $request->user_id)->update('id', $id)->firstOrFail();
+            ReferralCode::where('user_id', $request->user_id)->update('id', $id)->firstOrFail();
         }
         catch (\Exception $e){
             return  response()->jsonApi([
@@ -108,7 +108,7 @@ class ReferalCodeController extends Controller
      */
     public function destroy($id)
     {
-        $refcode = ReferalCode::find($id);
+        $refcode = ReferralCode::find($id);
         $refcode->delete();
 
         Session::flash('message', 'Successfully deleted the link');

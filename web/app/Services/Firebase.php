@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\ReferalCode;
+use App\Models\ReferralCode;
 use Kreait\Firebase\DynamicLink\CreateDynamicLink\FailedToCreateDynamicLink;
 
 class Firebase
@@ -18,8 +18,8 @@ class Firebase
         $referrerData = [
             //'code' => $referralCode,
             'utm_source' => $referralCode,
-            'utm_medium' => ReferalCode::MEDIUM,
-            'utm_campaign' => ReferalCode::CAMPAIGN,
+            'utm_medium' => ReferralCode::MEDIUM,
+            'utm_campaign' => ReferralCode::CAMPAIGN,
             'utm_content' => $packageName
         ];
 
@@ -41,8 +41,8 @@ class Firebase
                     'analyticsInfo' => [
                         'googlePlayAnalytics' => [
                             'utmSource' => $referralCode,
-                            'utmMedium' => ReferalCode::MEDIUM,
-                            'utmCampaign' => ReferalCode::CAMPAIGN,
+                            'utmMedium' => ReferralCode::MEDIUM,
+                            'utmCampaign' => ReferralCode::CAMPAIGN,
                             'utmContent' => $packageName,
                             /*
                             'utmTerm' => 'utmTerm',

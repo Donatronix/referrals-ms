@@ -3,10 +3,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ReferalCode extends Model
+class ReferralCode extends Model
 {
+    use HasFactory;
     const CAMPAIGN = 'Referral Program';
     const MEDIUM = 'Invite Friends';
 

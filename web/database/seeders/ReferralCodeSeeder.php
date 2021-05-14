@@ -4,7 +4,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\ReferalCode;
+use App\Models\ReferralCode;
 
 
 class ReferralCodeSeeder extends Seeder
@@ -16,6 +16,6 @@ class ReferralCodeSeeder extends Seeder
      */
     public function run()
     {
-        ReferalCode::factory()->count(3)->create();
+        ReferralCode::factory()->count(3)->create();
     }
 }
