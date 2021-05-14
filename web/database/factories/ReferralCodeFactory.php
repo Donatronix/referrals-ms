@@ -14,12 +14,11 @@ class ReferralCodeFactory extends Factory
      */
     public function definition()
     {
-        $refcode = new ReferalCode();
-
         return [
             'package_name' => str_replace('-', '.', $this->faker->slug(3, false)),
             'user_id' => 0,
-            'referral_link' => ''
+            'referral_link' => '',
+            'code' => ''
         ];
     }
 }
