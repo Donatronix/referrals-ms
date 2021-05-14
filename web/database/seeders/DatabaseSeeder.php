@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
             ApplicationKeysTableSeeder::class,
           //  UsersTableSeeder::class,
             ApplicationsTableSeeder::class,
-            LinksTableSeeder::class,
+            //LinksTableSeeder::class,
             ReferralCodeSeeder::class
         ]);
     }

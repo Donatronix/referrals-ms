@@ -24,7 +24,7 @@ class LinksTableSeeder extends Seeder
             $applications = Application::where('user_id', $user->id)->get();
 
             foreach($applications as $app){
-                factory(Link::class)->create([
+                Link::factory()->count(3)->create([
                     'package_name' => $app->package_name,
                     'user_id' => $user->id,
                     'referral_link' => Firebase::linkGenerate($user->referral_code, $app->package_name)
