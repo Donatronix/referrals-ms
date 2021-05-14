@@ -21,16 +21,6 @@ class ReferralCodeController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -60,18 +50,6 @@ class ReferralCodeController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    {
-        $refcode = ReferralCode::find($id);
-        return dump($refcode);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
     {
         $refcode = ReferralCode::find($id);
         return dump($refcode);
@@ -111,8 +89,6 @@ class ReferralCodeController extends Controller
         $refcode = ReferralCode::find($id);
         $refcode->delete();
 
-        Session::flash('message', 'Successfully deleted the link');
-        //return Redirect::to('index');
     }
 
 
@@ -120,7 +96,7 @@ class ReferralCodeController extends Controller
     {
         return $this->validate($request, [
             'user_id' => 'integer',
-            'package_name' => 'required|string|max:30',
+            'package_name' => 'string|max:30',
             'referral_link' => 'required|string|max:35'
         ]);
     }

@@ -23,7 +23,7 @@ class CreateReferralCodesTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('user_id');
 
-            $table->string('package_name', 30);
+            $table->string('package_name', 30)->nullable();
             $table->string('referral_link', 35)->unique();
             $table->string('code', 8)->default('');
 

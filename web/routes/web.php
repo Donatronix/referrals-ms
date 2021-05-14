@@ -15,11 +15,8 @@ use App\Api\V1\Controllers\ReferralCodeController;
 |
 */
 
-$router->get('/ref/edit/{id}', 'ReferralCodeController@edit');
-$router->put('/ref/update/{id}', 'ReferralCodeController@update');
-$router->delete('/ref/delete/{id}', 'ReferralCodeController@delete');
 
-$router->get('/', 'ReferralCodeController@index');
+
 /*
 Route::get('/', function () use ($router) {
     return $router->app->version();

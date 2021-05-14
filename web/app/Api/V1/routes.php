@@ -18,6 +18,12 @@ $router->group([
     $router->group(
         ['middleware' => 'checkUser'],
         function ($router) {
+            /**
+             *  Referral code
+             */
+            $router->put('/referral-codes/update/{id}', 'ReferralCodeController@update');
+            $router->delete('/referral-codes/delete/{id}', 'ReferralCodeController@delete');
+
             /*
              * Templates
              * */
