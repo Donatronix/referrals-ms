@@ -110,6 +110,7 @@ class UsersController extends Controller
         // Validate data
         $validator = Validator::make($request->all(), [
             'orderBy' => 'in:referral_code,referrer_id,status,id,username|nullable',
+//            'orderBy' => 'in:referral_code,referrer_id,status,id,username|nullable',
             'orderDirection' => 'in:asc,desc|nullable',
             'search' => 'string|nullable',
             'page' => 'integer|nullable',

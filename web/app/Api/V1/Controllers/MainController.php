@@ -73,7 +73,7 @@ class MainController extends Controller
         $user = $this->getUser();
 
         // Get list all referrals by user id
-        $list = User::where('referrer_id', $user->id)->get();
+        $list = User::where('id', $user->id)->get();
 
         // Return response
         return response()->jsonApi($list, 200);
