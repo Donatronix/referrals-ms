@@ -15,9 +15,9 @@ class ReferralCodeController extends Controller
      *  Get referral code and link
      *
      * @OA\Get (
-     *     path="/referral-codes",
+     *     path="/v1/referrals/referral-codes",
      *     description="Get all user's referral codes and link",
-     *     tags={"Referral-code"},
+     *     tags={"Referral Code"},
      *
      *     security={{
      *          "default": {
@@ -59,9 +59,9 @@ class ReferralCodeController extends Controller
      * Created code and link.
      *
      * @OA\Post (
-     *     path="/referral-codes",
+     *     path="/v1/referrals/referral-codes",
      *     description="Store code and link",
-     *     tags={"Referral-code"},
+     *     tags={"Referral Code"},
      *
      *     security={{
      *          "default": {
@@ -125,7 +125,7 @@ class ReferralCodeController extends Controller
      *              @OA\Property(
      *                  property="package_name",
      *                  type="string",
-     *                  description="Package name of error"
+     *                  description="Package name of error",
      *              ),
      *              @OA\Property(
      *                  property="referral_link",
@@ -165,9 +165,9 @@ class ReferralCodeController extends Controller
      * Show one code and link
      *
      * @OA\Get(
-     *     path="/referral-codes/{id:[\d+]}",
-     *     description="Show referral code and lonk",
-     *     tags={"Referral-code"},
+     *     path="/v1/referrals/referral-code",
+     *     description="Show referral code and link",
+     *     tags={"Referral Code"},
      *
      *     security={{
      *          "default":{
@@ -185,6 +185,15 @@ class ReferralCodeController extends Controller
      *              "optimal": "false"
      *          }
      *     },
+     *
+     *     @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          description="ID referral code",
+     *          @OA\Schema (
+     *              type="integer"
+     *          ),
+     *     ),
      *
      *     @OA\Response(
      *          response="200",
@@ -209,9 +218,9 @@ class ReferralCodeController extends Controller
      * Update referral link and code.
      *
      * @OA\Put(
-     *     path="/referral-codes/{id:[\d+]}",
+     *     path="/v1/referrals/referral-codes",
      *     description="Update referral code and link",
-     *     tags={"Referral-code"},
+     *     tags={"Referral Code"},
      *
      *     security={{
      *          "default":{
@@ -233,7 +242,7 @@ class ReferralCodeController extends Controller
      *     @OA\Parameter(
      *          name="id",
      *          in="path",
-     *          description="Note ID",
+     *          description="Referral ID",
      *          @OA\Schema (
      *              type="integer"
      *          ),
@@ -320,9 +329,9 @@ class ReferralCodeController extends Controller
      * Remove referral code
      *
      * @OA\Delete(
-     *     path="/referral-codes/{id:[\d+]}",
+     *     path="/v1/referrals/referral-codes",
      *     description="Delete referral code",
-     *     tags={"Referral-code"},
+     *     tags={"Referral Code"},
      *
      *     security={{
      *         "default": {
@@ -340,12 +349,12 @@ class ReferralCodeController extends Controller
      *         }
      *     },
      *
-     *
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         description="Delete referral code by ID",
      *         required=true,
+     *         example="",
      *         @OA\Schema(
      *             type="integer"
      *         )

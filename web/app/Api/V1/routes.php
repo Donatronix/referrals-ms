@@ -21,11 +21,11 @@ $router->group([
             /**
              *  Referral code
              */
-            $router->get('/referral-codes', 'ReferralCodeController@index');
-            $router->post("/referral-codes", 'ReferralCodeController@store');
-            $router->get("/referral-codes/{id:[\d+]}", 'ReferralCodeController@show');
-            $router->put('/referral-codes/{id:[\d+]}', 'ReferralCodeController@update');
-            $router->delete('/referral-codes/{id:[\d+]}', 'ReferralCodeController@delete');
+            $router->get('referral-codes', 'ReferralCodeController@index');
+            $router->post("referral-codes", 'ReferralCodeController@store');
+            $router->get("referral-code/{id:[\d+]}", 'ReferralCodeController@show');
+            $router->put('referral-codes/{id:[\d+]}', 'ReferralCodeController@update');
+            $router->delete('referral-codes/{id:[\d+]}', 'ReferralCodeController@delete');
 
             /*
              * Templates
