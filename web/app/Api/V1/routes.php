@@ -16,7 +16,9 @@ $router->group([
      * ADMIN PANEL
      */
     $router->group(
-        ['middleware' => 'checkUser'],
+       [
+       //    'middleware' => 'checkUser'
+       ], // TODO: вернуть закомментированное
         function ($router) {
             /**
              *  Referral code

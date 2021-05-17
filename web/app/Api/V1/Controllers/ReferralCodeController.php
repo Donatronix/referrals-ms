@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\ReferralCode;
 use Illuminate\Support\Facades\Redirect;
 use MongoDB\Driver\Session;
+use Illuminate\Support\Facades\DB;
 
 class ReferralCodeController extends Controller
 {
@@ -52,7 +53,9 @@ class ReferralCodeController extends Controller
      */
     public function index()
     {
-        return 123456;
+        $row = new ReferralCode();
+        $res = print_r($row->all());
+        return $res;
     }
 
     /**
