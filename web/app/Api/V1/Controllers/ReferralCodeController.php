@@ -162,7 +162,39 @@ class ReferralCodeController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Show one code and link
+     *
+     * @OA\Get(
+     *     path="/referral-codes/{id:[\d+]}",
+     *     description="Show referral code and lonk",
+     *     tags={"Referral-code"},
+     *
+     *     security={{
+     *          "default":{
+     *              "ManagerRead",
+     *              "User",
+     *              "ManagerWrite"
+     *           }
+     *     }},
+     *
+     *     x={
+     *          "auth-type": "Application & Application User",
+     *          "throttling-tier": "Unlimited",
+     *          "wso2-application-security": {
+     *              "security-types": {"oauth2"},
+     *              "optimal": "false"
+     *          }
+     *     },
+     *
+     *     @OA\Response(
+     *          response="200",
+     *          description="Success"
+     *     ),
+     *     @OA\Response(
+     *          response="401",
+     *          description="Unauthorized"
+     *     )
+     * )
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
