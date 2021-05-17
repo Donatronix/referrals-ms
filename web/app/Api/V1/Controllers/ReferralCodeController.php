@@ -317,7 +317,63 @@ class ReferralCodeController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove referral code
+     *
+     * @OA\Delete(
+     *     path="/referral-codes/{id:[\d+]}",
+     *     description="Delete referral code",
+     *     tags={"Referral-code"},
+     *
+     *     security={{
+     *         "default": {
+     *             "ManagerRead",
+     *             "User",
+     *             "ManagerWrite"
+     *         },
+     *     }},
+     *     x={
+     *         "auth-type": "Application & Application User",
+     *         "throttling-tier": "Unlimited",
+     *         "wso2-application-security": {
+     *             "security-types": {"oauth2"},
+     *             "optional": "false"
+     *         }
+     *     },
+     *
+     *
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Delete referral code by ID",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *          response="200",
+     *          description="Success"
+     *     ),
+     *
+     *     @OA\Response(
+     *          response="404",
+     *          description="Referral code not found",
+     *          @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(
+     *                  property="code",
+     *                  type="string",
+     *                  description="Code of error"
+     *              ),
+     *              @OA\Property(
+     *                  property="message",
+     *                  type="string",
+     *                  description="Error message"
+     *              ),
+     *          ),
+     *     ),
+     * )
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
