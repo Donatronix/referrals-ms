@@ -56,7 +56,90 @@ class ReferralCodeController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Created code and link.
+     *
+     * @OA\Post (
+     *     path="/referral-codes",
+     *     description="Store code and link",
+     *     tags={"Referral-code"},
+     *
+     *     security={{
+     *          "default": {
+     *              "ManagerRead",
+     *              "User",
+     *              "ManagerWrite"
+     *          }
+     *     }},
+     *
+     *     x={
+     *          "auth-type": "Application & Application User",
+     *          "throttling-tier": "Unlimited",
+     *          "wso2-application-security": {
+     *              "security-types": {"oauth2"},
+     *              "optional": "false"
+     *          }
+     *     },
+     *
+     *     @OA\RequestBody(
+     *          @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property (
+     *                  property="package_name",
+     *                  type="string",
+     *                  maximum="30",
+     *                  description="Package name property",
+     *                  example=""
+     *              ),
+     *              @OA\Property (
+     *                  property="referral_link",
+     *                  type="string",
+     *                  maximum="35",
+     *                  description="Referral link property",
+     *                  example=""
+     *              ),
+     *              @OA\Property(
+     *                  property="code",
+     *                  type="string",
+     *                  maximum="8",
+     *                  description="Referral code property",
+     *                  example=""
+     *              )
+     *          )
+     *     ),
+     *
+     *     @OA\Response(
+     *          response="200",
+     *          description="Success"
+     *     ),
+     *
+     *     @OA\Response(
+     *          response="401",
+     *          description="Unauthorized"
+     *     ),
+     *
+     *     @OA\Response(
+     *          response="500",
+     *          description="Unknown error",
+     *          @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(
+     *                  property="package_name",
+     *                  type="string",
+     *                  description="Package name of error"
+     *              ),
+     *              @OA\Property(
+     *                  property="referral_link",
+     *                  type="string",
+     *                  description="Referral link of error"
+     *              ),
+     *              @OA\Property(
+     *                  property="code",
+     *                  type="string",
+     *                  description="Code of error"
+     *              )
+     *          )
+     *     ),
+     * )
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
