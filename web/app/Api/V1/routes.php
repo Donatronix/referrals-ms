@@ -21,6 +21,7 @@ $router->group([
             /**
              *  Referral code
              */
+            $router->get('/referral-codes/', 'ReferralCodeController@index');
             $router->put('/referral-codes/update/{id}', 'ReferralCodeController@update');
             $router->delete('/referral-codes/delete/{id}', 'ReferralCodeController@delete');
 

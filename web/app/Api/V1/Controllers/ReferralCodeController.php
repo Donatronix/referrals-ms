@@ -3,6 +3,7 @@
 
 namespace App\Api\V1\Controllers;
 
+use Dotenv\Exception\ValidationException;
 use Illuminate\Http\Request;
 use App\Models\ReferralCode;
 use Illuminate\Support\Facades\Redirect;
@@ -11,9 +12,43 @@ use MongoDB\Driver\Session;
 class ReferralCodeController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     *  Get referral code and link
      *
-     * @return \Illuminate\Http\Response
+     * @OA\Get (
+     *     path="/referral-codes",
+     *     description="Get all user's referral codes and link",
+     *     tags={"Referral-code"},
+     *
+     *     security={{
+     *          "default": {
+     *              "ManagerRead",
+     *              "User",
+     *              "ManagerWrite"
+     *          }
+     *     }},
+     *     x={
+     *          "auth-type" : "Application & Application User",
+     *          "throttling-tier": "Unlimited",
+     *          "wso-application-security": {
+     *              "security-types": {"oauth2"},
+     *              "optinal": "false"
+     *           }
+     *     },
+     *
+     *     @OA\Response(
+     *          response="200",
+     *          description="List of all referral codes and links"
+     *     ),
+     *     @OA\Response(
+     *          response="401",
+     *          description="Unauthorized"
+     *     )
+     * )
+     *
+     * @param Request $request
+     *
+     * @return mixed
+     * @throws ValidationException
      */
     public function index()
     {
