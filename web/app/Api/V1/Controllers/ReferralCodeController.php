@@ -319,13 +319,20 @@ class ReferralCodeController extends Controller
         $this->validation($request);
 
         try{
-            ReferralCode::where('user_id', $request->user_id)->update('id', $id)->firstOrFail();
+            $data = ReferralCode::find($id);
+
+            $data->user_id = 2;
+            $data->package_name = $request->get('package_name','');
+            $data->referral_link = $request->get('referral_link', '');
+            $data->code = $request->get('code', '');
+            $data->save();
         }
         catch (\Exception $e){
             return  response()->jsonApi([
                 'type' => 'error',
                 'title' => 'Referrals link not found',
-                'message' => "Referrals link #{$id} not found"
+                'message' => $e
+//                'message' => "Referrals link #{$id} not found"
             ], 404);
         }
     }
@@ -394,10 +401,8 @@ class ReferralCodeController extends Controller
      */
     public function destroy($id)
     {
-        /*$refcode = ReferralCode::find($id);
-        $refcode->delete();*/
-
-        return 123456; // 405
+        $data = ReferralCode::find($id);
+        $data->delete();
     }
 
 
