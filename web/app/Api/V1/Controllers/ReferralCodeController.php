@@ -401,8 +401,9 @@ class ReferralCodeController extends Controller
      */
     public function destroy($id)
     {
-        $data = ReferralCode::find($id);
-        $data->delete();
+        ReferralCode::destroy($id);
+
+        return null;
     }
 
 
