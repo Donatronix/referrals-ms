@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 
 class ReferralCodeController extends Controller
 {
+
     /**
      *  Get referral code and link
      *
@@ -53,9 +54,7 @@ class ReferralCodeController extends Controller
      */
     public function index()
     {
-        $row = new ReferralCode();
-        $res = print_r($row->all());
-        return $res;
+        return print_r(ReferralCode::all());
     }
 
     /**
@@ -168,7 +167,7 @@ class ReferralCodeController extends Controller
      * Show one code and link
      *
      * @OA\Get(
-     *     path="/v1/referrals/referral-code",
+     *     path="/v1/referrals/referral-code/{id}",
      *     description="Show referral code and link",
      *     tags={"Referral Code"},
      *
@@ -213,15 +212,16 @@ class ReferralCodeController extends Controller
      */
     public function show($id)
     {
-        $refcode = ReferralCode::find($id);
-        return dump($refcode);
+        /*$refcode = ReferralCode::find($id);
+        return dump($refcode);*/
+        return 12334456; // 404
     }
 
     /**
      * Update referral link and code.
      *
      * @OA\Put(
-     *     path="/v1/referrals/referral-codes",
+     *     path="/v1/referrals/referral-codes/{id}",
      *     description="Update referral code and link",
      *     tags={"Referral Code"},
      *
@@ -314,7 +314,7 @@ class ReferralCodeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validation($request);
+        /*$this->validation($request);
 
         try{
             ReferralCode::where('user_id', $request->user_id)->update('id', $id)->firstOrFail();
@@ -325,14 +325,15 @@ class ReferralCodeController extends Controller
                 'title' => 'Referrals link not found',
                 'message' => "Referrals link #{$id} not found"
             ], 404);
-        }
+        }*/
+        return 123456; // 405
     }
 
     /**
      * Remove referral code
      *
      * @OA\Delete(
-     *     path="/v1/referrals/referral-codes",
+     *     path="/v1/referrals/referral-codes/{id}",
      *     description="Delete referral code",
      *     tags={"Referral Code"},
      *
@@ -392,9 +393,10 @@ class ReferralCodeController extends Controller
      */
     public function destroy($id)
     {
-        $refcode = ReferralCode::find($id);
-        $refcode->delete();
+        /*$refcode = ReferralCode::find($id);
+        $refcode->delete();*/
 
+        return 123456; // 405
     }
 
 
