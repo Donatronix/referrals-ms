@@ -153,11 +153,13 @@ class ReferralCodeController extends Controller
         try
         {
             $data = new ReferralCode();
+
+            print_r($data);
             $data->user_id = 2;
             $data->package_name = $request->package_name;
             $data->referral_link = $request->referral_link;
             $data->code = $request->code;
-            $data->save();
+            //$data->save();
 
         }
         catch (\Exception $e){

@@ -5,6 +5,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class ReferralCode extends Model
 {
@@ -29,39 +30,24 @@ class ReferralCode extends Model
         'updated_at',
     ];
 
-    public function generate($user_id)
+    /**
+     * Boot the model.
+     *
+     * @return  void
+     */
+    protected static function boot()
     {
-        $exists = true;
-        do {
-            $code = '';
-            for ($i = 0; $i < 6; $i++) {
-                $r = rand(0,61);
-                if($r<10) {
-                    $code .= chr($r+0x30);
-                } elseif($r<36) {
-                    $code .= chr($r+0x41-10);
-                } else {
-                    $code .= chr($r+0x61-36);
-                }
-            }
+        parent::boot();
 
-            if($this->codeNotExists($code)) {
-                $exists = false;
-            }
-        } while($exists);
+        static::creating(function ($obj) {
+            do {
+                // generate a random string using Laravel's str_random helper
+                $referralCode = Str::random(8);
+            } //check if the token already exists and if it does, try again
+            while (self::where('code', $referralCode)->first());
 
-        $this->user_id = $user_id;
-        $this->code = $code;
-        $this->save();
-    }
-
-    private function codeNotExists($code) : bool
-    {
-        $c = self::where('code',$code)->first();
-        if($c) {
-            return false;
-        }
-        return true;
+            $obj->code = (string)$referralCode;
+        });
     }
 
     /* ************************ ACCESSOR ************************* */

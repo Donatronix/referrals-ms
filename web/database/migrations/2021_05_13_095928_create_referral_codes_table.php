@@ -25,9 +25,9 @@ class CreateReferralCodesTable extends Migration
 
             $table->string('package_name', 30)->nullable();
             $table->string('referral_link', 35)->unique();
-            $table->string('code', 8)->default('');
+            $table->string('code', 8);
 
-            $table->unique(['user_id', 'package_name', 'code'])->nullable();
+            $table->unique(['user_id', 'package_name', 'code']);
 
             $table->timestamps();
 
