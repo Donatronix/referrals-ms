@@ -212,9 +212,7 @@ class ReferralCodeController extends Controller
      */
     public function show($id)
     {
-        /*$refcode = ReferralCode::find($id);
-        return dump($refcode);*/
-        return 12334456; // 404
+        print_r(ReferralCode::find($id));
     }
 
     /**
