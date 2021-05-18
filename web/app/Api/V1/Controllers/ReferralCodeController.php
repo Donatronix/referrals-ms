@@ -152,11 +152,13 @@ class ReferralCodeController extends Controller
 
         try
         {
-            ReferralCode::create([
-                'user_id' => $request->get('user_id'),
-                'package_name' => $request->get('package_name'),
-                'referral_link' => $request->get('referral_link')
-            ]);
+            $data = new ReferralCode();
+            $data->user_id = 2;
+            $data->package_name = $request->package_name;
+            $data->referral_link = $request->referral_link;
+            $data->code = $request->code;
+            $data->save();
+
         }
         catch (\Exception $e){
             dump($e->getMessage());
@@ -192,6 +194,7 @@ class ReferralCodeController extends Controller
      *          name="id",
      *          in="path",
      *          description="ID referral code",
+     *          example="1",
      *          @OA\Schema (
      *              type="integer"
      *          ),
@@ -244,6 +247,7 @@ class ReferralCodeController extends Controller
      *          name="id",
      *          in="path",
      *          description="Referral ID",
+     *          example="1",
      *          @OA\Schema (
      *              type="integer"
      *          ),
@@ -312,7 +316,7 @@ class ReferralCodeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        /*$this->validation($request);
+        $this->validation($request);
 
         try{
             ReferralCode::where('user_id', $request->user_id)->update('id', $id)->firstOrFail();
@@ -323,8 +327,7 @@ class ReferralCodeController extends Controller
                 'title' => 'Referrals link not found',
                 'message' => "Referrals link #{$id} not found"
             ], 404);
-        }*/
-        return 123456; // 405
+        }
     }
 
     /**
