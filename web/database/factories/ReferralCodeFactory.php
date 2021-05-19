@@ -3,7 +3,6 @@
 
 namespace Database\Factories;
 
-use App\Models\Application;
 use App\Models\ReferralCode;
 use App\Models\User;
 use App\Services\Firebase;
@@ -18,7 +17,7 @@ class ReferralCodeFactory extends Factory
     public function definition()
     {
         $user = User::all()->random();
-        $app = Application::where('user_id', $user)->get();
+        //$app = Application::where('user_id', $user)->get();
 
         return [
             'package_name' => str_replace('-', '.', $this->faker->slug(3, false)),

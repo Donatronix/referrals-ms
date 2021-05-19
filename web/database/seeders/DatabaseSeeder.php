@@ -15,8 +15,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             // UsersTableSeeder::class,
-            /*ApplicationKeysTableSeeder::class,
-            ApplicationsTableSeeder::class,*/
+            /*ApplicationKeysTableSeeder::class,*/
             ReferralCodeSeeder::class
         ]);
     }
