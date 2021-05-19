@@ -16,6 +16,6 @@ class ReferralCodeSeeder extends Seeder
      */
     public function run()
     {
-        ReferralCode::factory()->count(3)->create();
+        ReferralCode::factory()->count(30)->create();
     }
 }
