@@ -50,6 +50,11 @@ class ReferralCode extends Model
         });
     }
 
+    public function referralcodesUser()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     /* ************************ ACCESSOR ************************* */
 
     public function getResourceUrlAttribute()

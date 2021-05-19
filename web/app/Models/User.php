@@ -28,4 +28,9 @@ class User extends Model
      * @var bool
      */
     public $incrementing = false;
+
+    public function userReferalcodes()
+    {
+        return $this->hasMany(ReferralCode::class);
+    }
 }
