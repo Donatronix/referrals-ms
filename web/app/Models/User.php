@@ -11,7 +11,7 @@ class User extends Model
 
     protected $fillable = [
         'id',
-        'level',    // enum of ['basic', 'bronze', 'silver', 'gold']
+        'referrer_id',
     ];
 
     protected $dates = [

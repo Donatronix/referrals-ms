@@ -23,9 +23,10 @@ class ReferralCode extends Model
 
     protected $fillable = [
         'user_id',
-        'package_name',
         'referral_link',
         'code',
+        'is_default',
+        'application_id'
     ];
 
     protected $dates = [
