@@ -13,15 +13,12 @@ class CreateReferralCodesTable extends Migration
      */
     public function up()
     {
-        $table_name = "referral_codes";
+        Schema::enableForeignKeyConstraints();
 
         Schema::create('referral_codes', function (Blueprint $table) {
-            $table->engine = 'InnoDB';
-            $table->charset = 'utf8';
-            $table->collation = 'utf8_general_ci';
+            $table->uuid('id')->primary();
 
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('user_id');
+            $table->foreignId('user_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
 
             $table->string('package_name', 30)->nullable();
             $table->string('referral_link', 35)->unique();
@@ -30,8 +27,6 @@ class CreateReferralCodesTable extends Migration
             $table->unique(['user_id', 'package_name', 'code']);
 
             $table->timestamps();
-
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

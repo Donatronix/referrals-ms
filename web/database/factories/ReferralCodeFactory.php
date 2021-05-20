@@ -5,7 +5,6 @@ namespace Database\Factories;
 
 use App\Models\ReferralCode;
 use App\Models\User;
-use App\Services\Firebase;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ReferralCodeFactory extends Factory
