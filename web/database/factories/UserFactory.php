@@ -23,7 +23,7 @@ class UserFactory extends Factory
     {
         return [
             'id' => $this->faker->unique()->numberBetween(1, 100),
-            'level' => $this->faker->randomElement(['0', '1', '2', '3']),
+            'referrer_id' => $this->faker->numberBetween(1, 100)
         ];
     }
 }

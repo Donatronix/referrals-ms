@@ -20,11 +20,13 @@ class ReferralCodeFactory extends Factory
         //$app = Application::where('user_id', $user)->get();
 
         return [
-            'package_name' => str_replace('-', '.', $this->faker->slug(3, false)),
+            'application_id' => str_replace('-', '.', $this->faker->slug(3, false)),
             'user_id' => $user->id,
             'referral_link' => Firebase::linkGenerate($user->referral_code, 'net.sumra.chat'),
           //  'referral_link' => Firebase::linkGenerate($user->referral_code, $user->package_name),
-            'code' => ''
+            'code' => $user->referral_code,
+            'is_default' => $this->faker->randomElement(['0', '1']),
+            'application_id' => 'net.sumra.chat'
         ];
     }
 }
