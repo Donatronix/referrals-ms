@@ -32,7 +32,6 @@ class ReferralCodeController extends Controller
      *     }},
      *     x={
      *          "auth-type" : "Application & Application User",
-     *          "throttling-tier": "Unlimited",
      *          "wso-application-security": {
      *              "security-types": {"oauth2"},
      *              "optinal": "false"
@@ -77,7 +76,6 @@ class ReferralCodeController extends Controller
      *
      *     x={
      *          "auth-type": "Application & Application User",
-     *          "throttling-tier": "Unlimited",
      *          "wso2-application-security": {
      *              "security-types": {"oauth2"},
      *              "optional": "false"
@@ -88,10 +86,10 @@ class ReferralCodeController extends Controller
      *          @OA\JsonContent(
      *              type="object",
      *              @OA\Property (
-     *                  property="package_name",
+     *                  property="application_id",
      *                  type="string",
      *                  maximum="30",
-     *                  description="Package name property",
+     *                  description="Application ID property",
      *                  example=""
      *              ),
      *              @OA\Property (
@@ -107,7 +105,18 @@ class ReferralCodeController extends Controller
      *                  maximum="8",
      *                  description="Referral code property",
      *                  example=""
-     *              )
+     *              ),
+     *              @OA\Property(
+     *                  property="is_default",
+     *                  type="integer",
+     *                  maximum="1",
+     *                  description="Referral link by default. There is two variable: 1 and 0",
+     *                  example="0"
+     *              ),
+     *              @QA\Property(
+     *                  property="user_id",
+     *                  type="integer",
+     *              ),
      *          )
      *     ),
      *
