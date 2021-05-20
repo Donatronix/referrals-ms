@@ -20,11 +20,12 @@ class CreateReferralCodesTable extends Migration
 
             $table->foreignId('user_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
 
-            $table->string('package_name', 30)->nullable();
             $table->string('referral_link', 35)->unique();
             $table->string('code', 8);
+            $table->tinyInteger('is_default')->unsigned()->comment('default link');
+            $table->string('application_id', 50)->nullable()->comment('package_name');
 
-            $table->unique(['user_id', 'package_name', 'code']);
+            $table->unique(['user_id', 'code']);
 
             $table->timestamps();
         });

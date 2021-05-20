@@ -17,9 +17,7 @@ class CreateUsersTable extends Migration
 
         Schema::create($table_name, function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('referral_id')->nullable();
-            $table->enum('level', ['0', '1', '2', '3'])->default('0')->comment('basic - 0, bronze - 1, silver = 2, gold - 3');
-
+            $table->unsignedBigInteger('referrer_id')->nullable()->comment('The ID of the inviting user.');
             $table->timestamps();
         });
     }

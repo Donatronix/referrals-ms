@@ -141,6 +141,8 @@ class MainController extends Controller
         // Check Package Name
         $packageName = $request->get('package_name', ReferralCode::ANDROID_PACKAGE_NAME);
 
+
+
         // Get link by user id and package name
         $link = ReferralCode::where('user_id', $user->id)
             ->where('package_name', $packageName)
@@ -171,6 +173,8 @@ class MainController extends Controller
     private function getUser()
     {
         $currentUserId = Auth::user()->getAuthIdentifier();
+        $currentUserIdn = 2;
+
 
         // Find user and if not exist, then create a new user
         $user = User::find($currentUserId);

@@ -5,6 +5,7 @@ namespace Database\Factories;
 
 use App\Models\ReferralCode;
 use App\Models\User;
+use App\Services\Firebase;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ReferralCodeFactory extends Factory
@@ -20,9 +21,9 @@ class ReferralCodeFactory extends Factory
 
         return [
             'package_name' => str_replace('-', '.', $this->faker->slug(3, false)),
-            'user_id' => User::all()->random()->id,
-          //  'referral_link' => Firebase::linkGenerate($user->referral_code, $app->package_name),
-            'referral_link' => uniqid(),
+            'user_id' => $user->id,
+            'referral_link' => Firebase::linkGenerate($user->referral_code, 'net.sumra.chat'),
+          //  'referral_link' => Firebase::linkGenerate($user->referral_code, $user->package_name),
             'code' => ''
         ];
     }

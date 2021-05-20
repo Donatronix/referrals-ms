@@ -3,9 +3,11 @@
 
 namespace App\Api\V1\Controllers;
 
+use App\Services\Firebase;
 use Dotenv\Exception\ValidationException;
 use Illuminate\Http\Request;
 use App\Models\ReferralCode;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use MongoDB\Driver\Session;
 use Illuminate\Support\Facades\DB;
@@ -154,12 +156,10 @@ class ReferralCodeController extends Controller
         {
             $data = new ReferralCode();
 
-            $data->user_id = 2;
+            $data->user_id = Auth::user()->getAuthIdentifier();
             $data->package_name = $request->package_name;
-            $data->referral_link = $request->referral_link;
-            $data->code = $request->code;
-            print_r($data);
-            //$data->save();
+            $data->referral_link = Firebase::linkGenerate($data->referral_code, $request->package_name);
+            $data->save();
 
         }
         catch (\Exception $e){
@@ -322,11 +322,7 @@ class ReferralCodeController extends Controller
 
         try{
             $data = ReferralCode::find($id);
-
-            $data->user_id = 2;
-            $data->package_name = $request->get('package_name','');
-            $data->referral_link = $request->get('referral_link', '');
-            $data->code = $request->get('code', '');
+            $data->default = $request->get('default',false);
             $data->save();
         }
         catch (\Exception $e){
