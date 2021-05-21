@@ -10,7 +10,7 @@ $router->group([
     'namespace' => '\App\Api\V1\Controllers'
 ], function ($router) {
     // Register new user
-    $router->post('/', 'MainController@create');
+    $router->post('/', 'ReferralController@create');
 
     /**
      * ADMIN PANEL
@@ -44,8 +44,8 @@ $router->group([
             /**
              * Common
              */
-            $router->get('/', 'MainController@index');
-            $router->get('invite', 'MainController@invite');
+            $router->get('/', 'ReferralController@index');
+            $router->post('inviting', 'ReferralController@inviting');
 
             /**
              * Management

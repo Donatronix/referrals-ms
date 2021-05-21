@@ -7,19 +7,21 @@ use App\Models\ReferralCode;
 use App\Models\User;
 use App\Services\Firebase;
 use Illuminate\Contracts\Encryption\DecryptException;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use PubSub;
 use Sumra\JsonApi\JsonApiResponse;
 use function Psy\debug;
+use function Symfony\Component\Translation\t;
 
 /**
- * Class MainController
+ * Class ReferralController
  *
  * @package App\Api\V1\Controllers
  */
-class MainController extends Controller
+class ReferralController extends Controller
 {
     /**
      * List all referrals for user
@@ -71,7 +73,7 @@ class MainController extends Controller
         $user = $this->getUser();
 
         // Get list all referrals by user id
-        $list = User::where('id', $user->id)->get();
+        $list = User::where('referrer_id', $user->id)->get();
 
         // Return response
         return response()->jsonApi($list, 200);
@@ -80,8 +82,8 @@ class MainController extends Controller
     /**
      * Get user referrer invite code
      *
-     * @OA\Get(
-     *     path="/v1/referrals/invite",
+     * @OA\Post(
+     *     path="/v1/referrals/inviting",
      *     summary="Get user invite code",
      *     description="Get user referrer invite code",
      *     tags={"Main"},
@@ -101,16 +103,28 @@ class MainController extends Controller
      *             "optional": "false"
      *         }
      *     },
-     *     @OA\Parameter(
-     *         name="package_name",
-     *         description="Package Name",
-     *         in="query",
-     *         example="net.sumra.chat",
-     *         required=false,
-     *         @OA\Schema(
-     *             type="string"
-     *         )
+     *
+     *     @OA\RequestBody(
+     *          @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(
+     *                  property="application_id",
+     *                  type="string",
+     *                  maximum="50",
+     *                  description="ID of the service whose link the user clicked on",
+     *                  example="net.sumra.chat"
+     *              ),
+     *              @OA\Property(
+     *                  property="referral_code",
+     *                  type="string",
+     *                  minimum="8",
+     *                  maximum="8",
+     *                  description="Referral code of the inviting user",
+     *                  example="1827oGRL",
+     *              ),
+     *          ),
      *     ),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="Success get or generate referrer invite code"
@@ -125,7 +139,15 @@ class MainController extends Controller
      *     ),
      *     @OA\Response(
      *         response=404,
-     *         description="not found"
+     *         description="not found",
+     *         @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(
+     *                  property="code",
+     *                  type="string",
+     *                  description="Your request is missing a required parameter - Code"
+     *              ),
+     *         )
      *     )
      * )
      *
@@ -134,39 +156,45 @@ class MainController extends Controller
      * @return \Sumra\JsonApi\
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function invite(Request $request)
+    public function inviting(Request $request)
     {
-        $user = $this->getUser();
-        $link_cnt = config('app.link_limit');
+        // POST application_id, code
+        // id=net.sumra.chat
+        // code=1827oGRL
 
-        // Check Package Name
-        $application_id = $request->get('application_id');
+        $rules = [
+            'application_id' => 'string',
+            'code' => 'required|string|max:8|min:8'
+        ];
+        $this->validate($request, $rules);
 
-        if(!$application_id){
-            return 'Your request is missing a required parameter - Application ID';
-        }
-
-        // Get link by user id and package name
-        $link = ReferralCode::where('user_id', $user->id)->where('application_id', $application_id)->limit($link_cnt);
-
-        if ($link <= $link_cnt)
+        try
         {
-            // Create dynamic link from google firebase service
-            $shortLink = Firebase::linkGenerate($user->referral_code, $application_id);
 
-            // Add
-            $link = ReferralCode::create([
-                'user_id' => $user->id,
-                'application_id' => $application_id,
-                'referral_link' => (string)$shortLink
-            ]);
+        }
+        catch (\Exception $e){
+            return  response()->jsonApi([
+                'type' => 'error',
+                'title' => 'Referrals link not found',
+                'message' => $e
+            ], 404);
         }
 
-        // Return dynamic link
-        return response()->jsonApi([
-            'referral_code' => $user->referral_code,
-            'referral_link' => $link->referral_link
-        ], 200);
+        // Check Application ID
+        $application_id = $request->get('id');
+        // Check referrer code
+        $referrer_code = $request->get('code');
+
+        // if the user is invited, then we are looking for the referrer by the referral code
+        if($referrer_code != ''){
+            $referrer_id = ReferralCode::select('user_id')->where('code', $referrer_code)->where('application_id',
+                    $application_id)->first();
+            //$referrer_id = ReferralCode::where('code', $referrer_code)->get()->pluck('user_id');
+        }
+
+        $user = $this->getUser();
+        $user->referrer_id = $referrer_id;
+        $user->save();
     }
 
     /**
@@ -175,27 +203,33 @@ class MainController extends Controller
     private function getUser()
     {
         $currentUserId = Auth::user()->getAuthIdentifier();
-        $currentUserIdn = 2;
-
+        dd($currentUserId);
 
         // Find user and if not exist, then create a new user
         $user = User::find($currentUserId);
 
         if (!$user) {
             $user = User::create([
-                'id' => $currentUserId,
-                'username' => Auth::user()->username
+                'id' => $currentUserId
             ]);
-        } else {
-            // Update username, if not exist
-            $username = Auth::user()->username;
-            if ($user->username !== $username) {
-                $user->username = $username;
-                $user->save();
-            }
         }
+//        else {
+//            // Update username, if not exist
+//            $username = Auth::user()->username;
+//            if ($user->username !== $username) {
+//                $user->username = $username;
+//                $user->save();
+//            }
+//        }
 
         return $user;
+    }
+
+    private function createUser($referral_code)
+    {
+        return User::create([
+            'referrer_id' => $referral_code
+        ]);
     }
 }
 

@@ -162,6 +162,9 @@ class ReferralCodeController extends Controller
     {
         $this->validation($request);
 
+        $link_cnt = config('app.link_limit');
+        $is_default = false;
+
         try
         {
             $data = new ReferralCode();
@@ -175,6 +178,35 @@ class ReferralCodeController extends Controller
         catch (\Exception $e){
             dump($e->getMessage());
         }
+
+
+        // Get link by user id and package name
+        $link = ReferralCode::where('user_id', $user->id)->where('application_id', $application_id)->limit($link_cnt);
+
+
+        if (count($link) <= $link_cnt)
+        {
+            // if count($link) return 0 then this link is default
+            if(count($link) == 0) $is_default = true;
+
+            // Create dynamic link from google firebase service
+            $shortLink = Firebase::linkGenerate($user->referral_code, $application_id);
+
+            // Add
+            $link = ReferralCode::create([
+                'user_id' => $user->id,
+                'application_id' => $application_id,
+                'referral_link' => (string)$shortLink,
+                'code' => $user->referral_code,
+                'is_default' => $is_default
+            ]);
+        }
+
+        // Return dynamic link
+        return response()->jsonApi([
+            'referral_code' => $user->referral_code,
+            'referral_link' => $link->referral_link
+        ], 200);
     }
 
     /**
