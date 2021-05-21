@@ -113,10 +113,12 @@ class ReferralCodeController extends Controller
      *                  description="Referral link by default. There is two variable: 1 and 0",
      *                  example="0"
      *              ),
-     *              @QA\Property(
+     *              @OA\Property(
      *                  property="user_id",
      *                  type="integer",
-     *              ),
+     *                  description="user ID property",
+     *                  example="2"
+     *              )
      *          )
      *     ),
      *
@@ -282,6 +284,12 @@ class ReferralCodeController extends Controller
      *                  property="code",
      *                  type="string",
      *                  description="Code of error",
+     *                  example=""
+     *              ),
+     *              @OA\Property(
+     *                  property="application_id",
+     *                  type="string",
+     *                  description="Update application ID property",
      *                  example=""
      *              ),
      *          ),
