@@ -137,25 +137,27 @@ class MainController extends Controller
     public function invite(Request $request)
     {
         $user = $this->getUser();
+        $link_cnt = config('app.link_limit');
 
         // Check Package Name
-        $packageName = $request->get('package_name', ReferralCode::ANDROID_PACKAGE_NAME);
+        $application_id = $request->get('application_id');
 
-
+        if(!$application_id){
+            return 'Your request is missing a required parameter - Application ID';
+        }
 
         // Get link by user id and package name
-        $link = ReferralCode::where('user_id', $user->id)
-            ->where('package_name', $packageName)
-            ->first();
+        $link = ReferralCode::where('user_id', $user->id)->where('application_id', $application_id)->limit($link_cnt);
 
-        if (!$link) {
+        if ($link <= $link_cnt)
+        {
             // Create dynamic link from google firebase service
-            $shortLink = Firebase::linkGenerate($user->referral_code, $packageName);
+            $shortLink = Firebase::linkGenerate($user->referral_code, $application_id);
 
             // Add
             $link = ReferralCode::create([
                 'user_id' => $user->id,
-                'package_name' => $packageName,
+                'application_id' => $application_id,
                 'referral_link' => (string)$shortLink
             ]);
         }

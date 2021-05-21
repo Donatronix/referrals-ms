@@ -133,4 +133,14 @@ return [
         ''
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Link generation limit
+    |--------------------------------------------------------------------------
+    |
+    | Add a restriction on the presence of links for a specific get parameter
+    | application ID
+    |
+    */
+    'link_limit' => 10,
 ];

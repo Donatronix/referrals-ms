@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 use App\Models\ReferralCode;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
-use MongoDB\Driver\Session;
 use Illuminate\Support\Facades\DB;
 
 class ReferralCodeController extends Controller
