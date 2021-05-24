@@ -170,8 +170,10 @@ class ReferralCodeController extends Controller
             $data = new ReferralCode();
 
             $data->user_id = Auth::user()->getAuthIdentifier();
-            $data->package_name = $request->package_name;
-            $data->referral_link = Firebase::linkGenerate($data->referral_code, $request->package_name);
+            $data->referral_link = Firebase::linkGenerate($data->code, $request->application_id);
+            $data->code = $request->code;
+            $data->application_id = $request->application_id;
+            $data->is_default = $is_default;
             $data->save();
 
         }
@@ -370,7 +372,10 @@ class ReferralCodeController extends Controller
 
         try{
             $data = ReferralCode::find($id);
-            $data->default = $request->get('default',false);
+            $data->referral_link = $request->get('referral_link');
+            $data->code = $request->get('code');
+            $data->application_id = $request->get('application_id');
+            $data->is_default = $request->get('default',false);
             $data->save();
         }
         catch (\Exception $e){
@@ -457,8 +462,10 @@ class ReferralCodeController extends Controller
     {
         return $this->validate($request, [
             'user_id' => 'integer',
-            'package_name' => 'string|max:30',
-            'referral_link' => 'required|string|max:35'
+            'referral_link' => 'required|string|max:35',
+            'code' => 'required|string|max:8|min:8',
+            'is_default' => 'integer|max:1',
+            'application_id' => 'string|max:30',
         ]);
     }
 }

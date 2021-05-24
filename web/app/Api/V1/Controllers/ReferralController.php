@@ -164,21 +164,21 @@ class ReferralController extends Controller
         // code=1827oGRL
 
         $rules = [
-            'application_id' => 'string',
-            'code' => 'required|string|max:8|min:8'
+            'application_id' => 'required|string',
+            'code' => 'string|max:8|min:8'
         ];
         $this->validate($request, $rules);
         try
         {
             // if the user is invited, then we are looking for the referrer by the referral code
-            $user_parent_info = ReferralCode::getUserByReferralCode($request->code, $request->application_id);
+            if($request->code){
+                $referral_info = ReferralCode::getUserByReferralCode($request->code, $request->application_id);
+                if($referral_info){
+                    return $this->createUser($referral_info->user_id);
+                }
+            }
 
-            if($user_parent_info){
-                return $this->createUser($user_parent_info->user_id);
-            }
-            else{
-                return $this->getUser();
-            }
+            return $this->createUser();
         }
         catch (\Exception $e){
             return  response()->jsonApi([
@@ -192,7 +192,7 @@ class ReferralController extends Controller
     /**
      * @return mixed
      */
-    private function getUser()
+    private function getUser($parrent_user_id = false)
     {
         $currentUserId = Auth::user()->getAuthIdentifier();
 
@@ -201,7 +201,8 @@ class ReferralController extends Controller
 
         /*if (!$user) {*/
             $user = User::create([
-                'id' => $currentUserId
+                'id' => $currentUserId,
+                'referrer_id' => $parrent_user_id
             ]);
 //        }
 //        else {
@@ -216,10 +217,12 @@ class ReferralController extends Controller
         return $user;
     }
 
-    private function createUser($referral_code)
+    private function createUser($parrent_user_id = false)
     {
+        $currentUserId = Auth::user()->getAuthIdentifier();
         return User::create([
-            'referrer_id' => $referral_code
+            'id' => $currentUserId,
+            'referrer_id' => $parrent_user_id
         ]);
     }
 
