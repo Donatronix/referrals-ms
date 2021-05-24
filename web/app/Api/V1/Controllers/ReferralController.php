@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ReferralCode;
 use App\Models\User;
 use App\Services\Firebase;
+use App\Services\ReferralCodeService;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -174,11 +175,11 @@ class ReferralController extends Controller
             if($request->code){
                 $referral_info = ReferralCode::getUserByReferralCode($request->code, $request->application_id);
                 if($referral_info){
-                    return $this->createUser($referral_info->user_id);
+                    return $this->createUser($request->application_id, $referral_info->user_id);
                 }
             }
 
-            return $this->createUser();
+            return $this->createUser($request->application_id);
         }
         catch (\Exception $e){
             return  response()->jsonApi([
@@ -217,13 +218,24 @@ class ReferralController extends Controller
         return $user;
     }
 
-    private function createUser($parrent_user_id = false)
+    public function createUser($application_id, $parrent_user_id = false)
     {
         $currentUserId = Auth::user()->getAuthIdentifier();
-        return User::create([
+         User::create([
             'id' => $currentUserId,
             'referrer_id' => $parrent_user_id
         ]);
+
+         $referral_info = [
+             'user_id' => $currentUserId,
+             'application_id' => $application_id,
+             'is_default' => true
+         ];
+
+
+        ReferralCodeService::createReferralCode($referral_info);
+
+        return true;
     }
 
 }

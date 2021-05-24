@@ -4,12 +4,12 @@
 namespace App\Api\V1\Controllers;
 
 use App\Services\Firebase;
+
 use Dotenv\Exception\ValidationException;
 use Illuminate\Http\Request;
 use App\Models\ReferralCode;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\DB;
 
 class ReferralCodeController extends Controller
 {
@@ -137,9 +137,9 @@ class ReferralCodeController extends Controller
      *          @OA\JsonContent(
      *              type="object",
      *              @OA\Property(
-     *                  property="package_name",
+     *                  property="application_id",
      *                  type="string",
-     *                  description="Package name of error",
+     *                  description="Application ID of error",
      *              ),
      *              @OA\Property(
      *                  property="referral_link",
@@ -170,8 +170,8 @@ class ReferralCodeController extends Controller
             $data = new ReferralCode();
 
             $data->user_id = Auth::user()->getAuthIdentifier();
-            $data->referral_link = Firebase::linkGenerate($data->code, $request->application_id);
-            $data->code = $request->code;
+            $data->referral_link = Firebase::linkGenerate($data->referral_code, $request->application_id);
+            $data->code = $data->referral_code;
             $data->application_id = $request->application_id;
             $data->is_default = $is_default;
             $data->save();
@@ -182,27 +182,7 @@ class ReferralCodeController extends Controller
         }
 
 
-        // Get link by user id and package name
-        $link = ReferralCode::where('user_id', $user->id)->where('application_id', $application_id)->limit($link_cnt);
 
-
-        if (count($link) <= $link_cnt)
-        {
-            // if count($link) return 0 then this link is default
-            if(count($link) == 0) $is_default = true;
-
-            // Create dynamic link from google firebase service
-            $shortLink = Firebase::linkGenerate($user->referral_code, $application_id);
-
-            // Add
-            $link = ReferralCode::create([
-                'user_id' => $user->id,
-                'application_id' => $application_id,
-                'referral_link' => (string)$shortLink,
-                'code' => $user->referral_code,
-                'is_default' => $is_default
-            ]);
-        }
 
         // Return dynamic link
         return response()->jsonApi([
@@ -302,9 +282,9 @@ class ReferralCodeController extends Controller
      *          @OA\JsonContent(
      *              type="object",
      *              @OA\Property(
-     *                  property="package_name",
+     *                  property="application_id",
      *                  type="string",
-     *                  description="Package name of error",
+     *                  description="Application ID of error",
      *                  example=""
      *              ),
      *              @OA\Property(
@@ -320,9 +300,9 @@ class ReferralCodeController extends Controller
      *                  example=""
      *              ),
      *              @OA\Property(
-     *                  property="application_id",
+     *                  property="is_default",
      *                  type="string",
-     *                  description="Update application ID property",
+     *                  description="Update default property",
      *                  example=""
      *              ),
      *          ),
