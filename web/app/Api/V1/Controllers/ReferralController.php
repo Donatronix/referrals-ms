@@ -15,6 +15,7 @@ use PubSub;
 use Sumra\JsonApi\JsonApiResponse;
 use function Psy\debug;
 use function Symfony\Component\Translation\t;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class ReferralController
@@ -170,12 +171,24 @@ class ReferralController extends Controller
 
         try
         {
+            $user_parent_info = ReferralCode::getUserByReferralCode($request->code);
+//            $user_info = $this->getUser();
+            dd($user_parent_info);
+
+
+            /*if($user_parent_info){
+
+            }*/
+
+//            $user = new User();
+//            $this->getUserByReferralCode($request->code);
 
         }
         catch (\Exception $e){
             return  response()->jsonApi([
                 'type' => 'error',
-                'title' => 'Referrals link not found',
+                'title' => 'Horseradish you',
+//                'title' => 'Referrals link not found',
                 'message' => $e
             ], 404);
         }
@@ -203,7 +216,6 @@ class ReferralController extends Controller
     private function getUser()
     {
         $currentUserId = Auth::user()->getAuthIdentifier();
-        dd($currentUserId);
 
         // Find user and if not exist, then create a new user
         $user = User::find($currentUserId);
@@ -231,6 +243,7 @@ class ReferralController extends Controller
             'referrer_id' => $referral_code
         ]);
     }
+
 }
 
 ######################### EXAMPLE CODE ##################################

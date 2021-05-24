@@ -13,6 +13,7 @@ class ReferralCode extends Model
     use HasFactory;
     use UuidTrait;
 
+
     const CAMPAIGN = 'Referral Program';
     const MEDIUM = 'Invite Friends';
 
@@ -56,6 +57,11 @@ class ReferralCode extends Model
     public function referralcodesUser()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public static function getUserByReferralCode($referral_code)
+    {
+        return $referral_code ? self::where('code', $referral_code)->first() : false;
     }
 
     /* ************************ ACCESSOR ************************* */
