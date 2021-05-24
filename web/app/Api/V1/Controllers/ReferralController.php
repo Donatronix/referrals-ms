@@ -183,8 +183,7 @@ class ReferralController extends Controller
         catch (\Exception $e){
             return  response()->jsonApi([
                 'type' => 'error',
-                'title' => 'Horseradish you',
-//                'title' => 'Referrals link not found',
+                'title' => 'Referrals link not found',
                 'message' => $e
             ], 404);
         }
