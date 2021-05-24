@@ -7,7 +7,6 @@ use App\Models\ReferralCode;
 use App\Models\User;
 use App\Services\Firebase;
 use App\Services\ReferralCodeService;
-use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,8 +14,6 @@ use Illuminate\Support\Facades\Validator;
 use PubSub;
 use Sumra\JsonApi\JsonApiResponse;
 use function Psy\debug;
-use function Symfony\Component\Translation\t;
-use Illuminate\Support\Facades\DB;
 
 /**
  * Class ReferralController
@@ -229,9 +226,8 @@ class ReferralController extends Controller
          $referral_info = [
              'user_id' => $currentUserId,
              'application_id' => $application_id,
-             'is_default' => true
+             'is_default' => 1
          ];
-
 
         ReferralCodeService::createReferralCode($referral_info);
 
