@@ -168,21 +168,17 @@ class ReferralController extends Controller
             'code' => 'required|string|max:8|min:8'
         ];
         $this->validate($request, $rules);
-
         try
         {
-            $user_parent_info = ReferralCode::getUserByReferralCode($request->code);
-//            $user_info = $this->getUser();
-            dd($user_parent_info);
+            // if the user is invited, then we are looking for the referrer by the referral code
+            $user_parent_info = ReferralCode::getUserByReferralCode($request->code, $request->application_id);
 
-
-            /*if($user_parent_info){
-
-            }*/
-
-//            $user = new User();
-//            $this->getUserByReferralCode($request->code);
-
+            if($user_parent_info){
+                return $this->createUser($user_parent_info->user_id);
+            }
+            else{
+                return $this->getUser();
+            }
         }
         catch (\Exception $e){
             return  response()->jsonApi([
@@ -192,22 +188,6 @@ class ReferralController extends Controller
                 'message' => $e
             ], 404);
         }
-
-        // Check Application ID
-        $application_id = $request->get('id');
-        // Check referrer code
-        $referrer_code = $request->get('code');
-
-        // if the user is invited, then we are looking for the referrer by the referral code
-        if($referrer_code != ''){
-            $referrer_id = ReferralCode::select('user_id')->where('code', $referrer_code)->where('application_id',
-                    $application_id)->first();
-            //$referrer_id = ReferralCode::where('code', $referrer_code)->get()->pluck('user_id');
-        }
-
-        $user = $this->getUser();
-        $user->referrer_id = $referrer_id;
-        $user->save();
     }
 
     /**
@@ -218,13 +198,13 @@ class ReferralController extends Controller
         $currentUserId = Auth::user()->getAuthIdentifier();
 
         // Find user and if not exist, then create a new user
-        $user = User::find($currentUserId);
+        /*$user = User::find($currentUserId);*/
 
-        if (!$user) {
+        /*if (!$user) {*/
             $user = User::create([
                 'id' => $currentUserId
             ]);
-        }
+//        }
 //        else {
 //            // Update username, if not exist
 //            $username = Auth::user()->username;

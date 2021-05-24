@@ -59,9 +59,10 @@ class ReferralCode extends Model
         return $this->belongsTo(User::class);
     }
 
-    public static function getUserByReferralCode($referral_code)
+    public static function getUserByReferralCode($referral_code, $application_id)
     {
-        return $referral_code ? self::where('code', $referral_code)->first() : false;
+        return $referral_code && $application_id ? self::where('code', $referral_code)->where('application_id', $application_id)
+            ->first() : false;
     }
 
     /* ************************ ACCESSOR ************************* */
