@@ -188,31 +188,78 @@ class ReferralController extends Controller
     }
 
     /**
-     * @return mixed
+     *  Create link and code user generated
+     *
+     * @OA\Post(
+     *     path="/v1/referrals/create-link",
+     *     summary="Create link and code",
+     *     description="Create link and code user generated",
+     *     tags={"Main"},
+     *
+     *     security={{
+     *          "default": {
+     *              "ManagerRead",
+     *              "User",
+     *              "ManagerWrite"
+     *          }
+     *     }},
+     *
+     *     x={
+     *          "auth-type" : "Application & Application Yser",
+     *          "throtting-tier" : "Unlimited",
+     *          "wso2-application-security": {
+     *              "security-types": {"oauth2"},
+     *              "optional": "false"
+     *          }
+     *     },
+     *
+     *     @OA\RequestBody(
+     *          @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(
+     *                  property="application_id",
+     *                  type="string",
+     *                  maximum="50",
+     *                  description="Service ID",
+     *                  example="net.sumra.chat"
+     *              ),
+     *          ),
+     *     ),
+     *
+     *     @OA\Response(
+     *          response="200",
+     *          description="Success create link and code",
+     *     ),
+     *     @OA\Response(
+     *          response="401",
+     *          description="Unauthorized"
+     *     ),
+     *     @OA\Response(
+     *          response="400",
+     *          description="Invalid request"
+     *     ),
+     *     @OA\Response(
+     *          response="404",
+     *          description="Not found",
+     *          @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(
+     *                  property="code",
+     *                  type="string",
+     *                  description="Your request requires the required parameter application ID"
+     *              ),
+     *          ),
+     *     ),
+     * )
      */
-    private function getUser($parrent_user_id = false)
+
+    public function createLink()
     {
+        ///$application_id = "net.sumra.chat";
         $currentUserId = Auth::user()->getAuthIdentifier();
 
-        // Find user and if not exist, then create a new user
-        /*$user = User::find($currentUserId);*/
+        $this->sendDataToCreateReferralCode($currentUserId, $application_id);
 
-        /*if (!$user) {*/
-            $user = User::create([
-                'id' => $currentUserId,
-                'referrer_id' => $parrent_user_id
-            ]);
-//        }
-//        else {
-//            // Update username, if not exist
-//            $username = Auth::user()->username;
-//            if ($user->username !== $username) {
-//                $user->username = $username;
-//                $user->save();
-//            }
-//        }
-
-        return $user;
     }
 
     public function createUser($application_id, $parrent_user_id = false)
@@ -223,15 +270,20 @@ class ReferralController extends Controller
             'referrer_id' => $parrent_user_id
         ]);
 
-         $referral_info = [
-             'user_id' => $currentUserId,
-             'application_id' => $application_id,
-             'is_default' => 1
-         ];
-
-        ReferralCodeService::createReferralCode($referral_info);
+         $this->sendDataToCreateReferralCode($currentUserId, $application_id, true);
 
         return true;
+    }
+
+    public function sendDataToCreateReferralCode($currentUserId, $application_id, $default = false)
+    {
+        $referral_info = [
+            'user_id' => $currentUserId,
+            'application_id' => $application_id,
+            'is_default' => $default
+        ];
+
+        ReferralCodeService::createReferralCode($referral_info);
     }
 
 }

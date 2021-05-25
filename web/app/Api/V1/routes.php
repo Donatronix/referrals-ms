@@ -40,6 +40,7 @@ $router->group([
              */
             $router->get('/', 'ReferralController@index');
             $router->post('inviting', 'ReferralController@inviting');
+            $router->post('create-link', 'ReferralController@createLink');
 
             /**
              * Management
