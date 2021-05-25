@@ -35,14 +35,8 @@ $router->group([
             $router->get('/landingpage', 'LandingpageController@index');
             $router->post('/landingpage/{id:[\d+]}', 'LandingpageController@save');
 
-            /*
-             * Refcode
-             * */
-            $router->get('/refcode', 'RefcodeController@index');
-            $router->post('/refcode', 'RefcodeController@generate');
-
             /**
-             * Common
+             * Referral
              */
             $router->get('/', 'ReferralController@index');
             $router->post('inviting', 'ReferralController@inviting');
@@ -52,12 +46,6 @@ $router->group([
              */
             $router->get('manager/validate/user', 'ManagementController@validateUser');
             $router->get('manager/validate/referrer', 'ManagementController@validateReferrer');
-
-            /**
-             * Analytics
-             */
-            $router->get('analytics/byLink', 'AnalyticsController@index');
-            $router->get('analytics/unregistered', 'AnalyticsController@unregistered');
 
             /**
              * ADMIN PANEL
@@ -73,29 +61,11 @@ $router->group([
                 $router->get('/template', 'TemplateController@index');
                 $router->post('/template/{id:[\d*]}', 'TemplateController@save');
 
-
-
                 /**
                  * Refferals
                  */
                 $router->get('referrals-list', 'UsersController@index');
                 $router->get('referrals-list/{id:[\d]+}', 'UsersController@show');
-
-                /**
-                 * Applications
-                 */
-                $router->get('applications', 'ApplicationController@index');
-                $router->get('application-keys', 'ApplicationKeyController@index');
-
-                /**
-                 * Devices
-                 */
-                $router->get('devices', 'DeviceController@index');
-
-                /**
-                 *
-                 */
-                $router->get('links', 'LinksController@index');
             });
         }
     );

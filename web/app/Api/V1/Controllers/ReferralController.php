@@ -69,10 +69,10 @@ class ReferralController extends Controller
      */
     public function index(): JsonApiResponse
     {
-        $user = $this->getUser();
+        $currentUserId = Auth::user()->getAuthIdentifier();
 
         // Get list all referrals by user id
-        $list = User::where('referrer_id', $user->id)->get();
+        $list = User::where('referrer_id', $currentUserId)->get();
 
         // Return response
         return response()->jsonApi($list, 200);
