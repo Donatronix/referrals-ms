@@ -83,7 +83,7 @@ class ReferralController extends Controller
      *
      * @OA\Post(
      *     path="/v1/referrals/inviting",
-     *     summary="Get user invite code",
+     *     summary="Create user invite code",
      *     description="Get user referrer invite code",
      *     tags={"Main"},
      *
@@ -192,7 +192,7 @@ class ReferralController extends Controller
      *
      * @OA\Post(
      *     path="/v1/referrals/create-link",
-     *     summary="Create link and code",
+     *     summary="Create link and code for an existing user",
      *     description="Create link and code user generated",
      *     tags={"Main"},
      *
@@ -253,13 +253,18 @@ class ReferralController extends Controller
      * )
      */
 
-    public function createLink()
+    public function createLink(Request $request)
     {
         ///$application_id = "net.sumra.chat";
+        $result = false;
         $currentUserId = Auth::user()->getAuthIdentifier();
+        $referral_cnt = ReferralCode::where('user_id', $currentUserId)->count();
 
-        $this->sendDataToCreateReferralCode($currentUserId, $application_id);
+        if($referral_cnt <= config('app.link_limit')){
+            $result = $this->sendDataToCreateReferralCode($currentUserId, $request->application_id);
+        }
 
+        return $result;
     }
 
     public function createUser($application_id, $parrent_user_id = false)

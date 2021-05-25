@@ -21,6 +21,6 @@ class ReferralCodeService
         $generate_link = (string)Firebase::linkGenerate($rc->code, $referral_info['application_id']);
         $rc->update(['referral_link' => $generate_link]);
 
-        return true;
+        return response()->json(['Success' => true], 200);
     }
 }
