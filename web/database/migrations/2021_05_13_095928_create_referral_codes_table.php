@@ -15,13 +15,15 @@ class CreateReferralCodesTable extends Migration
     {
         Schema::enableForeignKeyConstraints();
 
-        Schema::create('referral_codes', function (Blueprint $table) {
+        Schema::create('referral_codes', function (Blueprint $table)
+        {
             $table->uuid('id')->primary();
 
             $table->foreignId('user_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
 
             $table->string('referral_link', 35)->unique();
             $table->string('code', 8);
+            $table->text('noutes')->nullable()->comment('The user can mark what he created the link for.');
             $table->tinyInteger('is_default')->unsigned()->comment('default link');
             $table->string('application_id', 50)->nullable()->comment('package_name');
 

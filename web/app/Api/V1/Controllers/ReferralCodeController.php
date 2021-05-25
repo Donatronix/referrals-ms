@@ -58,140 +58,6 @@ class ReferralCodeController extends Controller
     }
 
     /**
-     * Created code and link.
-     *
-     * @OA\Post (
-     *     path="/v1/referrals/referral-codes",
-     *     description="Store code and link",
-     *     tags={"Referral Code"},
-     *
-     *     security={{
-     *          "default": {
-     *              "ManagerRead",
-     *              "User",
-     *              "ManagerWrite"
-     *          }
-     *     }},
-     *
-     *     x={
-     *          "auth-type": "Application & Application User",
-     *          "wso2-application-security": {
-     *              "security-types": {"oauth2"},
-     *              "optional": "false"
-     *          }
-     *     },
-     *
-     *     @OA\RequestBody(
-     *          @OA\JsonContent(
-     *              type="object",
-     *              @OA\Property (
-     *                  property="application_id",
-     *                  type="string",
-     *                  maximum="30",
-     *                  description="Application ID property",
-     *                  example=""
-     *              ),
-     *              @OA\Property (
-     *                  property="referral_link",
-     *                  type="string",
-     *                  maximum="35",
-     *                  description="Referral link property",
-     *                  example=""
-     *              ),
-     *              @OA\Property(
-     *                  property="code",
-     *                  type="string",
-     *                  maximum="8",
-     *                  description="Referral code property",
-     *                  example=""
-     *              ),
-     *              @OA\Property(
-     *                  property="is_default",
-     *                  type="integer",
-     *                  maximum="1",
-     *                  description="Referral link by default. There is two variable: 1 and 0",
-     *                  example="0"
-     *              ),
-     *              @OA\Property(
-     *                  property="user_id",
-     *                  type="integer",
-     *                  description="user ID property",
-     *                  example="2"
-     *              )
-     *          )
-     *     ),
-     *
-     *     @OA\Response(
-     *          response="200",
-     *          description="Success"
-     *     ),
-     *
-     *     @OA\Response(
-     *          response="401",
-     *          description="Unauthorized"
-     *     ),
-     *
-     *     @OA\Response(
-     *          response="500",
-     *          description="Unknown error",
-     *          @OA\JsonContent(
-     *              type="object",
-     *              @OA\Property(
-     *                  property="application_id",
-     *                  type="string",
-     *                  description="Application ID of error",
-     *              ),
-     *              @OA\Property(
-     *                  property="referral_link",
-     *                  type="string",
-     *                  description="Referral link of error"
-     *              ),
-     *              @OA\Property(
-     *                  property="code",
-     *                  type="string",
-     *                  description="Code of error"
-     *              )
-     *          )
-     *     ),
-     * )
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        $this->validation($request);
-
-        $link_cnt = config('app.link_limit');
-        $is_default = false;
-
-        try
-        {
-            $data = new ReferralCode();
-
-            $data->user_id = Auth::user()->getAuthIdentifier();
-            $data->referral_link = Firebase::linkGenerate($data->referral_code, $request->application_id);
-            $data->code = $data->referral_code;
-            $data->application_id = $request->application_id;
-            $data->is_default = $is_default;
-            $data->save();
-
-        }
-        catch (\Exception $e){
-            dump($e->getMessage());
-        }
-
-
-
-
-        // Return dynamic link
-        return response()->jsonApi([
-            'referral_code' => $user->referral_code,
-            'referral_link' => $link->referral_link
-        ], 200);
-    }
-
-    /**
      * Show one code and link
      *
      * @OA\Get(
@@ -437,6 +303,87 @@ class ReferralCodeController extends Controller
         return null;
     }
 
+    /**
+     *  Create link and code user generated
+     *
+     * @OA\Post(
+     *     path="/v1/referrals/referral-codes",
+     *     summary="Create link and code for an existing user",
+     *     description="Create link and code user generated",
+     *     tags={"Referral Code"},
+     *
+     *     security={{
+     *          "default": {
+     *              "ManagerRead",
+     *              "User",
+     *              "ManagerWrite"
+     *          }
+     *     }},
+     *
+     *     x={
+     *          "auth-type" : "Application & Application Yser",
+     *          "throtting-tier" : "Unlimited",
+     *          "wso2-application-security": {
+     *              "security-types": {"oauth2"},
+     *              "optional": "false"
+     *          }
+     *     },
+     *
+     *     @OA\RequestBody(
+     *          @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(
+     *                  property="application_id",
+     *                  type="string",
+     *                  maximum="50",
+     *                  description="Service ID",
+     *                  example="net.sumra.chat"
+     *              ),
+     *          ),
+     *     ),
+     *
+     *     @OA\Response(
+     *          response="200",
+     *          description="Success create link and code",
+     *     ),
+     *     @OA\Response(
+     *          response="401",
+     *          description="Unauthorized"
+     *     ),
+     *     @OA\Response(
+     *          response="400",
+     *          description="Invalid request"
+     *     ),
+     *     @OA\Response(
+     *          response="404",
+     *          description="Not found",
+     *          @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(
+     *                  property="code",
+     *                  type="string",
+     *                  description="Your request requires the required parameter application ID"
+     *              ),
+     *          ),
+     *     ),
+     * )
+     */
+
+    public function store(Request $request)
+    {
+        ///$application_id = "net.sumra.chat";
+        $currentUserId = Auth::user()->getAuthIdentifier();
+        $this->validation($request);
+
+        $referral_cnt = ReferralCode::where('user_id', $currentUserId)->count();
+
+        if($referral_cnt <= config('app.link_limit')){
+            ReferralCode::sendDataToCreateReferralCode($currentUserId, $request->application_id);
+            return response()->jsonApi('Operation successful', 200);
+        }
+
+        return response()->jsonApi('You have exceeded the limit on the number of links to this service', 200);
+    }
 
     private function validation($request)
     {

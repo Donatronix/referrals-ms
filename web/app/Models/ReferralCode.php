@@ -3,6 +3,7 @@
 
 namespace App\Models;
 
+use App\Services\ReferralCodeService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -64,6 +65,18 @@ class ReferralCode extends Model
         return $referral_code ? self::where('code', $referral_code)->where('application_id', $application_id)
             ->first() : NULL;
     }
+
+    public static function sendDataToCreateReferralCode($currentUserId, $application_id, $default = false)
+    {
+        $referral_info = [
+            'user_id' => $currentUserId,
+            'application_id' => $application_id,
+            'is_default' => $default
+        ];
+
+        return ReferralCodeService::createReferralCode($referral_info);
+    }
+
 
     /* ************************ ACCESSOR ************************* */
 

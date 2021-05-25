@@ -187,86 +187,6 @@ class ReferralController extends Controller
         }
     }
 
-    /**
-     *  Create link and code user generated
-     *
-     * @OA\Post(
-     *     path="/v1/referrals/create-link",
-     *     summary="Create link and code for an existing user",
-     *     description="Create link and code user generated",
-     *     tags={"Main"},
-     *
-     *     security={{
-     *          "default": {
-     *              "ManagerRead",
-     *              "User",
-     *              "ManagerWrite"
-     *          }
-     *     }},
-     *
-     *     x={
-     *          "auth-type" : "Application & Application Yser",
-     *          "throtting-tier" : "Unlimited",
-     *          "wso2-application-security": {
-     *              "security-types": {"oauth2"},
-     *              "optional": "false"
-     *          }
-     *     },
-     *
-     *     @OA\RequestBody(
-     *          @OA\JsonContent(
-     *              type="object",
-     *              @OA\Property(
-     *                  property="application_id",
-     *                  type="string",
-     *                  maximum="50",
-     *                  description="Service ID",
-     *                  example="net.sumra.chat"
-     *              ),
-     *          ),
-     *     ),
-     *
-     *     @OA\Response(
-     *          response="200",
-     *          description="Success create link and code",
-     *     ),
-     *     @OA\Response(
-     *          response="401",
-     *          description="Unauthorized"
-     *     ),
-     *     @OA\Response(
-     *          response="400",
-     *          description="Invalid request"
-     *     ),
-     *     @OA\Response(
-     *          response="404",
-     *          description="Not found",
-     *          @OA\JsonContent(
-     *              type="object",
-     *              @OA\Property(
-     *                  property="code",
-     *                  type="string",
-     *                  description="Your request requires the required parameter application ID"
-     *              ),
-     *          ),
-     *     ),
-     * )
-     */
-
-    public function createLink(Request $request)
-    {
-        ///$application_id = "net.sumra.chat";
-        $result = false;
-        $currentUserId = Auth::user()->getAuthIdentifier();
-        $referral_cnt = ReferralCode::where('user_id', $currentUserId)->count();
-
-        if($referral_cnt <= config('app.link_limit')){
-            $result = $this->sendDataToCreateReferralCode($currentUserId, $request->application_id);
-        }
-
-        return $result;
-    }
-
     public function createUser($application_id, $parrent_user_id = false)
     {
         $currentUserId = Auth::user()->getAuthIdentifier();
@@ -275,20 +195,17 @@ class ReferralController extends Controller
             'referrer_id' => $parrent_user_id
         ]);
 
-         $this->sendDataToCreateReferralCode($currentUserId, $application_id, true);
+         $user_info = ReferralCode::sendDataToCreateReferralCode($currentUserId, $application_id, true);
 
-        return true;
-    }
+         $array = [
+            'user_id' => $user_info['user_id'],
+            'application_id' => $user_info['application_id'],
+            'referral_code' => $user_info['referral_code']
+         ];
 
-    public function sendDataToCreateReferralCode($currentUserId, $application_id, $default = false)
-    {
-        $referral_info = [
-            'user_id' => $currentUserId,
-            'application_id' => $application_id,
-            'is_default' => $default
-        ];
+        PubSub::publish('invitedReferral', $array, 'contactsBook');
 
-        ReferralCodeService::createReferralCode($referral_info);
+        return response()->jsonApi('User created', 200);
     }
 
 }
@@ -306,6 +223,8 @@ $array = [
         User::STATUS_BLOCKED
     ])
 ];
-PubSub::transaction(function() {})->publish('ReferralBonus', $array, 'referral');
+PubSub::transaction(function() {
+
+})->publish('ReferralBonus', $array, 'referral');
 */
 ######################### EXAMPLE CODE ##################################
