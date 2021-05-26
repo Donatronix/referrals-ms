@@ -68,9 +68,10 @@ class ReferralCodeController extends Controller
     {
         try{
             $currentUserId = Auth::user()->getAuthIdentifier();
-            ReferralCode::byOwner()->get();
+            $query = ReferralCode::byOwner()->get();
 
             return response()->jsonApi([
+                'query' => $query,
                 'status' => 'success',
                 'title' => "List referral",
                 'message' => 'list referral successfully received'
@@ -135,7 +136,7 @@ class ReferralCodeController extends Controller
      */
     public function show($id)
     {
-        print_r(ReferralCode::find($id));
+        
     }
 
     /**
