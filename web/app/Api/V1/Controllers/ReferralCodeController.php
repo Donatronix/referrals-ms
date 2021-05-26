@@ -72,16 +72,16 @@ class ReferralCodeController extends Controller
             $query = ReferralCode::byOwner()->get();
 
             return response()->jsonApi([
-                'query' => $query,
                 'status' => 'success',
                 'title' => "List referral",
-                'message' => 'list referral successfully received'
+                'message' => 'list referral successfully received',
+                'query' => $query
             ], 200);
         }
         catch (Exception $e){
             return response()->jsonApi([
-                'type' => 'error',
-                'title' => "Not received list referral",
+                'status' => 'danger',
+                'title' => "Not received list",
                 'message' => "Data #{$currentUserId} not found"
             ], 404);
         }
@@ -141,15 +141,15 @@ class ReferralCodeController extends Controller
             $query = ReferralCode::find($id);
 
             return response()->jsonApi([
-                'query' => $query,
                 'status' => 'success',
                 'title' => "Showing one link",
-                'message' => 'One link successfully shown'
+                'message' => 'One link successfully shown',
+                'row' => $query,
             ], 200);
         }
         catch (Exception $e){
             return response()->jsonApi([
-                'type' => 'error',
+                'status' => 'danger',
                 'title' => "Not found ID",
                 'message' => "#{$id} not found"
             ], 404);
@@ -260,26 +260,26 @@ class ReferralCodeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        try{
-            $this->validation($request);
+        $input_data = (object) $this->validate($request, $this->rules());
 
+        try{
             $data = ReferralCode::find($id);
-            $data->referral_link = $request->get('referral_link');
-            $data->code = $request->get('code');
-            $data->application_id = $request->get('application_id');
-            $data->is_default = $request->get('default',false);
+            $data->referral_link = $input_data->referral_link;
+            $data->code = $input_data->code;
+            $data->application_id = $input_data->application_id;
+            $data->is_default = $input_data->default;
             $data->save();
 
             return response()->jsonApi([
                 'status' => 'success',
-                'title' => "Updating the referral link field",
+                'title' => "Updating success",
                 'message' => 'The referral link field update has been successfully updated'
             ], 200);
         }
         catch (\Exception $e){
             return  response()->jsonApi([
-                'type' => 'error',
-                'title' => 'Referrals link not found',
+                'status' => 'danger',
+                'title' => 'Link not found',
                 'message' => "Referrals link #{$id} for updated not found"
             ], 404);
         }
@@ -349,9 +349,22 @@ class ReferralCodeController extends Controller
      */
     public function destroy($id)
     {
-        ReferralCode::destroy($id);
+        try{
+            ReferralCode::destroy($id);
 
-        return null;
+            return response()->jsonApi([
+                'status' => 'success',
+                'title' => "Deleting success",
+                'message' => 'The referral link field has been successfully deleted'
+            ], 200);
+        }
+        catch (\Exception $e){
+            return  response()->jsonApi([
+                'status' => 'danger',
+                'title' => 'Not found',
+                'message' => "Referrals link #{$id} for deleted not found"
+            ], 404);
+        }
     }
 
     /**
@@ -422,28 +435,50 @@ class ReferralCodeController extends Controller
 
     public function store(Request $request)
     {
-        ///$application_id = "net.sumra.chat";
-        $currentUserId = Auth::user()->getAuthIdentifier();
-        $this->validation($request);
+        $input_data = (object) $this->validate($request, $this->rules());
 
-        $referral_cnt = ReferralCode::where('user_id', $currentUserId)->count();
+        try{
+            $currentUserId = Auth::user()->getAuthIdentifier();
 
-        if($referral_cnt <= config('app.link_limit')){
-            ReferralCode::sendDataToCreateReferralCode($currentUserId, $request->application_id);
-            return response()->jsonApi('Operation successful', 200);
+            $referral_cnt = ReferralCode::where('user_id', $currentUserId)->count();
+
+            if($referral_cnt >= config('app.link_limit')){
+                return response()->jsonApi([
+                    'status' => 'warning',
+                    'title' => "Exceeded the limit",
+                    'message' => 'You have exceeded the limit on the number of links to this service'
+                ], 200);
+            }
+
+            $row = ReferralCode::sendDataToCreateReferralCode($currentUserId, $input_data->application_id);
+
+            return response()->jsonApi([
+                'status' => 'success',
+                'title' => "Create was success",
+                'message' => 'The creation of the referral link was successful',
+                'row' => $row
+            ], 200);
         }
-
-        return response()->jsonApi('You have exceeded the limit on the number of links to this service', 200);
+        catch (\Exception $e){
+            return  response()->jsonApi([
+                'status' => 'danger',
+                'title' => 'Operation not successful',
+                'message' => "The operation to add a referral link was not successful."
+            ], 404);
+        }
     }
 
-    private function validation($request)
+    /**
+     * @return string[]
+     */
+    private function rules()
     {
-        return $this->validate($request, [
+        return [
             'user_id' => 'integer',
             'referral_link' => 'required|string|max:35',
             'code' => 'required|string|max:8|min:8',
             'is_default' => 'integer|max:1',
             'application_id' => 'string|max:30',
-        ]);
+        ];
     }
 }
