@@ -3,13 +3,14 @@
 
 namespace App\Api\V1\Controllers;
 
+
 use App\Services\Firebase;
 
 use Dotenv\Exception\ValidationException;
 use Illuminate\Http\Request;
 use App\Models\ReferralCode;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redirect;
+use PHPUnit\Exception;
 
 class ReferralCodeController extends Controller
 {
@@ -37,9 +38,20 @@ class ReferralCodeController extends Controller
      *           }
      *     },
      *
+     *     @OA\Parameter(
+     *          name="user_id",
+     *          required=true,
+     *          in="path",
+     *          description="ID user",
+     *          example="112",
+     *          @OA\Schema (
+     *              type="integer"
+     *          ),
+     *     ),
+     *
      *     @OA\Response(
      *          response="200",
-     *          description="List of all referral codes and links"
+     *          description="The list of showing the codes of one referral is successful."
      *     ),
      *     @OA\Response(
      *          response="401",
@@ -54,7 +66,23 @@ class ReferralCodeController extends Controller
      */
     public function index()
     {
-        return print_r(ReferralCode::all());
+        try{
+            $currentUserId = Auth::user()->getAuthIdentifier();
+            ReferralCode::byOwner()->get();
+
+            return response()->jsonApi([
+                'status' => 'success',
+                'title' => "List referral",
+                'message' => 'list referral successfully received'
+            ], 200);
+        }
+        catch (Exception $e){
+            return response()->jsonApi([
+                'type' => 'error',
+                'title' => "Not received list referral",
+                'message' => "Data #{$currentUserId} not found"
+            ], 404);
+        }
     }
 
     /**

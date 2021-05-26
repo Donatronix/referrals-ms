@@ -6,8 +6,8 @@ namespace App\Models;
 use App\Services\ReferralCodeService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 use App\Traits\UuidTrait;
+use Illuminate\Support\Facades\Auth;
 
 class ReferralCode extends Model
 {
@@ -75,6 +75,15 @@ class ReferralCode extends Model
         ];
 
         return ReferralCodeService::createReferralCode($referral_info);
+    }
+
+    /**
+     * @param $query
+     * @return mixed
+     */
+    public function scopeByOwner($query)
+    {
+        return $query->where('user_id', (int)Auth::user()->getAuthIdentifier());
     }
 
 
