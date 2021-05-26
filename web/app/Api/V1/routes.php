@@ -24,6 +24,7 @@ $router->group([
              *  Referral code
              */
             $router->get('referral-codes', 'ReferralCodeController@index');
+            $router->get('referral-code-set/{id}', 'ReferralCodeController@setDefault');
             $router->post("referral-codes", 'ReferralCodeController@store');
             $router->get("referral-code/{id}", 'ReferralCodeController@show');
             $router->put('referral-codes/{id}', 'ReferralCodeController@update');

@@ -468,6 +468,80 @@ class ReferralCodeController extends Controller
         }
     }
 
+
+    /**
+     * Change the default link
+     *
+     * @OA\Get(
+     *     path="/v1/referrals/referral-code-set/{id}",
+     *     description="Set new referral code and link",
+     *     tags={"Referral Code"},
+     *
+     *     security={{
+     *          "default":{
+     *              "ManagerRead",
+     *              "User",
+     *              "ManagerWrite"
+     *           }
+     *     }},
+     *
+     *     x={
+     *          "auth-type": "Application & Application User",
+     *          "throttling-tier": "Unlimited",
+     *          "wso2-application-security": {
+     *              "security-types": {"oauth2"},
+     *              "optimal": "false"
+     *          }
+     *     },
+     *
+     *     @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          description="ID referral code",
+     *          example="1",
+     *          @OA\Schema (
+     *              type="integer"
+     *          ),
+     *     ),
+     *
+     *     @OA\Response(
+     *          response="200",
+     *          description="Success"
+     *     ),
+     *     @OA\Response(
+     *          response="401",
+     *          description="Unauthorized"
+     *     )
+     * )
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+
+    public function setDefault($id)
+    {
+        try{
+            $code = ReferralCode::find($id);
+
+            $list = ReferralCode::where('application_id', $code->application_id)->where('user_id', $code->user_id)->get();
+            $list->each->update(['is_default' => false]);
+            $code->update(['is_default' => true]);
+
+            return response()->jsonApi([
+                'status' => 'success',
+                'title' => "Update was success",
+                'message' => 'Changing the default а referral link was successful.'
+            ], 200);
+        }
+        catch (\Exception $e){
+            return  response()->jsonApi([
+                'status' => 'danger',
+                'title' => 'Operation not successful',
+                'message' => "Changing the default a referral link was not successful."
+            ], 404);
+        }
+    }
+
     /**
      * @return string[]
      */
