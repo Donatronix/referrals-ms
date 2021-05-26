@@ -9,6 +9,7 @@ use App\Services\Firebase;
 use Dotenv\Exception\ValidationException;
 use Illuminate\Http\Request;
 use App\Models\ReferralCode;
+use App\Models\MainModel;
 use Illuminate\Support\Facades\Auth;
 use PHPUnit\Exception;
 
@@ -117,7 +118,7 @@ class ReferralCodeController extends Controller
      *          description="ID referral code",
      *          example="1",
      *          @OA\Schema (
-     *              type="integer"
+     *              type="string"
      *          ),
      *     ),
      *
@@ -136,7 +137,23 @@ class ReferralCodeController extends Controller
      */
     public function show($id)
     {
-        
+        try{
+            $query = ReferralCode::find($id);
+
+            return response()->jsonApi([
+                'query' => $query,
+                'status' => 'success',
+                'title' => "Showing one link",
+                'message' => 'One link successfully shown'
+            ], 200);
+        }
+        catch (Exception $e){
+            return response()->jsonApi([
+                'type' => 'error',
+                'title' => "Not found ID",
+                'message' => "#{$id} not found"
+            ], 404);
+        }
     }
 
     /**
@@ -252,6 +269,8 @@ class ReferralCodeController extends Controller
             $data->application_id = $request->get('application_id');
             $data->is_default = $request->get('default',false);
             $data->save();
+
+
         }
         catch (\Exception $e){
             return  response()->jsonApi([

@@ -17,7 +17,7 @@ class MainModel extends Model
         return $query->where('user_id', (int)Auth::user()->getAuthIdentifier());
     }
 
-    public function scopeGetById($model, $id)
+    public static function scopeGetById($model, $id)
     {
         return $model::find($id);
     }

@@ -25,9 +25,9 @@ $router->group([
              */
             $router->get('referral-codes', 'ReferralCodeController@index');
             $router->post("referral-codes", 'ReferralCodeController@store');
-            $router->get("referral-code/{id:[\d]+}", 'ReferralCodeController@show');
-            $router->put('referral-codes/{id:[\d]+}', 'ReferralCodeController@update');
-            $router->delete('referral-codes/{id:[\d]+}', 'ReferralCodeController@destroy');
+            $router->get("referral-code/{id}", 'ReferralCodeController@show');
+            $router->put('referral-codes/{id}', 'ReferralCodeController@update');
+            $router->delete('referral-codes/{id}', 'ReferralCodeController@destroy');
 
             /*
              * Templates
