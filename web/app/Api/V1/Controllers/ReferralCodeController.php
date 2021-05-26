@@ -260,9 +260,9 @@ class ReferralCodeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validation($request);
-
         try{
+            $this->validation($request);
+
             $data = ReferralCode::find($id);
             $data->referral_link = $request->get('referral_link');
             $data->code = $request->get('code');
@@ -270,14 +270,17 @@ class ReferralCodeController extends Controller
             $data->is_default = $request->get('default',false);
             $data->save();
 
-
+            return response()->jsonApi([
+                'status' => 'success',
+                'title' => "Updating the referral link field",
+                'message' => 'The referral link field update has been successfully updated'
+            ], 200);
         }
         catch (\Exception $e){
             return  response()->jsonApi([
                 'type' => 'error',
                 'title' => 'Referrals link not found',
-                'message' => $e
-//                'message' => "Referrals link #{$id} not found"
+                'message' => "Referrals link #{$id} for updated not found"
             ], 404);
         }
     }
