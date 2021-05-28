@@ -52,14 +52,6 @@ class Application extends Model
         'referrer_status'
     ];
 
-    /**
-     * @var string[]
-     */
-    protected $dates = [
-        'created_at',
-        'updated_at'
-    ];
-
     /* ************************ ACCESSOR ************************* */
 
     public function getResourceUrlAttribute()

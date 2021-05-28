@@ -12,11 +12,6 @@ class LandingPage extends Model
         'json' => '[]', // json array of user's texts
     ];
 
-    protected $dates = [
-        'created_at',
-        'updated_at'
-    ];
-
     public function template()
     {
         return $this->belongsTo(Template::class);
