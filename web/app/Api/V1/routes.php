@@ -17,8 +17,8 @@ $router->group([
      */
     $router->group(
        [
-       //    'middleware' => 'checkUser'
-       ], // TODO: вернуть закомментированное
+           'middleware' => 'checkUser'
+       ],
         function ($router) {
             /**
              *  Referral code

@@ -118,9 +118,6 @@ $app->register(\SwaggerLume\ServiceProvider::class);
 /** Firebase */
 $app->register(Kreait\Laravel\Firebase\ServiceProvider::class);
 
-/** Routes List Tools */
-$app->register(\Thedevsaddam\LumenRouteList\LumenRouteListServiceProvider::class);
-
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes

@@ -56,7 +56,7 @@ class KeyGenerateCommand extends Command
      *
      * @return string
      */
-    protected function generateRandomKey()
+    protected function generateRandomKey(): string
     {
         return 'base64:' . base64_encode(
                 Encrypter::generateKey($this->laravel['config']['app.cipher'])
@@ -70,7 +70,7 @@ class KeyGenerateCommand extends Command
      *
      * @return bool
      */
-    protected function setKeyInEnvironmentFile($key)
+    protected function setKeyInEnvironmentFile($key): bool
     {
         $currentKey = $this->laravel['config']['app.key'];
 
@@ -90,7 +90,7 @@ class KeyGenerateCommand extends Command
      *
      * @return void
      */
-    protected function writeNewEnvironmentFileWith($key)
+    protected function writeNewEnvironmentFileWith($key): void
     {
         file_put_contents($this->laravel->environmentFilePath(), preg_replace(
             $this->keyReplacementPattern(),
@@ -104,7 +104,7 @@ class KeyGenerateCommand extends Command
      *
      * @return string
      */
-    protected function keyReplacementPattern()
+    protected function keyReplacementPattern(): string
     {
         $escaped = preg_quote('=' . $this->laravel['config']['app.key'], '/');
 

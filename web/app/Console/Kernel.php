@@ -2,6 +2,8 @@
 
 namespace App\Console;
 
+use App\Console\Commands\KeyGenerateCommand;
+use App\Console\Commands\RouteListCommand;
 use App\Services\MatomoAnalytics;
 use Illuminate\Console\Scheduling\Schedule;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
@@ -14,7 +16,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        Commands\KeyGenerateCommand::class
+        KeyGenerateCommand::class,
+        RouteListCommand::class
     ];
 
     /**

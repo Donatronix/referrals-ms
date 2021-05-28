@@ -9,6 +9,11 @@ class User extends Model
 {
     use HasFactory;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = [
         'id',
         'referrer_id',
@@ -21,7 +26,10 @@ class User extends Model
      */
     public $incrementing = false;
 
-    public function userReferalcodes()
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function userReferalcodes(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(ReferralCode::class);
     }
