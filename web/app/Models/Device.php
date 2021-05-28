@@ -10,11 +10,6 @@ class Device extends Model
         'resource_url'
     ];
 
-    protected $dates = [
-        'created_at',
-        'updated_at'
-    ];
-
     protected $fillable = [
         'name',
         'device_id',

@@ -13,9 +13,4 @@ class Template extends Model
         'html', // html or react template
         'json' => '[]', // default json array of changeable texts
     ];
-
-    protected $dates = [
-        'created_at',
-        'updated_at'
-    ];
 }
