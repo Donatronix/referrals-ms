@@ -13,11 +13,6 @@ class Refcode extends Model
         'code',
     ];
 
-    protected $dates = [
-        'created_at',
-        'updated_at'
-    ];
-
     public function generate($user_id)
     {
         $exists = true;

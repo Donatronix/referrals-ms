@@ -14,11 +14,6 @@ class User extends Model
         'isbustedmoney', // true if reach Tier::BURSTED_MIN_MONEY
     ];
 
-    protected $dates = [
-        'created_at',
-        'updated_at'
-    ];
-
     /**
      * Indicates if the IDs are auto-incrementing.
      *

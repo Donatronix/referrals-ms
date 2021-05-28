@@ -16,11 +16,6 @@ class ApplicationKey extends Model
         'cipher_key'
     ];
 
-    protected $dates = [
-        'created_at',
-        'updated_at'
-    ];
-
     /* ************************ ACCESSOR ************************* */
     public function getResourceUrlAttribute()
     {
