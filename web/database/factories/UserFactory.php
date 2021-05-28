@@ -23,8 +23,7 @@ class UserFactory extends Factory
     {
         return [
             'id' => $this->faker->unique()->numberBetween(1, 100),
-            'username' => mb_strtolower($this->faker->firstName),
-            'status' => $this->faker->boolean()
+            'referrer_id' => $this->faker->numberBetween(1, 100)
         ];
     }
 }

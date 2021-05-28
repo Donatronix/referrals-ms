@@ -2,16 +2,16 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class User extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'id',
-        'tier',    // enum of ['basic', 'bronze', 'silver', 'gold']
-        'regstate', // enum of ['new','registered','kyc']
-        'isbustedtime', // true if reach Tier::BURSTED_MIN_HOURS
-        'isbustedmoney', // true if reach Tier::BURSTED_MIN_MONEY
+        'referrer_id',
     ];
 
     /**
@@ -20,4 +20,9 @@ class User extends Model
      * @var bool
      */
     public $incrementing = false;
+
+    public function userReferalcodes()
+    {
+        return $this->hasMany(ReferralCode::class);
+    }
 }

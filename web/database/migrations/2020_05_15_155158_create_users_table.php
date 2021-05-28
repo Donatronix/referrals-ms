@@ -13,16 +13,11 @@ class CreateUsersTable extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->engine = 'InnoDB';
-            $table->charset = 'utf8';
-            $table->collation = 'utf8_general_ci';
+        $table_name = 'users';
 
-            $table->unsignedBigInteger('id')->primary()->unique();
-            $table->enum('tier', ['basic', 'bronze', 'silver', 'gold'])->default('basic');
-            $table->enum('regstate', ['new','registered','kyc'])->default('new');
-            $table->boolean('isbustedtime')->default(false);
-            $table->boolean('isbustedmoney')->default(false);
+        Schema::create($table_name, function (Blueprint $table) {
+            $table->bigInteger('id')->primary()->unsigned();
+            $table->unsignedBigInteger('referrer_id')->nullable()->comment('The ID of the inviting user.');
             $table->timestamps();
         });
     }

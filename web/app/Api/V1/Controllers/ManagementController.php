@@ -3,8 +3,6 @@
 namespace App\Api\V1\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\Application;
-use App\Models\Device;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -17,119 +15,6 @@ use Illuminate\Validation\ValidationException;
  */
 class ManagementController extends Controller
 {
-    /**
-     * Validate user install app
-     *
-     * @OA\Post(
-     *     path="/v1/referrals/manager/validate/user",
-     *     summary="Validate user installed app",
-     *     description="Validate user installed app",
-     *     tags={"Management"},
-     *
-     *     security={{
-     *         "default": {
-     *             "ManagerRead",
-     *             "User",
-     *             "ManagerWrite"
-     *         }
-     *     }},
-     *     x={
-     *         "auth-type": "Application & Application User",
-     *         "throttling-tier": "Unlimited",
-     *         "wso2-application-security": {
-     *             "security-types": {"oauth2"},
-     *             "optional": "false"
-     *         }
-     *     },
-     *
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             @OA\Property(
-     *                 property="user_id",
-     *                 type="integer",
-     *                 description="User ID",
-     *                 example="669"
-     *             ),
-     *             @OA\Property(
-     *                 property="application_id",
-     *                 type="integer",
-     *                 description="Application ID",
-     *                 example="2"
-     *             ),
-     *             @OA\Property(
-     *                 property="status",
-     *                 type="integer",
-     *                 description="Status (Approve, Reject, etc)",
-     *                 example="1"
-     *             )
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response="200",
-     *         description="User successfull validated"
-     *     ),
-     *     @OA\Response(
-     *         response=401,
-     *         description="Unauthorized"
-     *     ),
-     *     @OA\Response(
-     *         response=400,
-     *         description="Invalid request"
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="not found"
-     *     )
-     * )
-     *
-     * @param Request $request
-     *
-     * @return mixed
-     * @throws ValidationException
-     */
-    public function validateUser(Request $request)
-    {
-        $input = $this->validate($request, [
-            'user_id' => 'required|integer',
-            'application_id' => 'required|integer',
-            'status' => 'required|integer'
-        ]);
-
-        // Change user status
-        try {
-            $app = Application::where('id', $input['application_id'])
-                ->where('user_id', $input['user_id'])
-                ->first();
-            $app->user_status = $input['status'];
-            $app->save();
-        } catch (Exception $e) {
-            // Return error
-            return response()->jsonApi($e, 200);
-        }
-
-        /**
-         * Add Bonus for downloading the application and registration
-         */
-        if ($input['status'] === Application::INSTALLED_APPROVE) {
-            $array = [
-                'user_id' => $input['user_id'],
-                'points' => User::INSTALL_POINTS,
-                'subject' => "Bonus for downloading the application {$input['package_name']} and registration"
-            ];
-            PubSub::transaction(function () use ($app) {
-                // Add device to user
-                Device::create([
-                    'name' => $app->device_name,
-                    'device_id' => $app->device_id,
-                    'user_id' => $app->id
-                ]);
-            })->publish('sendRewardForInstallEmail', $array, 'mailReferral');
-        }
-
-        // Return response
-        return response()->jsonApi('Operation successful', 200);
-    }
 
     /**
      * Validate referrer

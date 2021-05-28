@@ -1,4 +1,5 @@
 <?php
+namespace Database\Seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -24,9 +25,7 @@ class UsersTableSeeder extends Seeder
                 }
             }
 
-            User::factory()->count(5)->create([
-                'referrer_id' => $id
-            ]);
+            User::factory()->count(5)->create();
         }
     }
 }

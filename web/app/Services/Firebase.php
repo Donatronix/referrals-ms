@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Link;
+use App\Models\ReferralCode;
 use Kreait\Firebase\DynamicLink\CreateDynamicLink\FailedToCreateDynamicLink;
 
 class Firebase
@@ -13,14 +13,14 @@ class Firebase
      *
      * @return mixed
      */
-    public static function linkGenerate($referralCode, $packageName)
+    public static function linkGenerate($referralCode, $application_id)
     {
         $referrerData = [
             //'code' => $referralCode,
             'utm_source' => $referralCode,
-            'utm_medium' => Link::MEDIUM,
-            'utm_campaign' => Link::CAMPAIGN,
-            'utm_content' => $packageName
+            'utm_medium' => ReferralCode::MEDIUM,
+            'utm_campaign' => ReferralCode::CAMPAIGN,
+            'utm_content' => $application_id
         ];
 
         try {
@@ -41,9 +41,9 @@ class Firebase
                     'analyticsInfo' => [
                         'googlePlayAnalytics' => [
                             'utmSource' => $referralCode,
-                            'utmMedium' => Link::MEDIUM,
-                            'utmCampaign' => Link::CAMPAIGN,
-                            'utmContent' => $packageName,
+                            'utmMedium' => ReferralCode::MEDIUM,
+                            'utmCampaign' => ReferralCode::CAMPAIGN,
+                            'utmContent' => $application_id,
                             /*
                             'utmTerm' => 'utmTerm',
                             'gclid' => 'gclid'
@@ -59,11 +59,11 @@ class Firebase
                         */
                     ],
                     'androidInfo' => [
-                        'androidPackageName' => $packageName,
+                        'androidPackageName' => $application_id,
                         'androidFallbackLink' => sprintf(
                             "%s?id=%s&referrer=%s",
                             config('firebase.app_urls.apple_store'),
-                            $packageName,
+                            $application_id,
                             urlencode(http_build_query($referrerData))
                         ),
 

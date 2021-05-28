@@ -1,5 +1,7 @@
 <?php
 
+use App\Api\V1\Controllers\ReferralCodeController;
+
 /** @var \Laravel\Lumen\Routing\Router $router */
 
 /*
@@ -13,9 +15,12 @@
 |
 */
 
+
+
+/*
 Route::get('/', function () use ($router) {
     return $router->app->version();
-});
+});*/
 
 Route::group(
     ['prefix' => env('API_PREFIX') . '/v1'],
