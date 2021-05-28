@@ -15,7 +15,7 @@ class CreateRefcodesTable extends Migration
     {
         Schema::create('refcodes', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('user_id')->default(0);
+            $table->unsignedBigInteger('user_id')->default(0);
             $table->char('code', 6)->default('');
             $table->timestamps();
 

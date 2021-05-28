@@ -20,7 +20,7 @@ class LandingpageController extends Controller
      * @OA\Get(
      *     path="/v1/referrals/landingpage",
      *     description="Get all user's landingpages",
-     *     tags={"Landingpages"},
+     *     tags={"Landing pages"},
      *
      *     security={{
      *         "default": {
@@ -38,10 +38,6 @@ class LandingpageController extends Controller
      *         }
      *     },
      *
-     *     @OA\RequestBody(
-     *         required=false
-     *         )
-     *     ),
      *     @OA\Response(
      *         response="200",
      *         description="List of all landingpages"
@@ -84,12 +80,12 @@ class LandingpageController extends Controller
     }
 
     /**
-     * Landingpage Controller
+     * Landing page Controller
      *
      * @OA\Post(
      *     path="/v1/referrals/landingpage/{id:[\d*]}",
      *     description="Save landingpage",
-     *     tags={"Landingpages"},
+     *     tags={"Landing pages"},
      *
      *     security={{
      *         "default": {
@@ -107,33 +103,23 @@ class LandingpageController extends Controller
      *         }
      *     },
      *
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         description="Landingpage ID. Empty for new page",
-     *         required=false,
-     *         @OA\Schema(
-     *             type="string"
-     *         )
+     *     @OA\RequestBody(
+     *          @OA\JsonContent(
+     *              @OA\Property (
+     *                  property="id",
+     *                  type="integer",
+     *                  description="Landingpage ID. Empty for new page",
+     *                  example="1"
+     *              ),
+     *              @OA\Property (
+     *                  property="template_id",
+     *                  type="integer",
+     *                  description="Template id for new page",
+     *                  example=""
+     *              ),
+     *          ),
      *     ),
-     *     @OA\Parameter(
-     *         name="template_id",
-     *         description="Template id for new page",
-     *         required=false,
-     *         in="query",
-     *         @OA\Schema (
-     *             type="string"
-     *         )
-     *     ),
-     *     @OA\Parameter(
-     *         name="jsonarray",
-     *         description="Array of user's texts",
-     *         required=true,
-     *         in="query",
-     *         @OA\Schema (
-     *             type="array"
-     *         )
-     *     ),
+
      *     @OA\Response(
      *         response="200",
      *         description="Save successfull"
