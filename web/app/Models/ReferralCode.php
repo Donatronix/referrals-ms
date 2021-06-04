@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\UuidTrait;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class ReferralCode extends MainModel
 {
