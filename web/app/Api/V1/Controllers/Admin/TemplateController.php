@@ -1,15 +1,10 @@
 <?php
 
-
 namespace App\Api\V1\Controllers\Admin;
-
 
 use App\Http\Controllers\Controller;
 use App\Models\Template;
 use Exception;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
 
 class TemplateController extends Controller
 {
@@ -73,11 +68,11 @@ class TemplateController extends Controller
      * @return mixed
      * @throws ValidationException
      */
-    public function index() : JsonResponse
+    public function index(): JsonResponse
     {
         try {
             $templates = Template::all();
-            foreach($templates as $t) {
+            foreach ($templates as $t) {
                 $t->jasonarray = json_decode($t->json);
             }
         } catch (Exception $e) {
@@ -86,6 +81,7 @@ class TemplateController extends Controller
                 'error' => $e->getMessage()
             ], 400);
         }
+
         // Return response
         return response()->json([
             'success' => true,
@@ -97,7 +93,7 @@ class TemplateController extends Controller
      * Template Controller
      *
      * @OA\Post(
-     *     path="/v1/referrals/admin/template/{id:[\d*]}",
+     *     path="/v1/referrals/admin/template",
      *     description="Save template",
      *     tags={"Template"},
      *
@@ -156,14 +152,15 @@ class TemplateController extends Controller
      * @return mixed
      * @throws ValidationException
      */
-    public function save(Request $request) : JsonResponse
+    public function save(Request $request): JsonResponse
     {
         try {
-            if(isset($request->id)) {
+            if (isset($request->id)) {
                 $template = Template::find(intval($request->id));
             } else {
                 $template = new Template();
             }
+
             $template->title = $request->title;
             $template->html = $request->html;
             $template->json = json_encode($request->jsonarray);
@@ -174,11 +171,11 @@ class TemplateController extends Controller
                 'error' => $e->getMessage()
             ], 400);
         }
+
         // Return response
         return response()->json([
             'success' => true,
             'data' => $template->id
         ], 200);
     }
-
 }

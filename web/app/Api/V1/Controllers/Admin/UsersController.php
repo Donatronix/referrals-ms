@@ -223,11 +223,12 @@ class UsersController extends Controller
      *
      * @return mixed
      */
-    public function show($id){
+    public function show($id)
+    {
         // Get user model
         try {
             // Get and return user data
-            $user  = User::findOrFail($id)->toArray();
+            $user = User::findOrFail($id)->toArray();
 
             return response()->jsonApi($user, 200);
         } catch (ModelNotFoundException $e) {

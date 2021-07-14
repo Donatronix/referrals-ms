@@ -24,17 +24,17 @@ $router->group([
              *  Referral code
              */
             $router->get('referral-codes', 'ReferralCodeController@index');
-            $router->get('referral-code-set/{id}', 'ReferralCodeController@setDefault');
+            $router->get('referral-codes/{id}/set', 'ReferralCodeController@setDefault');
             $router->post("referral-codes", 'ReferralCodeController@store');
-            $router->get("referral-code/{id}", 'ReferralCodeController@show');
+            $router->get("referral-codes/{id}", 'ReferralCodeController@show');
             $router->put('referral-codes/{id}', 'ReferralCodeController@update');
             $router->delete('referral-codes/{id}', 'ReferralCodeController@destroy');
 
             /*
              * Templates
              * */
-            $router->get('/landingpage', 'LandingpageController@index');
-            $router->post('/landingpage/{id:[\d+]}', 'LandingpageController@save');
+            $router->get('/landing-page', 'LandingPageController@index');
+            $router->post('/landing-page', 'LandingPageController@save');
 
             /**
              * Referral
@@ -60,7 +60,7 @@ $router->group([
                  * Templates
                  * */
                 $router->get('/template', 'TemplateController@index');
-                $router->post('/template/{id:[\d*]}', 'TemplateController@save');
+                $router->post('/template', 'TemplateController@save');
 
                 /**
                  * Refferals

@@ -1,21 +1,13 @@
 <?php
 
-
 namespace App\Api\V1\Controllers;
 
-
-use App\Services\Firebase;
-
-use Dotenv\Exception\ValidationException;
-use Illuminate\Http\Request;
 use App\Models\ReferralCode;
-use App\Models\MainModel;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use PHPUnit\Exception;
 
 class ReferralCodeController extends Controller
 {
-
     /**
      *  Get referral code and link
      *
@@ -39,17 +31,6 @@ class ReferralCodeController extends Controller
      *           }
      *     },
      *
-     *     @OA\Parameter(
-     *          name="user_id",
-     *          required=true,
-     *          in="path",
-     *          description="ID user",
-     *          example="112",
-     *          @OA\Schema (
-     *              type="integer"
-     *          ),
-     *     ),
-     *
      *     @OA\Response(
      *          response="200",
      *          description="The list of showing the codes of one referral is successful."
@@ -60,25 +41,23 @@ class ReferralCodeController extends Controller
      *     )
      * )
      *
-     * @param Request $request
-     *
      * @return mixed
      * @throws ValidationException
      */
     public function index()
     {
-        try{
-            $currentUserId = Auth::user()->getAuthIdentifier();
-            $query = ReferralCode::byOwner()->get();
+        try {
+            $codes = ReferralCode::byOwner()->get();
 
             return response()->jsonApi([
                 'status' => 'success',
                 'title' => "List referral",
                 'message' => 'list referral successfully received',
-                'query' => $query
+                'codes' => $codes
             ], 200);
-        }
-        catch (Exception $e){
+        } catch (Exception $e) {
+            $currentUserId = Auth::user()->getAuthIdentifier();
+
             return response()->jsonApi([
                 'status' => 'danger',
                 'title' => "Not received list",
@@ -91,7 +70,7 @@ class ReferralCodeController extends Controller
      * Show one code and link
      *
      * @OA\Get(
-     *     path="/v1/referrals/referral-code/{id}",
+     *     path="/v1/referrals/referral-codes/{id}",
      *     description="Show referral code and link",
      *     tags={"Referral Code"},
      *
@@ -115,6 +94,7 @@ class ReferralCodeController extends Controller
      *     @OA\Parameter(
      *          name="id",
      *          in="path",
+     *          required=true,
      *          description="ID referral code",
      *          example="1",
      *          @OA\Schema (
@@ -132,12 +112,13 @@ class ReferralCodeController extends Controller
      *     )
      * )
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        try{
+        try {
             $query = ReferralCode::find($id);
 
             return response()->jsonApi([
@@ -146,8 +127,7 @@ class ReferralCodeController extends Controller
                 'message' => 'One link successfully shown',
                 'row' => $query,
             ], 200);
-        }
-        catch (Exception $e){
+        } catch (Exception $e) {
             return response()->jsonApi([
                 'status' => 'danger',
                 'title' => "Not found ID",
@@ -184,6 +164,7 @@ class ReferralCodeController extends Controller
      *     @OA\Parameter(
      *          name="id",
      *          in="path",
+     *          required=true,
      *          description="Referral ID",
      *          example="1",
      *          @OA\Schema (
@@ -254,15 +235,16 @@ class ReferralCodeController extends Controller
      *     ),
      * )
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
-        $input_data = (object) $this->validate($request, $this->rules());
+        $input_data = (object)$this->validate($request, $this->rules());
 
-        try{
+        try {
             $data = ReferralCode::find($id);
             $data->referral_link = $input_data->referral_link;
             $data->code = $input_data->code;
@@ -275,14 +257,27 @@ class ReferralCodeController extends Controller
                 'title' => "Updating success",
                 'message' => 'The referral link field update has been successfully updated'
             ], 200);
-        }
-        catch (\Exception $e){
-            return  response()->jsonApi([
+        } catch (\Exception $e) {
+            return response()->jsonApi([
                 'status' => 'danger',
                 'title' => 'Link not found',
                 'message' => "Referrals link #{$id} for updated not found"
             ], 404);
         }
+    }
+
+    /**
+     * @return string[]
+     */
+    private function rules()
+    {
+        return [
+            'user_id' => 'integer',
+            'referral_link' => 'required|string|max:35',
+            'code' => 'required|string|max:8|min:8',
+            'is_default' => 'integer|max:1',
+            'application_id' => 'string|max:30',
+        ];
     }
 
     /**
@@ -312,8 +307,8 @@ class ReferralCodeController extends Controller
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
-     *         description="Delete referral code by ID",
      *         required=true,
+     *         description="Delete referral code by ID",
      *         example="",
      *         @OA\Schema(
      *             type="integer"
@@ -344,12 +339,13 @@ class ReferralCodeController extends Controller
      *     ),
      * )
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        try{
+        try {
             ReferralCode::destroy($id);
 
             return response()->jsonApi([
@@ -357,9 +353,8 @@ class ReferralCodeController extends Controller
                 'title' => "Deleting success",
                 'message' => 'The referral link field has been successfully deleted'
             ], 200);
-        }
-        catch (\Exception $e){
-            return  response()->jsonApi([
+        } catch (\Exception $e) {
+            return response()->jsonApi([
                 'status' => 'danger',
                 'title' => 'Not found',
                 'message' => "Referrals link #{$id} for deleted not found"
@@ -399,8 +394,8 @@ class ReferralCodeController extends Controller
      *              @OA\Property(
      *                  property="application_id",
      *                  type="string",
-     *                  maximum="50",
-     *                  description="Service ID",
+     *                  maximum=50,
+     *                  description="Application ID",
      *                  example="net.sumra.chat"
      *              ),
      *          ),
@@ -435,14 +430,14 @@ class ReferralCodeController extends Controller
 
     public function store(Request $request)
     {
-        $input_data = (object) $this->validate($request, $this->rules());
+        $input_data = (object)$this->validate($request, $this->rules());
 
-        try{
+        try {
             $currentUserId = Auth::user()->getAuthIdentifier();
 
             $referral_cnt = ReferralCode::where('user_id', $currentUserId)->count();
 
-            if($referral_cnt >= config('app.link_limit')){
+            if ($referral_cnt >= config('app.link_limit')) {
                 return response()->jsonApi([
                     'status' => 'warning',
                     'title' => "Exceeded the limit",
@@ -458,9 +453,8 @@ class ReferralCodeController extends Controller
                 'message' => 'The creation of the referral link was successful',
                 'row' => $row
             ], 200);
-        }
-        catch (\Exception $e){
-            return  response()->jsonApi([
+        } catch (\Exception $e) {
+            return response()->jsonApi([
                 'status' => 'danger',
                 'title' => 'Operation not successful',
                 'message' => "The operation to add a referral link was not successful."
@@ -468,12 +462,11 @@ class ReferralCodeController extends Controller
         }
     }
 
-
     /**
      * Change the default link
      *
      * @OA\Get(
-     *     path="/v1/referrals/referral-code-set/{id}",
+     *     path="/v1/referrals/referral-codes/{id}/set",
      *     description="Set new referral code and link",
      *     tags={"Referral Code"},
      *
@@ -497,6 +490,7 @@ class ReferralCodeController extends Controller
      *     @OA\Parameter(
      *          name="id",
      *          in="path",
+     *          required=true,
      *          description="ID referral code",
      *          example="1",
      *          @OA\Schema (
@@ -514,17 +508,19 @@ class ReferralCodeController extends Controller
      *     )
      * )
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
 
     public function setDefault($id)
     {
-        try{
+        try {
             $code = ReferralCode::find($id);
 
             $list = ReferralCode::where('application_id', $code->application_id)->where('user_id', $code->user_id)->get();
             $list->each->update(['is_default' => false]);
+
             $code->update(['is_default' => true]);
 
             return response()->jsonApi([
@@ -532,27 +528,12 @@ class ReferralCodeController extends Controller
                 'title' => "Update was success",
                 'message' => 'Changing the default а referral link was successful.'
             ], 200);
-        }
-        catch (\Exception $e){
-            return  response()->jsonApi([
+        } catch (\Exception $e) {
+            return response()->jsonApi([
                 'status' => 'danger',
                 'title' => 'Operation not successful',
                 'message' => "Changing the default a referral link was not successful."
             ], 404);
         }
-    }
-
-    /**
-     * @return string[]
-     */
-    private function rules()
-    {
-        return [
-            'user_id' => 'integer',
-            'referral_link' => 'required|string|max:35',
-            'code' => 'required|string|max:8|min:8',
-            'is_default' => 'integer|max:1',
-            'application_id' => 'string|max:30',
-        ];
     }
 }

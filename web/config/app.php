@@ -129,10 +129,6 @@ return [
 
     'application_version_key' => env('APPLICATION_VERSION_KEY', null),
 
-    'params' => [
-        ''
-    ],
-
     /*
     |--------------------------------------------------------------------------
     | Link generation limit

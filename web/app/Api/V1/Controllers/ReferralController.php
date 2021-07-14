@@ -5,8 +5,7 @@ namespace App\Api\V1\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\ReferralCode;
 use App\Models\User;
-use App\Services\Firebase;
-use App\Services\ReferralCodeService;
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -109,17 +108,17 @@ class ReferralController extends Controller
      *              @OA\Property(
      *                  property="application_id",
      *                  type="string",
-     *                  maximum="50",
+     *                  maximum=50,
      *                  description="ID of the service whose link the user clicked on",
      *                  example="net.sumra.chat"
      *              ),
      *              @OA\Property(
      *                  property="referral_code",
      *                  type="string",
-     *                  minimum="8",
-     *                  maximum="8",
+     *                  minimum=8,
+     *                  maximum=8,
      *                  description="Referral code of the inviting user",
-     *                  example="1827oGRL",
+     *                  example="1827oGRL"
      *              ),
      *          ),
      *     ),
@@ -166,20 +165,18 @@ class ReferralController extends Controller
             'code' => 'string|max:8|min:8'
         ];
         $this->validate($request, $rules);
-        try
-        {
+        try {
             // if the user is invited, then we are looking for the referrer by the referral code
-            if($request->code){
+            if ($request->code) {
                 $referral_info = ReferralCode::getUserByReferralCode($request->code, $request->application_id);
-                if($referral_info){
+                if ($referral_info) {
                     return $this->createUser($request->application_id, $referral_info->user_id);
                 }
             }
 
             return $this->createUser($request->application_id);
-        }
-        catch (\Exception $e){
-            return  response()->jsonApi([
+        } catch (Exception $e) {
+            return response()->jsonApi([
                 'type' => 'error',
                 'title' => 'Referrals link not found',
                 'message' => $e
@@ -190,18 +187,18 @@ class ReferralController extends Controller
     public function createUser($application_id, $parrent_user_id = false)
     {
         $currentUserId = Auth::user()->getAuthIdentifier();
-         User::create([
+        User::create([
             'id' => $currentUserId,
             'referrer_id' => $parrent_user_id
         ]);
 
-         $user_info = ReferralCode::sendDataToCreateReferralCode($currentUserId, $application_id, true);
+        $user_info = ReferralCode::sendDataToCreateReferralCode($currentUserId, $application_id, true);
 
-         $array = [
+        $array = [
             'user_id' => $user_info['user_id'],
             'application_id' => $user_info['application_id'],
             'referral_code' => $user_info['referral_code']
-         ];
+        ];
 
         PubSub::publish('invitedReferral', $array, 'contactsBook');
 

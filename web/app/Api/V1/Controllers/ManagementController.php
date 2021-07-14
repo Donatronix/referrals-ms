@@ -15,7 +15,6 @@ use Illuminate\Validation\ValidationException;
  */
 class ManagementController extends Controller
 {
-
     /**
      * Validate referrer
      *

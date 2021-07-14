@@ -1,25 +1,23 @@
 <?php
 
-
 namespace App\Api\V1\Controllers;
 
-
 use App\Http\Controllers\Controller;
-use App\Models\Landingpage;
+use App\Models\LandingPage;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
-class LandingpageController extends Controller
+class LandingPageController extends Controller
 {
     /**
-     * Landingpage Controller
+     * LandingPage Controller
      *
      * @OA\Get(
-     *     path="/v1/referrals/landingpage",
-     *     description="Get all user's landingpages",
+     *     path="/v1/referrals/landing-page",
+     *     description="Get all user's landing pages",
      *     tags={"Landing pages"},
      *
      *     security={{
@@ -40,7 +38,7 @@ class LandingpageController extends Controller
      *
      *     @OA\Response(
      *         response="200",
-     *         description="List of all landingpages"
+     *         description="List of all landing pages"
      *     ),
      *     @OA\Response(
      *         response=401,
@@ -53,16 +51,16 @@ class LandingpageController extends Controller
      * @return mixed
      * @throws ValidationException
      */
-    public function index() : JsonResponse
+    public function index(): JsonResponse
     {
         $user_id = intval(Auth::user()->getAuthIdentifier());
         try {
-            $userspages = Landingpage::where('user_id', $user_id);
+            $userspages = LandingPage::where('user_id', $user_id);
             $pages = [];
-            foreach($userspages as $p) {
+            foreach ($userspages as $p) {
                 $pages[] = [
-                    'template_id'=>$p->template_id,
-                    'html'=>$p->template->html,
+                    'template_id' => $p->template_id,
+                    'html' => $p->template->html,
                     'jasonarray' => json_decode($p->json)
                 ];
             }
@@ -72,6 +70,7 @@ class LandingpageController extends Controller
                 'error' => $e->getMessage()
             ], 400);
         }
+
         // Return response
         return response()->json([
             'success' => true,
@@ -83,8 +82,8 @@ class LandingpageController extends Controller
      * Landing page Controller
      *
      * @OA\Post(
-     *     path="/v1/referrals/landingpage/{id:[\d*]}",
-     *     description="Save landingpage",
+     *     path="/v1/referrals/landing page",
+     *     description="Save landing page",
      *     tags={"Landing pages"},
      *
      *     security={{
@@ -108,7 +107,7 @@ class LandingpageController extends Controller
      *              @OA\Property (
      *                  property="id",
      *                  type="integer",
-     *                  description="Landingpage ID. Empty for new page",
+     *                  description="Landing Page ID. Empty for new page",
      *                  example="1"
      *              ),
      *              @OA\Property (
@@ -119,7 +118,6 @@ class LandingpageController extends Controller
      *              ),
      *          ),
      *     ),
-
      *     @OA\Response(
      *         response="200",
      *         description="Save successfull"
@@ -135,20 +133,20 @@ class LandingpageController extends Controller
      * @return mixed
      * @throws ValidationException
      */
-    public function save(Request $request) : JsonResponse
+    public function save(Request $request): JsonResponse
     {
         $user_id = intval(Auth::user()->getAuthIdentifier());
         try {
-            if(isset($request->id)) {
-                $page = Landingpage::find(intval($request->id));
-                if($page->user_id!=$user_id) {
+            if (isset($request->id)) {
+                $page = LandingPage::find(intval($request->id));
+                if ($page->user_id != $user_id) {
                     throw new Exception('Invalid user');
                 }
             } else {
-                $page = new Landingpage();
+                $page = new LandingPage();
                 $page->user_id = $user_id;
                 $page->template_id = intval($request->template_id);
-                if($page->template_id==0) {
+                if ($page->template_id == 0) {
                     throw new Exception('Invalid template');
                 }
             }
@@ -160,11 +158,11 @@ class LandingpageController extends Controller
                 'error' => $e->getMessage()
             ], 400);
         }
+
         // Return response
         return response()->json([
             'success' => true,
             'data' => $page->id
         ], 200);
     }
-
 }
