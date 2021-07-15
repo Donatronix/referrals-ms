@@ -1,5 +1,5 @@
 {
-    "name": "sumra/referrals",
+    "name": "kup/referrals",
     "description": "Referral Program Microservice",
     "type": "project",
     "private": true,
@@ -31,10 +31,7 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        },
-        "files": [
-            "app/helpers.php"
-        ]
+        }
     },
     "autoload-dev": {
         "classmap": [
