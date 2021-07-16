@@ -14,14 +14,14 @@ class CreateLandingPagesTable extends Migration
     public function up()
     {
         Schema::create('landing_pages', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger("user_id")->default(0);
-            $table->unsignedBigInteger("template_id")->default(0);
+            $table->uuid('id')->primary();
+
+            $table->uuid('user_id');
+            //$table->foreignUuid('user_id')->default(0)->constrained()->onUpdate('cascade')->onDelete('cascade');
+
+            $table->foreignUuid('template_id')->default(0)->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->longText("json");
             $table->timestamps();
-
-            $table->foreign("user_id")->references("id")->on("users");
-            $table->foreign("template_id")->references("id")->on("templates");
         });
     }
 

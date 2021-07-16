@@ -22,16 +22,12 @@ class ReferralCode extends MainModel
     ];
 
     protected $fillable = [
+        'code',
+        'application_id',
         'user_id',
         'referral_link',
-        'code',
         'is_default',
-        'application_id'
-    ];
-
-    protected $dates = [
-        'created_at',
-        'updated_at',
+        'note'
     ];
 
     /**
@@ -54,7 +50,10 @@ class ReferralCode extends MainModel
         });
     }
 
-    public function referralcodesUser()
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class);
     }

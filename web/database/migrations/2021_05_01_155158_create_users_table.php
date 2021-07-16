@@ -16,8 +16,8 @@ class CreateUsersTable extends Migration
         $table_name = 'users';
 
         Schema::create($table_name, function (Blueprint $table) {
-            $table->bigInteger('id')->primary()->unsigned();
-            $table->unsignedBigInteger('referrer_id')->nullable()->comment('The ID of the inviting user.');
+            $table->uuid('id');
+            $table->uuid('referrer_id')->nullable()->comment('The ID of the inviting user');
             $table->timestamps();
         });
     }

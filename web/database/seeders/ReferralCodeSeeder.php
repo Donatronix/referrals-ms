@@ -1,11 +1,10 @@
 <?php
 
-
 namespace Database\Seeders;
 
+use App\Services\Firebase;
 use Illuminate\Database\Seeder;
 use App\Models\ReferralCode;
-
 
 class ReferralCodeSeeder extends Seeder
 {
@@ -16,6 +15,10 @@ class ReferralCodeSeeder extends Seeder
      */
     public function run()
     {
-        ReferralCode::factory()->count(30)->create();
+        for ($a = 0; $a < 30; $a++) {
+            $code = ReferralCode::factory()->create();
+            $code->referral_link = Firebase::linkGenerate($code->code, $code->application_id);
+            $code->save();
+        }
     }
 }

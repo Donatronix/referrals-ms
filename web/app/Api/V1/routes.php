@@ -43,12 +43,6 @@ $router->group([
             $router->post('inviting', 'ReferralController@inviting');
 
             /**
-             * Management
-             */
-            $router->get('manager/validate/user', 'ManagementController@validateUser');
-            $router->get('manager/validate/referrer', 'ManagementController@validateReferrer');
-
-            /**
              * ADMIN PANEL
              */
             $router->group([
