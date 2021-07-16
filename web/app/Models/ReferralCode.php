@@ -1,26 +1,25 @@
 <?php
 
-
 namespace App\Models;
 
 use App\Services\ReferralCodeService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use App\Traits\UuidTrait;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class ReferralCode extends MainModel
 {
     use HasFactory;
     use UuidTrait;
 
-
     const CAMPAIGN = 'Referral Program';
     const MEDIUM = 'Invite Friends';
 
     //const ANDROID_MIN_PACKAGE_VERSION = '20040902';
 
-    protected $appends = ['resource_url'];
+    protected $appends = [
+        'resource_url'
+    ];
 
     protected $fillable = [
         'user_id',
@@ -76,7 +75,6 @@ class ReferralCode extends MainModel
 
         return ReferralCodeService::createReferralCode($referral_info);
     }
-
 
     /* ************************ ACCESSOR ************************* */
 

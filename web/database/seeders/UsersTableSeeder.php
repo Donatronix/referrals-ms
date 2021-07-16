@@ -25,7 +25,9 @@ class UsersTableSeeder extends Seeder
                 }
             }
 
-            User::factory()->count(5)->create();
+            User::factory()->count(5)->create([
+                'referrer_id' => $id
+            ]);
         }
     }
 }

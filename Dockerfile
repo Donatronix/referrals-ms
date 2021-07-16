@@ -44,8 +44,7 @@ RUN chown -R www-data:www-data /var/www/html \
 # make sure apt is up to date
 RUN apt update --fix-missing && apt upgrade -y
 
-RUN apt install -y \
-        mc \
+RUN apt install -y \        
         curl \
         g++ \
         openssh-client \
