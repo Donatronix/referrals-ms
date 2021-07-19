@@ -5,6 +5,7 @@ namespace App\Api\V1\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\ReferralCode;
 use App\Models\User;
+use App\Services\ReferralCodeService;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -192,7 +193,11 @@ class ReferralController extends Controller
             'referrer_id' => $parrent_user_id
         ]);
 
-        $user_info = ReferralCode::sendDataToCreateReferralCode($currentUserId, $application_id, true);
+        $user_info = ReferralCodeService::createReferralCode([
+            'user_id' => $currentUserId,
+            'application_id' => $application_id,
+            'is_default' => true
+        ]);
 
         $array = [
             'user_id' => $user_info['user_id'],

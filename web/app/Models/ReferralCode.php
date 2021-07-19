@@ -64,17 +64,6 @@ class ReferralCode extends MainModel
             ->first() : NULL;
     }
 
-    public static function sendDataToCreateReferralCode($currentUserId, $application_id, $default = false)
-    {
-        $referral_info = [
-            'user_id' => $currentUserId,
-            'application_id' => $application_id,
-            'is_default' => $default
-        ];
-
-        return ReferralCodeService::createReferralCode($referral_info);
-    }
-
     /* ************************ ACCESSOR ************************* */
 
     public function getResourceUrlAttribute()

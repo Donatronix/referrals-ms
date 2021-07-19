@@ -3,6 +3,8 @@
 namespace App\Api\V1\Controllers;
 
 use App\Models\ReferralCode;
+use App\Services\ReferralCodeService;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -246,10 +248,8 @@ class ReferralCodeController extends Controller
 
         try {
             $data = ReferralCode::find($id);
-            $data->referral_link = $input_data->referral_link;
-            $data->code = $input_data->code;
-            $data->application_id = $input_data->application_id;
             $data->is_default = $input_data->default;
+            $data->note = $input_data->note;
             $data->save();
 
             return response()->jsonApi([
@@ -257,7 +257,7 @@ class ReferralCodeController extends Controller
                 'title' => "Updating success",
                 'message' => 'The referral link field update has been successfully updated'
             ], 200);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->jsonApi([
                 'status' => 'danger',
                 'title' => 'Link not found',
@@ -272,11 +272,9 @@ class ReferralCodeController extends Controller
     private function rules()
     {
         return [
-            'user_id' => 'integer',
-            'referral_link' => 'required|string|max:35',
-            'code' => 'required|string|max:8|min:8',
+            'application_id' => 'required|string|max:30',
             'is_default' => 'integer|max:1',
-            'application_id' => 'string|max:30',
+            'note' => 'string|max:255'
         ];
     }
 
@@ -353,7 +351,7 @@ class ReferralCodeController extends Controller
                 'title' => "Deleting success",
                 'message' => 'The referral link field has been successfully deleted'
             ], 200);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->jsonApi([
                 'status' => 'danger',
                 'title' => 'Not found',
@@ -427,25 +425,27 @@ class ReferralCodeController extends Controller
      *     ),
      * )
      */
-
     public function store(Request $request)
     {
-        $input_data = (object)$this->validate($request, $this->rules());
+        $input_data = (object) $this->validate($request, $this->rules());
+
+        $currentUserId = Auth::user()->getAuthIdentifier();
+
+        $referral_cnt = ReferralCode::where('user_id', $currentUserId)->count();
+        if ($referral_cnt >= config('app.link_limit')) {
+            return response()->jsonApi([
+                'status' => 'warning',
+                'title' => "Exceeded the limit",
+                'message' => 'You have exceeded the limit on the number of links to this service'
+            ], 200);
+        }
 
         try {
-            $currentUserId = Auth::user()->getAuthIdentifier();
-
-            $referral_cnt = ReferralCode::where('user_id', $currentUserId)->count();
-
-            if ($referral_cnt >= config('app.link_limit')) {
-                return response()->jsonApi([
-                    'status' => 'warning',
-                    'title' => "Exceeded the limit",
-                    'message' => 'You have exceeded the limit on the number of links to this service'
-                ], 200);
-            }
-
-            $row = ReferralCode::sendDataToCreateReferralCode($currentUserId, $input_data->application_id);
+            $row = ReferralCodeService::createReferralCode([
+                'user_id' => $currentUserId,
+                'application_id' => $input_data->application_id,
+                'is_default' => false
+            ]);
 
             return response()->jsonApi([
                 'status' => 'success',
@@ -453,7 +453,7 @@ class ReferralCodeController extends Controller
                 'message' => 'The creation of the referral link was successful',
                 'row' => $row
             ], 200);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->jsonApi([
                 'status' => 'danger',
                 'title' => 'Operation not successful',
@@ -512,7 +512,6 @@ class ReferralCodeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-
     public function setDefault($id)
     {
         try {
@@ -528,7 +527,7 @@ class ReferralCodeController extends Controller
                 'title' => "Update was success",
                 'message' => 'Changing the default а referral link was successful.'
             ], 200);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->jsonApi([
                 'status' => 'danger',
                 'title' => 'Operation not successful',
