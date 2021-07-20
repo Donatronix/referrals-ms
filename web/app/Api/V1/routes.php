@@ -24,7 +24,7 @@ $router->group([
              *  Referral code
              */
             $router->get('referral-codes', 'ReferralCodeController@index');
-            $router->get('referral-codes/{id}/set', 'ReferralCodeController@setDefault');
+            $router->get('referral-codes/{id}/default', 'ReferralCodeController@setDefault');
             $router->post("referral-codes", 'ReferralCodeController@store');
             $router->get("referral-codes/{id}", 'ReferralCodeController@show');
             $router->put('referral-codes/{id}', 'ReferralCodeController@update');
@@ -34,7 +34,7 @@ $router->group([
              * Templates
              * */
             $router->get('/landing-page', 'LandingPageController@index');
-            $router->post('/landing-page', 'LandingPageController@save');
+            $router->post('/landing-page', 'LandingPageController@store');
 
             /**
              * Referral
@@ -54,7 +54,7 @@ $router->group([
                  * Templates
                  * */
                 $router->get('/template', 'TemplateController@index');
-                $router->post('/template', 'TemplateController@save');
+                $router->post('/template', 'TemplateController@store');
 
                 /**
                  * Refferals

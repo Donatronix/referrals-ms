@@ -8,39 +8,43 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * Referral code Controller
+ *
+ * @package App\Api\V1\Controllers
+ */
 class ReferralCodeController extends Controller
 {
     /**
-     *  Get referral code and link
+     * Get referral codes and links
      *
-     * @OA\Get (
+     * @OA\Get(
      *     path="/v1/referrals/referral-codes",
-     *     description="Get all user's referral codes and link",
+     *     description="Get all user's referral codes and links",
      *     tags={"Referral Code"},
      *
      *     security={{
-     *          "default": {
-     *              "ManagerRead",
-     *              "User",
-     *              "ManagerWrite"
-     *          }
+     *         "default": {
+     *             "ManagerRead",
+     *             "User",
+     *             "ManagerWrite"
+     *         }
      *     }},
      *     x={
-     *          "auth-type" : "Application & Application User",
-     *          "throttling-tier": "Unlimited",
-     *          "wso-application-security": {
-     *              "security-types": {"oauth2"},
-     *              "optinal": "false"
-     *           }
+     *         "auth-type": "Application & Application User",
+     *         "throttling-tier": "Unlimited",
+     *         "wso2-application-security": {
+     *             "security-types": {"oauth2"},
+     *             "optional": "false"
+     *         }
      *     },
-     *
      *     @OA\Response(
-     *          response="200",
-     *          description="The list of referral codes has been displayed successfully"
+     *         response="200",
+     *         description="The list of referral codes has been displayed successfully"
      *     ),
      *     @OA\Response(
-     *          response="401",
-     *          description="Unauthorized"
+     *         response="401",
+     *         description="Unauthorized"
      *     )
      * )
      *
@@ -56,7 +60,7 @@ class ReferralCodeController extends Controller
                 'status' => 'success',
                 'title' => "List referral",
                 'message' => 'list referral successfully received',
-                'codes' => $codes
+                'data' => $codes->toArray()
             ], 200);
         } catch (Exception $e) {
             $currentUserId = Auth::user()->getAuthIdentifier();
@@ -104,6 +108,18 @@ class ReferralCodeController extends Controller
      *                  description="Application ID",
      *                  example="net.sumra.chat"
      *              ),
+     *              @OA\Property(
+     *                  property="is_default",
+     *                  type="string",
+     *                  description="Is Defailt refferal link",
+     *                  example=""
+     *              ),
+     *              @OA\Property(
+     *                  property="note",
+     *                  type="string",
+     *                  description="Note about referral code",
+     *                  example=""
+     *              )
      *          ),
      *     ),
      *
@@ -159,9 +175,8 @@ class ReferralCodeController extends Controller
     {
         $input_data = (object)$this->validate($request, $this->rules());
 
-        $currentUserId = Auth::user()->getAuthIdentifier();
+        $referral_cnt = ReferralCode::byOwner()->get()->count();
 
-        $referral_cnt = ReferralCode::where('user_id', $currentUserId)->count();
         if ($referral_cnt >= config('app.link_limit')) {
             return response()->jsonApi([
                 'status' => 'warning',
@@ -171,23 +186,23 @@ class ReferralCodeController extends Controller
         }
 
         try {
-            $row = ReferralCodeService::createReferralCode([
-                'user_id' => $currentUserId,
+            $code = ReferralCodeService::createReferralCode([
+                'user_id' => Auth::user()->getAuthIdentifier(),
                 'application_id' => $input_data->application_id,
                 'is_default' => false
             ]);
 
             return response()->jsonApi([
                 'status' => 'success',
-                'title' => "Create was success",
+                'title' => "Referral code generate",
                 'message' => 'The creation of the referral link was successful',
-                'row' => $row
+                'data' => $code->toArray()
             ], 200);
         } catch (Exception $e) {
             return response()->jsonApi([
                 'status' => 'danger',
-                'title' => 'Operation not successful',
-                'message' => "The operation to add a referral link was not successful."
+                'title' => 'Referral code generate',
+                'message' => "There was an error while creating a referral code: " . $e->getMessage()
             ], 404);
         }
     }
@@ -245,19 +260,19 @@ class ReferralCodeController extends Controller
     public function show($id)
     {
         try {
-            $query = ReferralCode::find($id);
+            $code = ReferralCode::find($id);
 
             return response()->jsonApi([
                 'status' => 'success',
-                'title' => "Showing one link",
-                'message' => 'One link successfully shown',
-                'row' => $query,
+                'title' => "Get referral code info",
+                'message' => 'Get referral code info with link',
+                'data' => $code,
             ], 200);
         } catch (Exception $e) {
             return response()->jsonApi([
                 'status' => 'danger',
-                'title' => "Not found ID",
-                'message' => "#{$id} not found"
+                'title' => "Get referral code info",
+                'message' => "Referral code #{$id} not found"
             ], 404);
         }
     }
@@ -291,8 +306,8 @@ class ReferralCodeController extends Controller
      *          name="id",
      *          in="path",
      *          required=true,
-     *          description="Referral ID",
-     *          example="1",
+     *          description="Referral code ID",
+     *          example="93f49909-a6ba-4812-b507-e5eb08a3cb9d",
      *          @OA\Schema (
      *              type="integer"
      *          ),
@@ -301,27 +316,15 @@ class ReferralCodeController extends Controller
      *          @OA\JsonContent(
      *              type="object",
      *              @OA\Property(
-     *                  property="application_id",
-     *                  type="string",
-     *                  description="Application ID of error",
-     *                  example=""
-     *              ),
-     *              @OA\Property(
-     *                  property="referral_link",
-     *                  type="string",
-     *                  description="Referral link of error",
-     *                  example=""
-     *              ),
-     *              @OA\Property(
-     *                  property="code",
-     *                  type="string",
-     *                  description="Code of error",
-     *                  example=""
-     *              ),
-     *              @OA\Property(
      *                  property="is_default",
      *                  type="string",
-     *                  description="Update default property",
+     *                  description="Is Defailt refferal link",
+     *                  example=""
+     *              ),
+     *              @OA\Property(
+     *                  property="note",
+     *                  type="string",
+     *                  description="Note about referral code",
      *                  example=""
      *              ),
      *          ),
@@ -329,9 +332,8 @@ class ReferralCodeController extends Controller
      *
      *     @OA\Response(
      *         response="200",
-     *         description="Success"
+     *         description="Save successfull"
      *     ),
-     *
      *     @OA\Response(
      *         response="401",
      *         description="Unauthorized"
@@ -420,9 +422,9 @@ class ReferralCodeController extends Controller
      *         in="path",
      *         required=true,
      *         description="Delete referral code by ID",
-     *         example="",
+     *         example="93f49909-a6ba-4812-b507-e5eb08a3cb9d",
      *         @OA\Schema(
-     *             type="integer"
+     *             type="string"
      *         )
      *     ),
      *
@@ -477,7 +479,7 @@ class ReferralCodeController extends Controller
      * Change the default link
      *
      * @OA\Get(
-     *     path="/v1/referrals/referral-codes/{id}/set",
+     *     path="/v1/referrals/referral-codes/{id}/default",
      *     description="Set new referral code and link",
      *     tags={"Referral Code"},
      *
@@ -488,7 +490,6 @@ class ReferralCodeController extends Controller
      *              "ManagerWrite"
      *           }
      *     }},
-     *
      *     x={
      *          "auth-type": "Application & Application User",
      *          "throttling-tier": "Unlimited",
@@ -503,12 +504,11 @@ class ReferralCodeController extends Controller
      *          in="path",
      *          required=true,
      *          description="ID referral code",
-     *          example="1",
+     *          example="93f49909-a6ba-4812-b507-e5eb08a3cb9d",
      *          @OA\Schema (
-     *              type="integer"
+     *              type="string"
      *          ),
      *     ),
-     *
      *     @OA\Response(
      *          response="200",
      *          description="Success"
@@ -550,7 +550,7 @@ class ReferralCodeController extends Controller
     /**
      * @return string[]
      */
-    private function rules()
+    private function rules(): array
     {
         return [
             'application_id' => 'required|string|max:30',

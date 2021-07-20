@@ -157,7 +157,7 @@ class TemplateController extends Controller
      * @return mixed
      * @throws ValidationException
      */
-    public function save(Request $request): JsonResponse
+    public function store(Request $request): JsonResponse
     {
         try {
             if (isset($request->id)) {

@@ -20,6 +20,62 @@ use Sumra\JsonApi\JsonApiResponse;
 class ReferralController extends Controller
 {
     /**
+     * List all referrals for user
+     *
+     * @OA\Get(
+     *     path="/v1/referrals",
+     *     summary="List all referrals for user",
+     *     description="List all referrals for user",
+     *     tags={"Referrals"},
+     *
+     *     security={{
+     *         "default": {
+     *             "ManagerRead",
+     *             "User",
+     *             "ManagerWrite"
+     *         }
+     *     }},
+     *     x={
+     *         "auth-type": "Application & Application User",
+     *         "throttling-tier": "Unlimited",
+     *         "wso2-application-security": {
+     *             "security-types": {"oauth2"},
+     *             "optional": "false"
+     *         }
+     *     },
+     *
+     *     @OA\Response(
+     *         response="200",
+     *         description="Success join new user to referrer user"
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="not found"
+     *     )
+     * )
+     *
+     * @return \Sumra\JsonApi\JsonApiResponse
+     */
+    public function index(): JsonApiResponse
+    {
+        $currentUserId = Auth::user()->getAuthIdentifier();
+
+        // Get list all referrals by user id
+        $list = User::where('referrer_id', $currentUserId)->get();
+
+        // Return response
+        return response()->jsonApi($list, 200);
+    }
+
+    /**
      * Get user referrer invite code
      *
      * @OA\Post(
@@ -98,25 +154,25 @@ class ReferralController extends Controller
      */
     public function inviting(Request $request)
     {
-        // POST application_id, code
-        // id=net.sumra.chat
-        // code=1827oGRL
-
-        $rules = [
+        $this->validate($request, [
             'application_id' => 'required|string',
             'code' => 'string|max:8|min:8'
-        ];
-        $this->validate($request, $rules);
+        ]);
+
         try {
             // if the user is invited, then we are looking for the referrer by the referral code
             if ($request->code) {
-                $referral_info = ReferralCode::getUserByReferralCode($request->code, $request->application_id);
+
+                $referral_info = ReferralCode::where('application_id', $request->get('application_id'))
+                    ->where('code', $request->code)
+                    ->first();
+
                 if ($referral_info) {
-                    return $this->createUser($request->application_id, $referral_info->user_id);
+                    return $this->createUser($request->get('application_id'), $referral_info->user_id);
                 }
             }
 
-            return $this->createUser($request->application_id);
+            return $this->createUser($request->get('application_id'));
         } catch (Exception $e) {
             return response()->jsonApi([
                 'type' => 'error',
@@ -126,12 +182,19 @@ class ReferralController extends Controller
         }
     }
 
-    public function createUser($application_id, $parrent_user_id = false)
+    /**
+     * @param       $application_id
+     * @param null  $parent_user_id
+     *
+     * @return mixed
+     */
+    private function createUser($application_id, $parent_user_id = null)
     {
         $currentUserId = Auth::user()->getAuthIdentifier();
+
         User::create([
             'id' => $currentUserId,
-            'referrer_id' => $parrent_user_id
+            'referrer_id' => $parent_user_id
         ]);
 
         $user_info = ReferralCodeService::createReferralCode([
@@ -149,62 +212,6 @@ class ReferralController extends Controller
         PubSub::publish('invitedReferral', $array, 'contactsBook');
 
         return response()->jsonApi('User created', 200);
-    }
-
-    /**
-     * List all referrals for user
-     *
-     * @OA\Get(
-     *     path="/v1/referrals",
-     *     summary="List all referrals for user",
-     *     description="List all referrals for user",
-     *     tags={"Main"},
-     *
-     *     security={{
-     *         "default": {
-     *             "ManagerRead",
-     *             "User",
-     *             "ManagerWrite"
-     *         }
-     *     }},
-     *     x={
-     *         "auth-type": "Application & Application User",
-     *         "throttling-tier": "Unlimited",
-     *         "wso2-application-security": {
-     *             "security-types": {"oauth2"},
-     *             "optional": "false"
-     *         }
-     *     },
-     *
-     *     @OA\Response(
-     *         response="200",
-     *         description="Success join new user to referrer user"
-     *     ),
-     *     @OA\Response(
-     *         response=401,
-     *         description="Unauthorized"
-     *     ),
-     *     @OA\Response(
-     *         response=400,
-     *         description="Invalid request"
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="not found"
-     *     )
-     * )
-     *
-     * @return \Sumra\JsonApi\JsonApiResponse
-     */
-    public function index(): JsonApiResponse
-    {
-        $currentUserId = Auth::user()->getAuthIdentifier();
-
-        // Get list all referrals by user id
-        $list = User::where('referrer_id', $currentUserId)->get();
-
-        // Return response
-        return response()->jsonApi($list, 200);
     }
 }
 

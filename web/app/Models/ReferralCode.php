@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
 
-class ReferralCode extends MainModel
+class ReferralCode extends BaseModel
 {
     use HasFactory;
     use UuidTrait;
@@ -17,8 +17,6 @@ class ReferralCode extends MainModel
 
     const ANDROID_PACKAGE_NAME = 'net.sumra.android';
     //const ANDROID_MIN_PACKAGE_VERSION = '20040902';
-
-    public $code = null;
 
     protected $appends = [
         'resource_url'
@@ -32,12 +30,6 @@ class ReferralCode extends MainModel
         'is_default',
         'note'
     ];
-
-    public static function getUserByReferralCode($referral_code, $application_id)
-    {
-        return $referral_code ? self::where('code', $referral_code)->where('application_id', $application_id)
-            ->first() : null;
-    }
 
     /**
      * Boot the model.
@@ -55,7 +47,7 @@ class ReferralCode extends MainModel
             } //check if the token already exists and if it does, try again
             while (self::where('code', $referralCode)->first());
 
-            $obj->code = (string)$referralCode;
+            $obj->setAttribute('code', (string)$referralCode);
         });
     }
 

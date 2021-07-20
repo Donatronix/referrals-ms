@@ -138,7 +138,7 @@ class LandingPageController extends Controller
      * @return mixed
      * @throws ValidationException
      */
-    public function save(Request $request): JsonResponse
+    public function store(Request $request): JsonResponse
     {
         $user_id = intval(Auth::user()->getAuthIdentifier());
         try {

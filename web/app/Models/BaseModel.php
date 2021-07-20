@@ -5,13 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
-class MainModel extends Model
+class BaseModel extends Model
 {
-    public static function scopeGetById($model, $id)
-    {
-        return $model::find($id);
-    }
-
     /**
      * @param $query
      *
