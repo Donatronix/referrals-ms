@@ -3,7 +3,7 @@
 namespace App\Api\V1\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\LandingPage;
+use App\Models\ReferralCode;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -11,19 +11,19 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
 /**
- * Class LandingPageController
+ * Referral code Controller
  *
  * @package App\Api\V1\Controllers
  */
-class LandingPageController extends Controller
+class ReferralCodeController2 extends Controller
 {
     /**
-     * LandingPage Controller
+     * Get referral code
      *
      * @OA\Get(
-     *     path="/v1/referrals/landing-pages",
-     *     description="Get all user's landing pages",
-     *     tags={"Landing pages"},
+     *     path="/v1/referrals/referral-codes",
+     *     description="Get all user's referral codes",
+     *     tags={"Referral Code"},
      *
      *     security={{
      *         "default": {
@@ -40,15 +40,14 @@ class LandingPageController extends Controller
      *             "optional": "false"
      *         }
      *     },
-     *
      *     @OA\Response(
      *         response="200",
-     *         description="List of all landing pages"
+     *         description="List of all referral codes"
      *     ),
      *     @OA\Response(
      *         response=401,
      *         description="Unauthorized"
-     *     ),
+     *     )
      * )
      *
      * @param Request $request
@@ -58,15 +57,16 @@ class LandingPageController extends Controller
      */
     public function index(): JsonResponse
     {
-        $user_id = intval(Auth::user()->getAuthIdentifier());
+        $user_id = (int)Auth::user()->getAuthIdentifier();
         try {
-            $userspages = LandingPage::where('user_id', $user_id);
-            $pages = [];
-            foreach ($userspages as $p) {
-                $pages[] = [
-                    'template_id' => $p->template_id,
-                    'html' => $p->template->html,
-                    'jasonarray' => json_decode($p->json)
+            $referralCodes = ReferralCode::where('user_id', $user_id);
+            $codes = [];
+            foreach ($referralCodes as $p) {
+                $codes[] = [
+                    'id' => $p->id,
+                    'code' => $p->code,
+                    'created_at' => $p->created_at,
+                    'updated_at' => $p->updated_at
                 ];
             }
         } catch (Exception $e) {
@@ -79,17 +79,17 @@ class LandingPageController extends Controller
         // Return response
         return response()->json([
             'success' => true,
-            'data' => $pages
+            'data' => $codes
         ], 200);
     }
 
     /**
-     * Landing page Controller
+     * LandingPage Controller
      *
      * @OA\Post(
-     *     path="/v1/referrals/landing-pages",
-     *     description="Save landing page",
-     *     tags={"Landing pages"},
+     *     path="/v1/referrals/referral-codes",
+     *     description="Generate new code",
+     *     tags={"Referral Code"},
      *
      *     security={{
      *         "default": {
@@ -107,28 +107,28 @@ class LandingPageController extends Controller
      *         }
      *     },
      *
-     *     @OA\RequestBody(
-     *          @OA\JsonContent(
-     *              @OA\Property (
-     *                  property="id",
-     *                  type="integer",
-     *                  description="Landing Page ID. Empty for new page",
-     *                  example="1"
-     *              ),
-     *              @OA\Property (
-     *                  property="template_id",
-     *                  type="integer",
-     *                  description="Template id for new page",
-     *                  example=""
-     *              ),
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\Property (
+     *              property="user_id",
+     *              type="integer",
+     *              description="",
+     *              example="100"
      *          ),
-     *     ),
+     *          @OA\Property (
+     *              property="code",
+     *              type="integeer",
+     *              description="",
+     *              example=""
+     *          ),
+     *      ),
+     *
      *     @OA\Response(
      *         response="200",
      *         description="Save successfull"
      *     ),
      *     @OA\Response(
-     *         response=401,
+     *         response="401",
      *         description="Unauthorized"
      *     ),
      * )
@@ -138,25 +138,12 @@ class LandingPageController extends Controller
      * @return mixed
      * @throws ValidationException
      */
-    public function save(Request $request): JsonResponse
+    public function save(): JsonResponse
     {
-        $user_id = intval(Auth::user()->getAuthIdentifier());
+        $user_id = (int)Auth::user()->getAuthIdentifier();
         try {
-            if (isset($request->id)) {
-                $page = LandingPage::find(intval($request->id));
-                if ($page->user_id != $user_id) {
-                    throw new Exception('Invalid user');
-                }
-            } else {
-                $page = new LandingPage();
-                $page->user_id = $user_id;
-                $page->template_id = intval($request->template_id);
-                if ($page->template_id == 0) {
-                    throw new Exception('Invalid template');
-                }
-            }
-            $page->json = json_encode($request->jsonarray);
-            $page->save();
+            $code = new ReferralCode();
+            $code->generate($user_id);
         } catch (Exception $e) {
             return response()->json([
                 'success' => false,
@@ -167,7 +154,7 @@ class LandingPageController extends Controller
         // Return response
         return response()->json([
             'success' => true,
-            'data' => $page->id
+            'data' => $code->code
         ], 200);
     }
 }

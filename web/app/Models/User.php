@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\UuidTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Model
 {
@@ -24,7 +25,7 @@ class User extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function referralCodes(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function referralCodes(): HasMany
     {
         return $this->hasMany(ReferralCode::class);
     }

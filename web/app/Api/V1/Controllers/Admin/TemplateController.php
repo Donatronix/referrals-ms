@@ -6,6 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Template;
 use Exception;
 
+/**
+ * Class TemplateController
+ *
+ * @package App\Api\V1\Controllers
+ */
 class TemplateController extends Controller
 {
     /**

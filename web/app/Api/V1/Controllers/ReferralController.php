@@ -7,13 +7,10 @@ use App\Models\ReferralCode;
 use App\Models\User;
 use App\Services\ReferralCodeService;
 use Exception;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 use PubSub;
 use Sumra\JsonApi\JsonApiResponse;
-use function Psy\debug;
 
 /**
  * Class ReferralController
@@ -29,7 +26,7 @@ class ReferralController extends Controller
      *     path="/v1/referrals/inviting",
      *     summary="Create user invite code",
      *     description="Get user referrer invite code",
-     *     tags={"Main"},
+     *     tags={"Referrals"},
      *
      *     security={{
      *         "default": {
@@ -129,6 +126,31 @@ class ReferralController extends Controller
         }
     }
 
+    public function createUser($application_id, $parrent_user_id = false)
+    {
+        $currentUserId = Auth::user()->getAuthIdentifier();
+        User::create([
+            'id' => $currentUserId,
+            'referrer_id' => $parrent_user_id
+        ]);
+
+        $user_info = ReferralCodeService::createReferralCode([
+            'user_id' => $currentUserId,
+            'application_id' => $application_id,
+            'is_default' => true
+        ]);
+
+        $array = [
+            'user_id' => $user_info['user_id'],
+            'application_id' => $user_info['application_id'],
+            'referral_code' => $user_info['referral_code']
+        ];
+
+        PubSub::publish('invitedReferral', $array, 'contactsBook');
+
+        return response()->jsonApi('User created', 200);
+    }
+
     /**
      * List all referrals for user
      *
@@ -184,32 +206,6 @@ class ReferralController extends Controller
         // Return response
         return response()->jsonApi($list, 200);
     }
-
-    public function createUser($application_id, $parrent_user_id = false)
-    {
-        $currentUserId = Auth::user()->getAuthIdentifier();
-        User::create([
-            'id' => $currentUserId,
-            'referrer_id' => $parrent_user_id
-        ]);
-
-        $user_info = ReferralCodeService::createReferralCode([
-            'user_id' => $currentUserId,
-            'application_id' => $application_id,
-            'is_default' => true
-        ]);
-
-        $array = [
-            'user_id' => $user_info['user_id'],
-            'application_id' => $user_info['application_id'],
-            'referral_code' => $user_info['referral_code']
-        ];
-
-        PubSub::publish('invitedReferral', $array, 'contactsBook');
-
-        return response()->jsonApi('User created', 200);
-    }
-
 }
 
 ######################### EXAMPLE CODE ##################################
@@ -226,7 +222,6 @@ $array = [
     ])
 ];
 PubSub::transaction(function() {
-
 })->publish('ReferralBonus', $array, 'referral');
 */
 ######################### EXAMPLE CODE ##################################

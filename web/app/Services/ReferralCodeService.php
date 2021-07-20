@@ -1,18 +1,15 @@
 <?php
 
-
 namespace App\Services;
 
-use App\Services\Firebase;
 use App\Models\ReferralCode;
-
 
 class ReferralCodeService
 {
     public static function createReferralCode($data)
     {
         $rc = ReferralCode::create([
-            'user_id' => (string) $data['user_id'],
+            'user_id' => (string)$data['user_id'],
             'application_id' => $data['application_id'],
             'referral_link' => 'link' . rand(1, 1000),
             'is_default' => $data['is_default']

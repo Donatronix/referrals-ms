@@ -20,7 +20,7 @@ class CheckAdminMiddleware
     {
         $adminUsers = explode(',', env('SUMRA_ADMIN_USERS', ''));
 
-        if(empty($adminUsers) || !in_array(Auth::user()->getAuthIdentifier(), $adminUsers)){
+        if (empty($adminUsers) || !in_array(Auth::user()->getAuthIdentifier(), $adminUsers)) {
             return response()->jsonApi([
                 'status' => 'error',
                 'title' => 'Access error',

@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-
 /**
  * Class UsersController
  *
@@ -106,7 +105,7 @@ class UsersController extends Controller
      * @return string
      * @throws \Exception
      */
-    public function index(Request $request)
+    public function index(Request $request): string
     {
         // Validate data
         $validator = Validator::make($request->all(), [

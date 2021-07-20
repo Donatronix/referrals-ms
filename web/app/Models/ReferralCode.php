@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use App\Services\ReferralCodeService;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Traits\UuidTrait;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
 
 class ReferralCode extends MainModel
@@ -15,7 +15,10 @@ class ReferralCode extends MainModel
     const CAMPAIGN = 'Referral Program';
     const MEDIUM = 'Invite Friends';
 
+    const ANDROID_PACKAGE_NAME = 'net.sumra.android';
     //const ANDROID_MIN_PACKAGE_VERSION = '20040902';
+
+    public $code = null;
 
     protected $appends = [
         'resource_url'
@@ -29,6 +32,12 @@ class ReferralCode extends MainModel
         'is_default',
         'note'
     ];
+
+    public static function getUserByReferralCode($referral_code, $application_id)
+    {
+        return $referral_code ? self::where('code', $referral_code)->where('application_id', $application_id)
+            ->first() : null;
+    }
 
     /**
      * Boot the model.
@@ -53,21 +62,15 @@ class ReferralCode extends MainModel
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
-    }
-
-    public static function getUserByReferralCode($referral_code, $application_id)
-    {
-        return $referral_code ? self::where('code', $referral_code)->where('application_id', $application_id)
-            ->first() : NULL;
     }
 
     /* ************************ ACCESSOR ************************* */
 
     public function getResourceUrlAttribute()
     {
-        return url('/admin/links/'.$this->getKey());
+        return url('/admin/links/' . $this->getKey());
     }
 }

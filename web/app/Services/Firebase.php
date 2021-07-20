@@ -67,7 +67,7 @@ class Firebase
                             urlencode(http_build_query($referrerData))
                         ),
 
-                        //'androidMinPackageVersionCode' => Link::ANDROID_MIN_PACKAGE_VERSION
+                        //'androidMinPackageVersionCode' => ReferralCode::ANDROID_MIN_PACKAGE_VERSION
                     ],
                     /*
                     'iosInfo' => [
