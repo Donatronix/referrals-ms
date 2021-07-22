@@ -27,7 +27,6 @@ services:
       - ./web:/var/www/html:rw
       - ./xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini:rw
 
-
 #  redis:
 #    container_name: sumra-kv-dev-redis-cache
 #    hostname: sumra-kv-dev-redis-cache

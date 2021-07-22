@@ -101,24 +101,24 @@ class ReferralController extends Controller
      *     },
      *
      *     @OA\RequestBody(
-     *          @OA\JsonContent(
-     *              type="object",
-     *              @OA\Property(
-     *                  property="application_id",
-     *                  type="string",
-     *                  maximum=50,
-     *                  description="ID of the service whose link the user clicked on",
-     *                  example="net.sumra.chat"
-     *              ),
-     *              @OA\Property(
-     *                  property="referral_code",
-     *                  type="string",
-     *                  minimum=8,
-     *                  maximum=8,
-     *                  description="Referral code of the inviting user",
-     *                  example="1827oGRL"
-     *              ),
-     *          ),
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="application_id",
+     *                 type="string",
+     *                 maximum=50,
+     *                 description="ID of the service whose link the user clicked on",
+     *                 example="net.sumra.chat"
+     *             ),
+     *             @OA\Property(
+     *                 property="referral_code",
+     *                 type="string",
+     *                 minimum=8,
+     *                 maximum=8,
+     *                 description="Referral code of the inviting user",
+     *                 example="1827oGRL"
+     *             ),
+     *         ),
      *     ),
      *
      *     @OA\Response(
@@ -154,64 +154,72 @@ class ReferralController extends Controller
      */
     public function inviting(Request $request)
     {
+        // Validate input data
         $this->validate($request, [
             'application_id' => 'required|string',
-            'code' => 'string|max:8|min:8'
+            'referral_code' => 'string|max:8|min:8'
         ]);
 
-        try {
-            // if the user is invited, then we are looking for the referrer by the referral code
-            if ($request->code) {
+        // Check if the user is invited, then we are looking for the referrer by the referral code
+        $parent_user_id = null;
+        if ($request->has('referral_code')) {
+            $referralInfo = ReferralCode::where('application_id', $request->get('application_id'))
+                ->where('code', $request->get('referral_code'))
+                ->first();
 
-                $referral_info = ReferralCode::where('application_id', $request->get('application_id'))
-                    ->where('code', $request->code)
-                    ->first();
-
-                if ($referral_info) {
-                    return $this->createUser($request->get('application_id'), $referral_info->user_id);
-                }
+            if ($referralInfo) {
+                $parent_user_id = $referralInfo->user_id;
             }
-
-            return $this->createUser($request->get('application_id'));
-        } catch (Exception $e) {
-            return response()->jsonApi([
-                'type' => 'error',
-                'title' => 'Referrals link not found',
-                'message' => $e
-            ], 404);
         }
-    }
 
-    /**
-     * @param       $application_id
-     * @param null  $parent_user_id
-     *
-     * @return mixed
-     */
-    private function createUser($application_id, $parent_user_id = null)
-    {
+        // Read current user id
         $currentUserId = Auth::user()->getAuthIdentifier();
 
-        User::create([
-            'id' => $currentUserId,
-            'referrer_id' => $parent_user_id
-        ]);
+        // Try create new user with referrer link
+        try {
+            User::create([
+                'id' => $currentUserId,
+                'referrer_id' => $parent_user_id
+            ]);
+        } catch (Exception $e) {
+            return response()->jsonApi([
+                'status' => 'danger',
+                'title' => 'User inviting',
+                'message' => "Cannot inviting new user: " . $e->getMessage()
+            ], 404);
+        }
 
-        $user_info = ReferralCodeService::createReferralCode([
-            'user_id' => $currentUserId,
-            'application_id' => $application_id,
-            'is_default' => true
-        ]);
+        // Try create new code with link
+        try {
+            $codeInfo = ReferralCodeService::createReferralCode([
+                'user_id' => $currentUserId,
+                'application_id' => $request->get('application_id'),
+                'is_default' => true
+            ]);
 
-        $array = [
-            'user_id' => $user_info['user_id'],
-            'application_id' => $user_info['application_id'],
-            'referral_code' => $user_info['referral_code']
-        ];
+            // Send notification to contacts book
+            $array = [
+                'user_id' => $codeInfo['user_id'],
+                'application_id' => $codeInfo['application_id'],
+                'referral_code' => $codeInfo['referral_code']
+            ];
 
-        PubSub::publish('invitedReferral', $array, 'contactsBook');
+            PubSub::publish('invitedReferral', $array, 'contactsBook');
 
-        return response()->jsonApi('User created', 200);
+            // Return response
+            return response()->jsonApi([
+                'status' => 'success',
+                'title' => "Referral code generate",
+                'message' => 'The creation of the referral link was successful',
+                'data' => $codeInfo->toArray()
+            ], 200);
+        } catch (Exception $e) {
+            return response()->jsonApi([
+                'status' => 'danger',
+                'title' => 'Referral code generate',
+                'message' => "There was an error while creating a referral code: " . $e->getMessage()
+            ], 404);
+        }
     }
 }
 
@@ -228,7 +236,6 @@ $array = [
         User::STATUS_BLOCKED
     ])
 ];
-PubSub::transaction(function() {
-})->publish('ReferralBonus', $array, 'referral');
+PubSub::transaction(function() {})->publish('ReferralBonus', $array, 'referral');
 */
 ######################### EXAMPLE CODE ##################################

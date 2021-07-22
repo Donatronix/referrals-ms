@@ -173,10 +173,11 @@ class ReferralCodeController extends Controller
      */
     public function store(Request $request)
     {
+        // Validate input data
         $input_data = (object)$this->validate($request, $this->rules());
 
+        // Check amount generated codes for current user
         $referral_cnt = ReferralCode::byOwner()->get()->count();
-
         if ($referral_cnt >= config('app.link_limit')) {
             return response()->jsonApi([
                 'status' => 'warning',
@@ -185,6 +186,7 @@ class ReferralCodeController extends Controller
             ], 200);
         }
 
+        // Try create new code with link
         try {
             $code = ReferralCodeService::createReferralCode([
                 'user_id' => Auth::user()->getAuthIdentifier(),
@@ -528,7 +530,9 @@ class ReferralCodeController extends Controller
         try {
             $code = ReferralCode::find($id);
 
-            $list = ReferralCode::where('application_id', $code->application_id)->where('user_id', $code->user_id)->get();
+            $list = ReferralCode::where('application_id', $code->application_id)
+                ->where('user_id', $code->user_id)
+                ->get();
             $list->each->update(['is_default' => false]);
 
             $code->update(['is_default' => true]);

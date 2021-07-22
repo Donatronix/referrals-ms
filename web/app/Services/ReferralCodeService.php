@@ -8,6 +8,15 @@ class ReferralCodeService
 {
     public static function createReferralCode($data)
     {
+        // Check if link is default, reset all previous link
+        if ($data['is_default']) {
+            $list = ReferralCode::where('application_id', $data['application_id'])
+                ->where('user_id', $data['user_id'])
+                ->get();
+            $list->each->update(['is_default' => false]);
+        }
+
+        // Create new referral code
         $rc = ReferralCode::create([
             'application_id' => $data['application_id'],
             'user_id' => (string)$data['user_id'],

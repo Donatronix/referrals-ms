@@ -44,7 +44,8 @@ RUN chown -R www-data:www-data /var/www/html \
 # make sure apt is up to date
 RUN apt update --fix-missing && apt upgrade -y
 
-RUN apt install -y \        
+RUN apt install -y \
+        mc \
         curl \
         g++ \
         openssh-client \
@@ -54,10 +55,9 @@ RUN apt install -y \
         libicu-dev \
         libgmp-dev
 
-#RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-#    && docker-php-ext-install -j$(nproc) gd
+#RUN docker-php-ext-configure gd --with-freetype --with-jpeg
 
-RUN docker-php-ext-install \
+RUN docker-php-ext-install -j$(nproc) \
     pdo \
     pdo_mysql \
     intl \
