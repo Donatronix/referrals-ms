@@ -36,11 +36,6 @@ COPY --from=build /app /var/www/html
 COPY --from=build /pubsub /var/www/pubsub
 COPY --from=build /json-api /var/www/json-api
 
-COPY conf/vhost.conf /etc/apache2/sites-available/000-default.conf
-
-RUN chown -R www-data:www-data /var/www/html \
-    && a2enmod rewrite ssl headers
-
 # make sure apt is up to date
 RUN apt update --fix-missing && apt upgrade -y
 
@@ -55,9 +50,11 @@ RUN apt install -y \
         libicu-dev \
         libgmp-dev
 
-#RUN docker-php-ext-configure gd --with-freetype --with-jpeg
+#RUN docker-php-ext-configure gd \
+#    --with-freetype --with-jpeg
 
 RUN docker-php-ext-install -j$(nproc) \
+#    gd
     pdo \
     pdo_mysql \
     intl \
@@ -70,9 +67,13 @@ RUN pecl install xdebug-3.0.3
 #RUN docker-php-ext-configure xdebug
 RUN docker-php-ext-enable xdebug
 
-#RUN cd /var/www/html && php artisan swagger-lume:generate
-
+# Configure Apache
+COPY conf/vhost.conf /etc/apache2/sites-available/000-default.conf
 RUN echo "Listen 8080" > /etc/apache2/ports.conf
 RUN echo "Listen 8443" >> /etc/apache2/ports.conf
-USER www-data
 EXPOSE 8443 8080
+
+RUN chown -R www-data:www-data /var/www/html \
+    && a2enmod rewrite ssl headers
+
+USER www-data

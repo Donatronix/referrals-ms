@@ -170,11 +170,16 @@ class ReferralCodeController extends Controller
      *          )
      *     ),
      * )
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return mixed
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request)
     {
         // Validate input data
-        $input_data = (object)$this->validate($request, array_merge(['application_id' => 'required|string|max:30'], $this->rules()));
+        $this->validate($request, array_merge(['application_id' => 'required|string|max:30'], $this->rules()));
 
         // Check amount generated codes for current user
         $referral_cnt = ReferralCode::byOwner()->get()->count();
@@ -190,7 +195,7 @@ class ReferralCodeController extends Controller
         try {
             $code = ReferralCodeService::createReferralCode([
                 'user_id' => Auth::user()->getAuthIdentifier(),
-                'application_id' => $input_data->get('application_id', null),
+                'application_id' => $request->get('application_id', null),
                 'is_default' => false
             ]);
 
@@ -255,9 +260,9 @@ class ReferralCodeController extends Controller
      *     )
      * )
      *
-     * @param int $id
+     * @param $id
      *
-     * @return \Illuminate\Http\Response
+     * @return mixed
      */
     public function show($id)
     {
@@ -366,18 +371,21 @@ class ReferralCodeController extends Controller
      * )
      *
      * @param \Illuminate\Http\Request $request
-     * @param int                      $id
+     * @param                          $id
      *
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Validation\ValidationException
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id): \Illuminate\Http\Response
     {
-        $input_data = (object)$this->validate($request, $this->rules());
+        // Validate input data
+        $this->validate($request, $this->rules());
 
+        // Try find referral code and update it
         try {
             $data = ReferralCode::find($id);
-            $data->is_default = $input_data->get('isDefault', false);
-            $data->note = $input_data->get('note', null);
+            $data->is_default = $request->get('isDefault', false);
+            $data->note = $request->get('note', null);
             $data->save();
 
             return response()->jsonApi([
@@ -453,9 +461,9 @@ class ReferralCodeController extends Controller
      *     ),
      * )
      *
-     * @param int $id
+     * @param $id
      *
-     * @return \Illuminate\Http\Response
+     * @return mixed
      */
     public function destroy($id)
     {
@@ -520,11 +528,11 @@ class ReferralCodeController extends Controller
      *     )
      * )
      *
-     * @param int $id
+     * @param $id
      *
      * @return \Illuminate\Http\Response
      */
-    public function setDefault($id)
+    public function setDefault($id): \Illuminate\Http\Response
     {
         try {
             $code = ReferralCode::find($id);
