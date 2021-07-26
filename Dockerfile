@@ -70,7 +70,7 @@ RUN pecl install xdebug-3.0.3
 #RUN docker-php-ext-configure xdebug
 RUN docker-php-ext-enable xdebug
 
-#RUN cd /var/www/html && php artisan l5-swagger:generate
+#RUN cd /var/www/html && php artisan swagger-lume:generate
 
 RUN echo "Listen 8080" > /etc/apache2/ports.conf
 RUN echo "Listen 8443" >> /etc/apache2/ports.conf

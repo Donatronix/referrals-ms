@@ -174,7 +174,7 @@ class ReferralCodeController extends Controller
     public function store(Request $request)
     {
         // Validate input data
-        $input_data = (object)$this->validate($request, $this->rules());
+        $input_data = (object)$this->validate($request, array_merge(['application_id' => 'required|string|max:30'], $this->rules()));
 
         // Check amount generated codes for current user
         $referral_cnt = ReferralCode::byOwner()->get()->count();
@@ -190,7 +190,7 @@ class ReferralCodeController extends Controller
         try {
             $code = ReferralCodeService::createReferralCode([
                 'user_id' => Auth::user()->getAuthIdentifier(),
-                'application_id' => $input_data->application_id,
+                'application_id' => $input_data->get('application_id', null),
                 'is_default' => false
             ]);
 
@@ -376,8 +376,8 @@ class ReferralCodeController extends Controller
 
         try {
             $data = ReferralCode::find($id);
-            $data->is_default = $input_data->default;
-            $data->note = $input_data->note;
+            $data->is_default = $input_data->get('isDefault', false);
+            $data->note = $input_data->get('note', null);
             $data->save();
 
             return response()->jsonApi([
@@ -389,8 +389,7 @@ class ReferralCodeController extends Controller
             return response()->jsonApi([
                 'status' => 'danger',
                 'title' => 'Referrals link not found',
-                'message' => $e,
-                // 'message' => "Referrals link #{$id} for updated not found"
+                'message' => "Referrals link #{$id} for updated not found: " . $e->getMessage()
             ], 404);
         }
     }
@@ -557,7 +556,6 @@ class ReferralCodeController extends Controller
     private function rules(): array
     {
         return [
-            'application_id' => 'required|string|max:30',
             'is_default' => 'integer|max:1',
             'note' => 'string|max:255'
         ];
