@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\UuidTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class ReferralCode extends BaseModel
@@ -18,17 +19,36 @@ class ReferralCode extends BaseModel
     const ANDROID_PACKAGE_NAME = 'net.sumra.android';
     //const ANDROID_MIN_PACKAGE_VERSION = '20040902';
 
+    /**
+     * @var string[]
+     */
     protected $appends = [
         'resource_url'
     ];
 
+    /**
+     * @var string[]
+     */
     protected $fillable = [
         'code',
         'application_id',
         'user_id',
-        'referral_link',
+        'link',
         'is_default',
         'note'
+    ];
+
+    /**
+     * @var string[]
+     */
+    protected $hidden = [
+        'created_at',
+        'updated_at'
+    ];
+
+    public static array $rules = [
+        'is_default' => 'integer|max:1',
+        'note' => 'string|max:255'
     ];
 
     /**
@@ -59,9 +79,24 @@ class ReferralCode extends BaseModel
         return $this->belongsTo(User::class);
     }
 
-    /* ************************ ACCESSOR ************************* */
+    /**
+     * Get codes / links by application
+     *
+     * @param $query
+     * @param $application_id
+     *
+     * @return mixed
+     */
+    public function scopeByApplication($query, $application_id = null)
+    {
+        return $query->where('application_id', $application_id);
+    }
 
-    public function getResourceUrlAttribute()
+    /* ************************ ACCESSOR ************************* */
+    /**
+     * @return string
+     */
+    public function getResourceUrlAttribute(): string
     {
         return url('/admin/links/' . $this->getKey());
     }

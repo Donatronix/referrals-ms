@@ -152,7 +152,7 @@ class ReferralController extends Controller
      * @return \Sumra\JsonApi\
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function inviting(Request $request)
+    public function inviting(Request $request): \Sumra\JsonApi
     {
         // Validate input data
         $this->validate($request, [
@@ -163,8 +163,8 @@ class ReferralController extends Controller
         // Check if the user is invited, then we are looking for the referrer by the referral code
         $parent_user_id = null;
         if ($request->has('referral_code')) {
-            $referralInfo = ReferralCode::where('application_id', $request->get('application_id'))
-                ->where('code', $request->get('referral_code'))
+            $referralInfo = ReferralCode::where('code', $request->get('referral_code'))
+                ->byApplication($request->get('application_id'))
                 ->first();
 
             if ($referralInfo) {
@@ -172,13 +172,10 @@ class ReferralController extends Controller
             }
         }
 
-        // Read current user id
-        $currentUserId = Auth::user()->getAuthIdentifier();
-
         // Try create new user with referrer link
         try {
             User::create([
-                'id' => $currentUserId,
+                'id' => Auth::user()->getAuthIdentifier(),
                 'referrer_id' => $parent_user_id
             ]);
         } catch (Exception $e) {
@@ -192,7 +189,6 @@ class ReferralController extends Controller
         // Try create new code with link
         try {
             $codeInfo = ReferralCodeService::createReferralCode([
-                'user_id' => $currentUserId,
                 'application_id' => $request->get('application_id'),
                 'is_default' => true
             ]);

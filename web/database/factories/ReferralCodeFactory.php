@@ -18,7 +18,7 @@ class ReferralCodeFactory extends Factory
         return [
             'application_id' => str_replace('-', '.', $this->faker->slug(3, false)),
             'user_id' => User::all()->random()->id,
-            'referral_link' => $this->faker->word(),
+            'link' => $this->faker->word(),
             'is_default' => $this->faker->boolean(),
             'note' => $this->faker->text(255),
         ];

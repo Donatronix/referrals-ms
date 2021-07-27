@@ -17,18 +17,18 @@ $router->group([
      */
     $router->group(
        [
-           'middleware' => 'checkUser'
+         //  'middleware' => 'checkUser'
        ],
         function ($router) {
             /**
              *  Referral code
              */
             $router->get('referral-codes', 'ReferralCodeController@index');
-            $router->get('referral-codes/{id}/default', 'ReferralCodeController@setDefault');
             $router->post("referral-codes", 'ReferralCodeController@store');
             $router->get("referral-codes/{id}", 'ReferralCodeController@show');
             $router->put('referral-codes/{id}', 'ReferralCodeController@update');
             $router->delete('referral-codes/{id}', 'ReferralCodeController@destroy');
+            $router->put('referral-codes/{id}/default', 'ReferralCodeController@setDefault');
 
             /*
              * Templates

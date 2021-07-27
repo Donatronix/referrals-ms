@@ -24,7 +24,7 @@ class CreateReferralCodesTable extends Migration
             $table->uuid('user_id');
             //$table->foreignUuid('user_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
 
-            $table->string('referral_link', 35)->unique();
+            $table->string('link', 35)->unique();
             $table->boolean('is_default')->default(false)->comment('Default link');
             $table->string('note')->nullable()->comment('The user can mark what he created the link for');
             $table->timestamps();

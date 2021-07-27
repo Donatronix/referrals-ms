@@ -60,7 +60,7 @@ class LandingPageController extends Controller
     {
         $user_id = intval(Auth::user()->getAuthIdentifier());
         try {
-            $userspages = LandingPage::where('user_id', $user_id);
+            $userspages = LandingPage::byOwner($user_id);
             $pages = [];
             foreach ($userspages as $p) {
                 $pages[] = [

@@ -12,8 +12,8 @@ class BaseModel extends Model
      *
      * @return mixed
      */
-    public function scopeByOwner($query)
+    public function scopeByOwner($query, $user_id = null)
     {
-        return $query->where('user_id', (int)Auth::user()->getAuthIdentifier());
+        return $query->where('user_id', $user_id ?? Auth::user()->getAuthIdentifier());
     }
 }

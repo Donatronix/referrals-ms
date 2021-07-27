@@ -131,12 +131,11 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Link generation limit
+    | Referral code and link generation limit
     |--------------------------------------------------------------------------
     |
-    | Add a restriction on the presence of links for a specific get parameter
-    | application ID
+    | Add a restriction on the presence of codes / links for a specific get parameter application ID
     |
     */
-    'link_limit' => 10,
+    'code_limit' => 10,
 ];

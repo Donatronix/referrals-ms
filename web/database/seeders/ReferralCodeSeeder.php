@@ -17,7 +17,7 @@ class ReferralCodeSeeder extends Seeder
     {
         for ($a = 0; $a < 30; $a++) {
             $code = ReferralCode::factory()->create();
-            $code->referral_link = Firebase::linkGenerate($code->code, $code->application_id);
+            $code->link = Firebase::linkGenerate($code->code, $code->application_id);
             $code->save();
         }
     }
