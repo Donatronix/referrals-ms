@@ -9,15 +9,17 @@ class ReferralCodeService
 {
     public static function createReferralCode($data)
     {
+        $userId = Auth::user()->getAuthIdentifier();
+
         // Check if code is set as default, then reset all previous code
         if ($data['is_default']) {
-            self::defaultReset($data['application_id'], $data['user_id']);
+            self::defaultReset($data['application_id'], $userId);
         }
 
         // Create new referral code
         $rc = ReferralCode::create([
             'application_id' => $data['application_id'],
-            'user_id' => Auth::user()->getAuthIdentifier(),
+            'user_id' => $userId,
             'link' => 'link' . rand(1, 1000),
             'is_default' => $data['is_default'] ?? false,
             'note' => $data['note'] ?? null

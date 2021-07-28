@@ -128,7 +128,7 @@ class ReferralCodeController extends Controller
      *                 property="is_default",
      *                 type="string",
      *                 description="Is Defailt referral code / link",
-     *                 example=""
+     *                 example="1, 0, true, false"
      *             ),
      *             @OA\Property(
      *                 property="note",
@@ -330,7 +330,7 @@ class ReferralCodeController extends Controller
      *                  property="is_default",
      *                  type="string",
      *                  description="Is Defailt refferal link",
-     *                  example=""
+     *                  example="1, 0, true, false"
      *              ),
      *              @OA\Property(
      *                  property="note",
@@ -371,9 +371,9 @@ class ReferralCodeController extends Controller
         try {
             $data = ReferralCode::find($id);
 
-            // Check if code is set as default, then reset all previous code
-            if ($request->boolean('is_default')) {
-                self::defaultReset($data->application_id, $data->user_id);
+            // Check if has is_default parameter, then reset all previous code
+            if ($request->has('is_default')) {
+                ReferralCodeService::defaultReset($data->application_id, $data->user_id);
 
                 $data->is_default = $request->boolean('is_default');
             }
@@ -385,7 +385,7 @@ class ReferralCodeController extends Controller
             return response()->jsonApi([
                 'status' => 'success',
                 'title' => "Updating success",
-                'message' => 'The referral code / link has been successfully updated'
+                'message' => 'The referral code (link) has been successfully updated'
             ], 200);
         } catch (Exception $e) {
             return response()->jsonApi([
@@ -528,6 +528,8 @@ class ReferralCodeController extends Controller
      */
     public function setDefault($id): \Illuminate\Http\Response
     {
+        dd('fff');
+
         try {
             $code = ReferralCode::find($id);
 
