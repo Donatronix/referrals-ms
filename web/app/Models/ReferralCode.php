@@ -5,12 +5,13 @@ namespace App\Models;
 use App\Traits\UuidTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
 class ReferralCode extends BaseModel
 {
     use HasFactory;
+    use SoftDeletes;
     use UuidTrait;
 
     const CAMPAIGN = 'Referral Program';
@@ -23,7 +24,7 @@ class ReferralCode extends BaseModel
      * @var string[]
      */
     protected $appends = [
-       // 'resource_url'
+        // 'resource_url'
     ];
 
     protected $casts = [

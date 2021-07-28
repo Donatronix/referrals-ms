@@ -28,6 +28,7 @@ class CreateReferralCodesTable extends Migration
             $table->boolean('is_default')->default(false)->comment('Default link');
             $table->string('note')->nullable()->comment('The user can mark what he created the link for');
             $table->timestamps();
+            $table->softDeletes();
 
             $table->unique(['user_id', 'code']);
         });
