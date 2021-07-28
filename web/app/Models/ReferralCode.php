@@ -23,7 +23,7 @@ class ReferralCode extends BaseModel
      * @var string[]
      */
     protected $appends = [
-        'resource_url'
+       // 'resource_url'
     ];
 
     protected $casts = [

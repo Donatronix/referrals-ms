@@ -76,7 +76,7 @@ class ReferralCodeController extends Controller
                 'status' => 'success',
                 'title' => "List referral",
                 'message' => 'list referral successfully received',
-                'data' => $codes
+                'data' => $codes->toArray()
             ], 200);
         } catch (Exception $e) {
             $currentUserId = Auth::user()->getAuthIdentifier();
@@ -127,8 +127,8 @@ class ReferralCodeController extends Controller
      *             @OA\Property(
      *                 property="is_default",
      *                 type="string",
-     *                 description="Is Defailt referral code / link",
-     *                 example="1, 0, true, false"
+     *                 description="Is Defailt referral code / link. Accept 1, 0, true, false",
+     *                 example="false"
      *             ),
      *             @OA\Property(
      *                 property="note",
@@ -329,8 +329,8 @@ class ReferralCodeController extends Controller
      *              @OA\Property(
      *                  property="is_default",
      *                  type="string",
-     *                  description="Is Defailt refferal link",
-     *                  example="1, 0, true, false"
+     *                  description="Is Defailt referral code / link. Accept 1, 0, true, false",
+     *                  example="false"
      *              ),
      *              @OA\Property(
      *                  property="note",
