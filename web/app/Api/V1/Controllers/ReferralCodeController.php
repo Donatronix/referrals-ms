@@ -554,11 +554,17 @@ class ReferralCodeController extends Controller
         }
     }
 
+    /**
+     *  Get information on the referral link for a specific user
+     *
+     * @param Request $request
+     * @return mixed
+     */
     public function getDataByUserId (Request $request)
     {
         $user_id = $request->get('user_id');
         try{
-            $referral_data = ReferralCode::where('user_id', $user_id);
+            $referral_data = ReferralCode::where('user_id', $user_id)->where('is_default', 1)->first();
 
             return response()->jsonApi([
                 'type' => 'success',
