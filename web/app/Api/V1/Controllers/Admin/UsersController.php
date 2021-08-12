@@ -119,7 +119,7 @@ class UsersController extends Controller
 
         if ($validator->fails()) {
             return response()->jsonApi([
-                'type' => 'error',
+                'type' => 'danger',
                 'title' => 'Error',
                 'message' => 'Validation error',
                 'errors' => $validator->errors()
@@ -233,7 +233,7 @@ class UsersController extends Controller
             return response()->jsonApi($user, 200);
         } catch (ModelNotFoundException $e) {
             return response()->jsonApi([
-                'type' => 'error',
+                'type' => 'danger',
                 'title' => 'User not found',
                 'message' => "User #{$id} not found"
             ], 404);

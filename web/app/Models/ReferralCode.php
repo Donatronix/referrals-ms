@@ -27,6 +27,9 @@ class ReferralCode extends BaseModel
         // 'resource_url'
     ];
 
+    /**
+     * @var string[]
+     */
     protected $casts = [
         'is_default' => 'boolean'
     ];
@@ -51,6 +54,9 @@ class ReferralCode extends BaseModel
         'updated_at'
     ];
 
+    /**
+     * @var array|string[]
+     */
     public static array $rules = [
         'is_default' => 'boolean',
         'note' => 'string|max:255'
