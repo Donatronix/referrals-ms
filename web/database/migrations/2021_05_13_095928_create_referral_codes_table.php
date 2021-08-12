@@ -18,13 +18,12 @@ class CreateReferralCodesTable extends Migration
         Schema::create('referral_codes', function (Blueprint $table)
         {
             $table->uuid('id')->primary();
+
+            $table->foreignUuid('user_id')->constrained()->onUpdate('restrict')->onDelete('restrict');
+
             $table->string('code', 8)->unique();
-            $table->string('application_id', 50)->nullable()->comment('Application ID / Package Name');
-
-            $table->uuid('user_id');
-            //$table->foreignUuid('user_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
-
             $table->string('link', 35)->unique();
+            $table->string('application_id', 50)->nullable()->comment('Application ID / Package Name');
             $table->boolean('is_default')->default(false)->comment('Default link');
             $table->string('note')->nullable()->comment('The user can mark what he created the link for');
             $table->timestamps();

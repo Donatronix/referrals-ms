@@ -528,13 +528,11 @@ class ReferralCodeController extends Controller
      */
     public function setDefault($id): \Illuminate\Http\Response
     {
-        dd('fff');
-
         try {
             $code = ReferralCode::find($id);
 
             // Reset defaults
-            self::defaultReset($code->application_id, $code->user_id);
+            ReferralCodeService::defaultReset($code->application_id, $code->user_id);
 
             // Set new default code
             $code->update(['is_default' => true]);
