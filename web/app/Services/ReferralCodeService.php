@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\ReferralCode;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class ReferralCodeService
@@ -46,5 +47,40 @@ class ReferralCodeService
         $list->each->update(['is_default' => false]);
 
         return null;
+    }
+
+    /**
+     *  Check the invited user for uniqueness
+     *
+     * @param array | $data
+     * @return false | object $output_data
+     */
+    public static function checkUser($data)
+    {
+        // trying to search for the invited user in the microservice structure
+        $user_info = User::find($data['user2']);
+
+        if($user_info === null)
+        {
+            $user_info = User::where('referrer_id', $data['user2'])->first();
+
+            if($user_info !== null)
+            {
+                $output_data = User::create([
+                    'id' => $data['user1'],
+                    'referrer_id' => $data['user2'],
+                ]);
+
+                return $output_data;
+            }
+
+            $output_data = User::where('id', $data['user1'])->update([
+                'referrer_id' => $data['user2'],
+            ]);
+
+            return $output_data;
+        }
+
+        return false;
     }
 }

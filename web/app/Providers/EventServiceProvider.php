@@ -15,5 +15,8 @@ class EventServiceProvider extends ServiceProvider
         'ReferralBonus' => [
             'App\Listeners\ReferralBonusListener',
         ],
+        'ReferralUserInfo' => [
+            'App\Listeners\UsersMeetListener',
+        ],
     ];
 }
