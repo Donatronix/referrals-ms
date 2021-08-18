@@ -49,33 +49,31 @@ class ReferralCodeService
         return null;
     }
 
+    public static function addUniqueUser ($data)
+    {
+        self::checkUser($data['user1']);
+        $result = self::checkUser($data['user2'], $data['user1']);
+
+        return $result;
+    }
+
     /**
-     *  Check the invited user for uniqueness
+     *  Check the invited user for uniqueness.
      *
-     * @param array | $data
+     * @param string | $user1 | inviting user
+     * @param string | $user2 | invited user
      * @return false | object $output_data
      */
-    public static function checkUser($data)
+    public static function checkUser($user2, $user1 = null)
     {
         // trying to search for the invited user in the microservice structure
-        $user_info = User::find($data['user2']);
+        $user_info = User::getUserById($user2);
 
         if($user_info === null)
         {
-            $user_info = User::where('referrer_id', $data['user2'])->first();
-
-            if($user_info !== null)
-            {
-                $output_data = User::create([
-                    'id' => $data['user1'],
-                    'referrer_id' => $data['user2'],
-                ]);
-
-                return $output_data;
-            }
-
-            $output_data = User::where('id', $data['user1'])->update([
-                'referrer_id' => $data['user2'],
+            $output_data = User::create([
+                'id' => $user2,
+                'referrer_id' => $user1,
             ]);
 
             return $output_data;

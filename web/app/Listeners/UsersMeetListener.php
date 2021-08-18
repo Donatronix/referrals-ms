@@ -1,7 +1,8 @@
 <?php
 
-
 namespace App\Listeners;
+
+use Illuminate\Support\Facades\Log;
 
 class UsersMeetListener
 {
@@ -14,6 +15,6 @@ class UsersMeetListener
      */
     public function handle($data)
     {
-        \App\Services\ReferralCodeService::checkUser($data);
+        \App\Services\ReferralCodeService::addUniqueUser($data);
     }
 }

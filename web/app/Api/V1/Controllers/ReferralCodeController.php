@@ -582,4 +582,13 @@ class ReferralCodeController extends Controller
             ], 404);
         }
     }
+
+    public function test (Request $request)
+    {
+        $users = ['user1' => $request->get('user1'), 'user2' => $request->get('user2')];
+
+        $user = ReferralCodeService::checkUser($users['user2']);
+
+
+    }
 }

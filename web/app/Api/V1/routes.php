@@ -20,9 +20,11 @@ $router->group([
          //  'middleware' => 'checkUser'
        ],
         function ($router) {
+            $router->get('/test', 'TestController@test');
             /**
              *  Referral code
              */
+
             $router->get('referral-codes', 'ReferralCodeController@index');
             $router->get('referral-codes/user', 'ReferralCodeController@getDataByUserId');
             $router->post("referral-codes", 'ReferralCodeController@store');
