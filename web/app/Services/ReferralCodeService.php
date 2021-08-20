@@ -49,6 +49,12 @@ class ReferralCodeService
         return null;
     }
 
+    /**
+     *  Handler for uid users received from another microservice
+     *
+     * @param array |$data
+     * @return false|object
+     */
     public static function addUniqueUser ($data)
     {
         self::checkUser($data['user1']);
