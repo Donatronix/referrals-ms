@@ -147,12 +147,12 @@ class ReferralController extends Controller
      *     )
      * )
      *
-     * @param Request $request
+     * @param \Illuminate\Http\Request $request
      *
-     * @return \Sumra\JsonApi\
+     * @return mixed
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function inviting(Request $request): \Sumra\JsonApi
+    public function inviting(Request $request): JsonApiResponse
     {
         // Validate input data
         $this->validate($request, [
@@ -172,7 +172,7 @@ class ReferralController extends Controller
             }
         }
 
-        // Try create new user with referrer link
+        // Try to create new user with referrer link
         try {
             User::create([
                 'id' => Auth::user()->getAuthIdentifier(),
@@ -186,7 +186,7 @@ class ReferralController extends Controller
             ], 404);
         }
 
-        // Try create new code with link
+        // Try to create new code with link
         try {
             $codeInfo = ReferralCodeService::createReferralCode([
                 'application_id' => $request->get('application_id'),

@@ -127,7 +127,7 @@ class ReferralCodeController extends Controller
      *             ),
      *             @OA\Property(
      *                 property="is_default",
-     *                 type="string",
+     *                 type="boolean",
      *                 description="Is Defailt referral code / link. Accept 1, 0, true, false",
      *                 example="false"
      *             ),
@@ -331,7 +331,7 @@ class ReferralCodeController extends Controller
      *              type="object",
      *              @OA\Property(
      *                  property="is_default",
-     *                  type="string",
+     *                  type="boolean",
      *                  description="Is Defailt referral code / link. Accept 1, 0, true, false",
      *                  example="false"
      *              ),

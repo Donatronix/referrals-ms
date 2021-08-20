@@ -16,9 +16,9 @@ $router->group([
      * ADMIN PANEL
      */
     $router->group(
-       [
-         //  'middleware' => 'checkUser'
-       ],
+        [
+            'middleware' => 'checkUser'
+        ],
         function ($router) {
             $router->get('/test', 'TestController@test');
             /**
