@@ -2,23 +2,34 @@
 
 namespace App\Models;
 
+use App\Traits\OwnerTrait;
 use App\Traits\UuidTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
-class ReferralCode extends BaseModel
+class ReferralCode extends Model
 {
     use HasFactory;
     use SoftDeletes;
     use UuidTrait;
+    use OwnerTrait;
 
     const CAMPAIGN = 'Referral Program';
     const MEDIUM = 'Invite Friends';
 
     const ANDROID_PACKAGE_NAME = 'net.sumra.android';
     //const ANDROID_MIN_PACKAGE_VERSION = '20040902';
+
+    /**
+     * @var array|string[]
+     */
+    public static array $rules = [
+        'is_default' => 'boolean',
+        'note' => 'string|max:255'
+    ];
 
     /**
      * @var string[]
@@ -52,14 +63,6 @@ class ReferralCode extends BaseModel
     protected $hidden = [
         'created_at',
         'updated_at'
-    ];
-
-    /**
-     * @var array|string[]
-     */
-    public static array $rules = [
-        'is_default' => 'boolean',
-        'note' => 'string|max:255'
     ];
 
     /**
