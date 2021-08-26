@@ -29,4 +29,9 @@ class User extends Model
     {
         return $this->hasMany(ReferralCode::class);
     }
+
+    public static function getUserById($user)
+    {
+        return User::find($user);
+    }
 }

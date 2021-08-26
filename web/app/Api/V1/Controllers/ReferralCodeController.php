@@ -73,7 +73,7 @@ class ReferralCodeController extends Controller
                 ->get();
 
             return response()->jsonApi([
-                'status' => 'success',
+                'type' => 'success',
                 'title' => "List referral",
                 'message' => 'list referral successfully received',
                 'data' => $codes->toArray()
@@ -82,9 +82,10 @@ class ReferralCodeController extends Controller
             $currentUserId = Auth::user()->getAuthIdentifier();
 
             return response()->jsonApi([
-                'status' => 'danger',
+                'type' => 'danger',
                 'title' => "Not received list",
-                'message' => "Data #{$currentUserId} not found"
+                'message' => "Data #{$currentUserId} not found",
+                'data' => null
             ], 404);
         }
     }
@@ -204,16 +205,17 @@ class ReferralCodeController extends Controller
             ]);
 
             return response()->jsonApi([
-                'status' => 'success',
+                'type' => 'success',
                 'title' => "Referral code generate",
                 'message' => 'The creation of the referral link was successful',
                 'data' => $code->toArray()
             ], 200);
         } catch (Exception $e) {
             return response()->jsonApi([
-                'status' => 'danger',
+                'type' => 'danger',
                 'title' => 'Referral code generate',
-                'message' => "There was an error while creating a referral code: " . $e->getMessage()
+                'message' => "There was an error while creating a referral code: " . $e->getMessage(),
+                'data' => null
             ], 404);
         }
     }
@@ -274,16 +276,17 @@ class ReferralCodeController extends Controller
             $code = ReferralCode::find($id);
 
             return response()->jsonApi([
-                'status' => 'success',
+                'type' => 'success',
                 'title' => "Get referral code info",
                 'message' => 'Get referral code info with link',
                 'data' => $code,
             ], 200);
         } catch (Exception $e) {
             return response()->jsonApi([
-                'status' => 'danger',
+                'type' => 'danger',
                 'title' => "Get referral code info",
-                'message' => "Referral code #{$id} not found"
+                'message' => "Referral code #{$id} not found",
+                'data' => null,
             ], 404);
         }
     }
@@ -383,13 +386,13 @@ class ReferralCodeController extends Controller
 
             // Send response
             return response()->jsonApi([
-                'status' => 'success',
+                'type' => 'success',
                 'title' => "Updating success",
                 'message' => 'The referral code (link) has been successfully updated'
             ], 200);
         } catch (Exception $e) {
             return response()->jsonApi([
-                'status' => 'danger',
+                'type' => 'danger',
                 'title' => 'Referrals link not found',
                 'message' => "Referral code #{$id} updated error: " . $e->getMessage()
             ], 404);
@@ -465,13 +468,13 @@ class ReferralCodeController extends Controller
             ReferralCode::destroy($id);
 
             return response()->jsonApi([
-                'status' => 'success',
+                'type' => 'success',
                 'title' => "Deleting success",
                 'message' => 'The referral link field has been successfully deleted'
             ], 200);
         } catch (Exception $e) {
             return response()->jsonApi([
-                'status' => 'danger',
+                'type' => 'danger',
                 'title' => 'Not found',
                 'message' => "Referrals link #{$id} for deleted not found"
             ], 404);
@@ -532,22 +535,60 @@ class ReferralCodeController extends Controller
             $code = ReferralCode::find($id);
 
             // Reset defaults
-            self::defaultReset($code->application_id, $code->user_id);
+            ReferralCodeService::defaultReset($code->application_id, $code->user_id);
 
             // Set new default code
             $code->update(['is_default' => true]);
 
             return response()->jsonApi([
-                'status' => 'success',
+                'type' => 'success',
                 'title' => "Update was success",
                 'message' => 'Changing the default а referral link was successful.'
             ], 200);
         } catch (Exception $e) {
             return response()->jsonApi([
-                'status' => 'danger',
+                'type' => 'danger',
                 'title' => 'Operation not successful',
                 'message' => "Changing the default a referral link was not successful."
             ], 404);
         }
+    }
+
+    /**
+     *  Get information on the referral link for a specific user
+     *
+     * @param Request $request
+     * @return mixed
+     */
+    public function getDataByUserId (Request $request)
+    {
+        $user_id = $request->get('user_id');
+        try{
+            $referral_data = ReferralCode::where('user_id', $user_id)->where('is_default', 1)->first();
+
+            return response()->jsonApi([
+                'type' => 'success',
+                'title' => "Update was success",
+                'message' => 'Changing the default а referral link was successful.',
+                'data' => $referral_data
+            ], 200);
+        }
+        catch (\Exception $e){
+            return response()->jsonApi([
+                'type' => 'danger',
+                'title' => 'Not received list',
+                'message' => "Data of referral code not found",
+                'data' => null
+            ], 404);
+        }
+    }
+
+    public function test (Request $request)
+    {
+        $users = ['user1' => $request->get('user1'), 'user2' => $request->get('user2')];
+
+        $user = ReferralCodeService::checkUser($users['user2']);
+
+
     }
 }

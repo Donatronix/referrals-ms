@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\ReferralCode;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class ReferralCodeService
@@ -46,5 +47,44 @@ class ReferralCodeService
         $list->each->update(['is_default' => false]);
 
         return null;
+    }
+
+    /**
+     *  Handler for uid users received from another microservice
+     *
+     * @param array |$data
+     * @return false|object
+     */
+    public static function addUniqueUser ($data)
+    {
+        self::checkUser($data['user1']);
+        $result = self::checkUser($data['user2'], $data['user1']);
+
+        return $result;
+    }
+
+    /**
+     *  Check the invited user for uniqueness.
+     *
+     * @param string | $user1 | inviting user
+     * @param string | $user2 | invited user
+     * @return false | object $output_data
+     */
+    public static function checkUser($user2, $user1 = null)
+    {
+        // trying to search for the invited user in the microservice structure
+        $user_info = User::getUserById($user2);
+
+        if($user_info === null)
+        {
+            $output_data = User::create([
+                'id' => $user2,
+                'referrer_id' => $user1,
+            ]);
+
+            return $output_data;
+        }
+
+        return false;
     }
 }

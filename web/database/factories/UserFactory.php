@@ -23,9 +23,9 @@ class UserFactory extends Factory
     {
         return [
             'id' => $this->faker->unique()->uuid(),
-            'referrer_id' => function(){
+            /*'referrer_id' => function(){
                return User::factory()->create()->id;
-            }
+            }*/
         ];
     }
 }
