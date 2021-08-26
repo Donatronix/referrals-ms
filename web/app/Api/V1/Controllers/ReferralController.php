@@ -200,7 +200,7 @@ class ReferralController extends Controller
                 'referral_code' => $codeInfo['referral_code']
             ];
 
-            PubSub::publish('invitedReferral', $array, config('exchange_queue.contacts_book'));
+            PubSub::publish('invitedReferral', $array, config('settings.exchange_queue.contacts_book'));
 
             // Return response
             return response()->jsonApi([
