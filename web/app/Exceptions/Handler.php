@@ -28,8 +28,7 @@ class Handler extends ExceptionHandler
      *
      * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
      *
-     * @param \Throwable $exception
-     *
+     * @param  \Throwable  $exception
      * @return void
      *
      * @throws \Exception
@@ -42,15 +41,21 @@ class Handler extends ExceptionHandler
     /**
      * Render an exception into an HTTP response.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Throwable               $exception
-     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Throwable  $exception
      * @return \Illuminate\Http\Response|\Illuminate\Http\JsonResponse
      *
      * @throws \Throwable
      */
     public function render($request, Throwable $exception)
     {
+        if ($exception instanceof ModelNotFoundException) {
+            $classFullName = $exception->getModel();
+            $className = substr($classFullName, strrpos($classFullName, '\\') + 1);
+
+            return response()->json(config('constants.errors.' . $className . 'NotFound'), 404);
+        }
+
         return parent::render($request, $exception);
     }
 }
