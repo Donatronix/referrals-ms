@@ -1,6 +1,6 @@
 {
     "name": "kup/referrals",
-    "description": "Referral Program Microservice",
+    "description": "Referral Program API Microservice",
     "type": "project",
     "private": true,
     "require": {

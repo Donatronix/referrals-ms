@@ -60,6 +60,7 @@ $app->singleton(
 */
 
 $app->configure('app');
+$app->configure('settings');
 
 // Neo4j
 $app->configure('database');
@@ -79,7 +80,8 @@ $app->configure('matomo-analytics');
 */
 
 $app->middleware([
-    \App\Http\Middleware\CorsMiddleware::class
+    \App\Http\Middleware\CorsMiddleware::class,
+    \App\Http\Middleware\TrimStrings::class,
 ]);
 
 $app->routeMiddleware([
@@ -93,7 +95,7 @@ $app->routeMiddleware([
 | Register Service Providers
 |--------------------------------------------------------------------------
 |
-| Here we will register all of the application's service providers which
+| Here we will register all the application's service providers which
 | are used to bind services into the container. Service providers are
 | totally optional, so you are not required to uncomment this line.
 |
@@ -103,7 +105,7 @@ $app->routeMiddleware([
 $app->register(App\Providers\AuthServiceProvider::class);
 $app->register(App\Providers\EventServiceProvider::class);
 
-/** Pubsub - RebbitMQ */
+/** Pubsub - RabbitMQ */
 $app->configure('queues');
 $app->register(VladimirYuldashev\LaravelQueueRabbitMQ\LaravelQueueRabbitMQServiceProvider::class);
 class_alias(\Illuminate\Support\Facades\App::class, 'App');
@@ -125,7 +127,7 @@ $app->register(Kreait\Laravel\Firebase\ServiceProvider::class);
 |--------------------------------------------------------------------------
 |
 | Next we will include the routes file so that they can all be added to
-| the application. This will provide all of the URLs the application
+| the application. This will provide all the URLs the application
 | can respond to, as well as the controllers that may handle them.
 |
 */

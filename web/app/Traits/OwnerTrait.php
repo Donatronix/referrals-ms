@@ -1,14 +1,19 @@
 <?php
 
-namespace App\Models;
+namespace App\Traits;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
-class BaseModel extends Model
+/**
+ * Trait OwnerTrait
+ *
+ * @package App\Http\Traits
+ */
+trait OwnerTrait
 {
     /**
-     * @param $query
+     * @param      $query
+     * @param null $user_id
      *
      * @return mixed
      */

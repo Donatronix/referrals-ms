@@ -200,7 +200,7 @@ class ReferralController extends Controller
                 'referral_code' => $codeInfo['referral_code']
             ];
 
-            PubSub::publish('invitedReferral', $array, 'contactsBook');
+            PubSub::publish('invitedReferral', $array, config('settings.exchange_queue.contacts_book'));
 
             // Return response
             return response()->jsonApi([
@@ -218,20 +218,3 @@ class ReferralController extends Controller
         }
     }
 }
-
-######################### EXAMPLE CODE ##################################
-/**
- * For wallet microservice
- */
-/*
-$array = [
-    'user_id' => $appUserId,
-    'status' => Arr::random([
-        User::STATUS_APPROVED,
-        User::STATUS_NOT_APPROVED,
-        User::STATUS_BLOCKED
-    ])
-];
-PubSub::transaction(function() {})->publish('ReferralBonus', $array, 'referral');
-*/
-######################### EXAMPLE CODE ##################################

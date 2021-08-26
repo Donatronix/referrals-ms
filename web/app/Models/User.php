@@ -22,16 +22,16 @@ class User extends Model
         'referrer_id',
     ];
 
+    public static function getUserById($user)
+    {
+        return User::find($user);
+    }
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function referralCodes(): HasMany
     {
         return $this->hasMany(ReferralCode::class);
-    }
-
-    public static function getUserById($user)
-    {
-        return User::find($user);
     }
 }
