@@ -23,8 +23,7 @@ class CreateTransactionsTable extends Migration
             $table->uuid('user_id')
                 ->index();
 
-            $table->tinyInteger('user_plan')
-                ->unsigned()
+            $table->string('user_plan')
                 ->comment('User\'s current tariff plan at the time of accrual');
 
             $table->integer('reward')
@@ -33,7 +32,7 @@ class CreateTransactionsTable extends Migration
                 ->comment('Rewarding the user');
 
             $table->string('currency', 5)
-                ->default('DR')
+                ->default('$')
                 ->comment('What currency will the accrual be in');
 
             $table->string('operation_name')
