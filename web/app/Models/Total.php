@@ -20,6 +20,7 @@ class Total extends Model
      * @var array
      */
     protected $fillable = [
+        'username',
         'amount',
         'reward',
     ];
@@ -39,6 +40,7 @@ class Total extends Model
      * @var array|string[]
      */
     public static array $rules = [
+        'username' => 'required|string|max:255',
         'amount' => 'integer',
         'reward' => 'regex:/^\d*(\.\d{2})?$/',
     ];

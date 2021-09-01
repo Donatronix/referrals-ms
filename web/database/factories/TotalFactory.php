@@ -26,6 +26,7 @@ class TotalFactory extends Factory
             'user_id' => function() {
                 return \App\Models\User::all()->random()->id;
             },
+            'username' => $this->faker->unique()->firstName(),
             'amount' => rand(1, 500),
             'reward' => rand(1, 500),
         ];
