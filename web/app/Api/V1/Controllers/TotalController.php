@@ -149,9 +149,10 @@ class TotalController extends Controller
         }
     }
 
-    public function checkRemoteServices()
+    public function checkRemoteServices($input_data)
     {
-        $input_data = \App\Services\TestService::showDataFromRemoteMembership();
+        // Igor, this is demo data for the test. By connecting them, you don't need a remote microservice.
+        // $input_data = \App\Services\TestService::showDataFromRemoteMembership();
         return \App\Services\RemoteService::accrualRemuneration($input_data);
     }
 }

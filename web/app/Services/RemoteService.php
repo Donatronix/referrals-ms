@@ -12,6 +12,7 @@ class RemoteService
     {
         if($data !== null)
         {
+//            dd($data);
             // if the user data came from the membership microservice, we try to find the user in the leaderboard
             $data_total = Total::where('user_id', $data['id'])
                 ->first();
@@ -34,15 +35,20 @@ class RemoteService
 
             // in any case, we will enter the data about the incoming data in the transaction history
             $transaction = \App\Models\Transaction::create([
-                'user_id',
-                'user_plan',
-                'reward',
-                'currency',
-                'operation_name',
+                'user_id' => $data['id'],
+                'user_plan' => $data['level']['name'],
+                'reward' => $data['value'][0],
+                'currency' => $data['level']['currency'],
+                'operation_name' => 'invitation reward',
             ]);
 
-            dd($data_total);
+            return true;
         }
         return false;
+    }
+
+    public static function sendData ($data, $action, $microservice)
+    {
+        \PubSub::publish($action, $data, $microservice);
     }
 }

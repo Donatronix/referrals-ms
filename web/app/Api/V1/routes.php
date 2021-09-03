@@ -22,7 +22,7 @@ $router->group([
              *  Total
              */
             $router->get('referral-codes', 'TotalController@index');
-            $router->get('check', 'TotalController@checkRemoteServices');
+            $router->post('check-totals', 'TotalController@checkRemoteServices');
 
             /**
              *  Referral code
