@@ -148,4 +148,10 @@ class TotalController extends Controller
             ], 404);
         }
     }
+
+    public function checkRemoteServices()
+    {
+        $input_data = \App\Services\TestService::showDataFromRemoteMembership();
+        return \App\Services\RemoteService::accrualRemuneration($input_data);
+    }
 }

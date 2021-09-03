@@ -18,5 +18,8 @@ class EventServiceProvider extends ServiceProvider
         'ReferralUserInfo' => [
             'App\Listeners\UsersMeetListener',
         ],
+        'SendReward' => [
+            'App\Listeners\AccrualRemunerationListener',
+        ],
     ];
 }

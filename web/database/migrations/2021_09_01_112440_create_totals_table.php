@@ -19,7 +19,8 @@ class CreateTotalsTable extends Migration
             $table->uuid('id')
                 ->primary();
 
-            $table->string('username');
+            $table->string('username')
+                ->default('');
 
             $table->integer('amount')
                 ->unsigned()

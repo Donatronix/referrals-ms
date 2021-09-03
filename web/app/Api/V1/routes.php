@@ -12,9 +12,6 @@ $router->group([
     // Register new user
     $router->post('/', 'ReferralController@create');
 
-    /**
-     * ADMIN PANEL
-     */
     $router->group(
         [
             'middleware' => 'checkUser'
@@ -24,7 +21,8 @@ $router->group([
             /**
              *  Total
              */
-            $router->get('referral-codes', 'ReferralCodeController@index');
+            $router->get('referral-codes', 'TotalController@index');
+            $router->get('check', 'TotalController@checkRemoteServices');
 
             /**
              *  Referral code

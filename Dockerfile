@@ -10,13 +10,13 @@
 #        php8-intl \
 #        icu-dev \
 #        gmp-dev
-
+#
 #RUN docker-php-ext-configure intl
 #RUN docker-php-ext-install \
- #   intl \
- #   sockets \
- #   bcmath \
- #   gmp
+#    intl \
+#    sockets \
+#    bcmath \
+#    gmp
 
 #COPY ./web      /app
 #COPY ./pubsub   /pubsub
@@ -24,7 +24,7 @@
 #COPY ./baum    /baum
 
 #WORKDIR /app
-#RUN rm -rf .idea
+#RU#N rm -rf .idea
 #RUN composer -v install
 #RUN composer -v update
 

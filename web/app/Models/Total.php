@@ -20,6 +20,7 @@ class Total extends Model
      * @var array
      */
     protected $fillable = [
+        'user_id',
         'username',
         'amount',
         'reward',
