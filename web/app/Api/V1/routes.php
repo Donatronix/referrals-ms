@@ -19,6 +19,10 @@ $router->group([
         function ($router) {
             $router->get('/total', 'TotalController@index');
             /**
+             *  test
+             */
+            $router->get('test', 'TestController@test');
+            /**
              *  Total
              */
             $router->get('referral-codes', 'TotalController@index');

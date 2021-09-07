@@ -77,14 +77,18 @@ class ReferralCodeService
 
         if($user_info === null)
         {
+            // save the invited unique user
             $output_data = User::create([
                 'id' => $user2,
                 'referrer_id' => $user1,
             ]);
 
+            if($user1){
+                // we send data to the membership microservice for information about the tariff plan and reward for the inviting user
+                RemoteService::sendData('getDataAboutPlanAndReward', $user1, 'Test');
+            }
 
-
-            return $output_data;
+//            return $output_data;
         }
 
         return false;
