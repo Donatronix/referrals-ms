@@ -8,15 +8,15 @@ use App\Services\RemoteService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
-class TotalController extends Controller
+class LeaderboardController extends Controller
 {
     /**
-     *  Display a listing of the users.
+     *  A list of leaders in the invitation referrals
      *
      * @OA\Get(
-     *     path="/v1/referrals/total",
-     *     description="Get all users",
-     *     tags={"Total"},
+     *     path="/v1/referrals/leaderboard",
+     *     description="A list of leaders in the invitation referrals",
+     *     tags={"Leaderboard"},
      *
      *     security={{
      *          "default" :{
@@ -37,7 +37,7 @@ class TotalController extends Controller
      *
      *     @OA\Response(
      *         response="200",
-     *         description="Service Contracts list",
+     *         description="TOP 1000 of leaders in the invitation referrals",
      *
      *         @OA\JsonContent(
      *             @OA\Property(
@@ -72,9 +72,9 @@ class TotalController extends Controller
      *                      type="double",
      *                      description="Amount of remuneration",
      *                      example=50.50,
-     *                  ),
-     *             ),
-     *         ),
+     *                  )
+     *             )
+     *         )
      *     ),
      *
      *     @OA\Response(
@@ -114,8 +114,8 @@ class TotalController extends Controller
      *                  property="message",
      *                  type="string",
      *                  description="Error message"
-     *              ),
-     *          ),
+     *              )
+     *          )
      *     ),
      *
      *     @OA\Response(

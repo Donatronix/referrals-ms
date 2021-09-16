@@ -18,7 +18,10 @@ class CreateReferralCodesTable extends Migration
         Schema::create('referral_codes', function (Blueprint $table) {
             $table->uuid('id')->primary();
 
-            $table->foreignUuid('user_id')->constrained()->onUpdate('restrict')->onDelete('restrict');
+            $table->foreignUuid('user_id')
+                ->constrained()
+                ->onUpdate('restrict')
+                ->onDelete('restrict');
 
             $table->string('code', 8)->unique();
             $table->string('link', 35)->unique();

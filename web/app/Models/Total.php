@@ -22,6 +22,7 @@ class Total extends Model
         'amount' => 'integer',
         'reward' => 'regex:/^\d*(\.\d{2})?$/',
     ];
+
     /**
      * The attributes that are mass assignable.
      *
@@ -33,6 +34,7 @@ class Total extends Model
         'amount',
         'reward',
     ];
+
     /**
      * The attributes excluded from the model's JSON form.
      *

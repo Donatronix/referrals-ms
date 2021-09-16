@@ -24,8 +24,8 @@ class ReferralController extends Controller
      *
      * @OA\Get(
      *     path="/v1/referrals",
-     *     summary="List all referrals for user",
-     *     description="List all referrals for user",
+     *     summary="List all referrals for current user",
+     *     description="List all referrals for current user",
      *     tags={"Referrals"},
      *
      *     security={{
@@ -44,9 +44,34 @@ class ReferralController extends Controller
      *         }
      *     },
      *
+     *     @OA\Parameter(
+     *         name="limit",
+     *         in="query",
+     *         description="Limit referrals of page",
+     *         @OA\Schema(
+     *             type="number"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="Count referrals of page",
+     *         @OA\Schema(
+     *             type="number"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="search",
+     *         in="query",
+     *         description="Search keywords",
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *
      *     @OA\Response(
      *         response="200",
-     *         description="Success join new user to referrer user"
+     *         description="Success getting list of referrals"
      *     ),
      *     @OA\Response(
      *         response=401,
@@ -62,17 +87,36 @@ class ReferralController extends Controller
      *     )
      * )
      *
-     * @return \Sumra\JsonApi\JsonApiResponse
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function index(): JsonApiResponse
+    public function index(Request $request)
     {
-        $currentUserId = Auth::user()->getAuthIdentifier();
+        try {
+            $currentUserId = Auth::user()->getAuthIdentifier();
 
-        // Get list all referrals by user id
-        $list = User::where('referrer_id', $currentUserId)->get();
+            // Get list all referrals by user id
+            $list = User::where('referrer_id', $currentUserId)
+                ->paginate($request->get('limit', config('settings.pagination_limit')));
 
-        // Return response
-        return response()->jsonApi($list, 200);
+            // Return response
+            return response()->json(array_merge(
+                [
+                    'type' => 'success',
+                    'title' => "Get referrals list",
+                    'message' => 'Contacts list received',
+                ],
+                $list->toArray()
+            ), 200);
+        } catch (Exception $e) {
+            return response()->jsonApi([
+                'type' => 'danger',
+                'title' => "Get referrals list",
+                'message' => $e->getMessage(),
+                'data' => null
+            ], 400);
+        }
     }
 
     /**
@@ -193,14 +237,14 @@ class ReferralController extends Controller
                 'is_default' => true
             ]);
 
-            // Send notification to contacts book
+            // Send notification to referrals book
             $array = [
                 'user_id' => $codeInfo['user_id'],
                 'application_id' => $codeInfo['application_id'],
                 'referral_code' => $codeInfo['referral_code']
             ];
 
-            PubSub::publish('invitedReferral', $array, config('settings.exchange_queue.contacts_book'));
+            PubSub::publish('invitedReferral', $array, config('settings.exchange_queue.referrals_book'));
 
             // Return response
             return response()->jsonApi([

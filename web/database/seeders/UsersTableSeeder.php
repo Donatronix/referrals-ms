@@ -15,6 +15,19 @@ class UsersTableSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->count(20)->create();
+        // Generate default users
+        foreach(config('settings.default_users_ids') as $uuid){
+            User::factory()->create([
+                'id' => $uuid
+            ]);
+        }
+
+        // Adding additional users
+        $users = User::all();
+        foreach ($users as $user){
+            User::factory()->count(100)->create([
+                'referrer_id' => $user->id
+            ]);
+        }
     }
 }
