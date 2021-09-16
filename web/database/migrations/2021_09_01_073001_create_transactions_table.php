@@ -15,8 +15,7 @@ class CreateTransactionsTable extends Migration
     {
         $table_name = 'transactions';
 
-        Schema::create($table_name, function (Blueprint $table)
-        {
+        Schema::create($table_name, function (Blueprint $table) {
             $table->uuid('id')
                 ->primary();
 

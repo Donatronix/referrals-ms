@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Total;
 use Illuminate\Database\Seeder;
 
 class TotalSeeder extends Seeder
@@ -13,6 +14,6 @@ class TotalSeeder extends Seeder
      */
     public function run()
     {
-        \App\Models\Total::factory()->count(20)->create();
+        Total::factory()->count(20)->create();
     }
 }

@@ -4,7 +4,6 @@ namespace App\Listeners;
 
 use App\Services\RemoteService;
 
-
 class AccrualRemunerationListener
 {
     /**

@@ -2,39 +2,39 @@
 #
 # 1. The first part extends a PHP composer image so that you can install the application's dependencies.
 
-#FROM composer:latest as build
+FROM composer:latest as build
 
-#LABEL maintainer="Ihor Porokhnenko <ihor.porokhnenko@gmail.com>"
+LABEL maintainer="Ihor Porokhnenko <ihor.porokhnenko@gmail.com>"
 
-#RUN apk update && apk add --no-cache \
-#        php8-intl \
-#        icu-dev \
-#        gmp-dev
-#
-#RUN docker-php-ext-configure intl
-#RUN docker-php-ext-install \
-#    intl \
-#    sockets \
-#    bcmath \
-#    gmp
+RUN apk update && apk add --no-cache \
+        php8-intl \
+        icu-dev \
+        gmp-dev
 
-#COPY ./web      /app
-#COPY ./pubsub   /pubsub
-#COPY ./json-api /json-api
+RUN docker-php-ext-configure intl
+RUN docker-php-ext-install \
+    intl \
+    sockets \
+    bcmath \
+    gmp
+
+COPY ./web      /app
+COPY ./pubsub   /pubsub
+COPY ./json-api /json-api
 #COPY ./baum    /baum
 
-#WORKDIR /app
-#RU#N rm -rf .idea
-#RUN composer -v install
-#RUN composer -v update
+WORKDIR /app
+RUN rm -rf .idea
+RUN composer -v install
+RUN composer -v update
 
 # 2. The second part creates a final Docker image with an Apache web server to serve the application
 
 FROM php:8.0.6-apache-buster
 
-#COPY --from=build /app /var/www/html
-#COPY --from=build /pubsub /var/www/pubsub
-#COPY --from=build /json-api /var/www/json-api
+COPY --from=build /app /var/www/html
+COPY --from=build /pubsub /var/www/pubsub
+COPY --from=build /json-api /var/www/json-api
 
 # make sure apt is up to date
 RUN apt update --fix-missing && apt upgrade -y

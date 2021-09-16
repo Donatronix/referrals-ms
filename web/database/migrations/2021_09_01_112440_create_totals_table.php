@@ -27,7 +27,7 @@ class CreateTotalsTable extends Migration
                 ->default(0)
                 ->comment('sum of invited users');
 
-            $table->float('reward', 7,2)
+            $table->float('reward', 7, 2)
                 ->unsigned()
                 ->default(0)
                 ->comment('the number of invitees by this user');

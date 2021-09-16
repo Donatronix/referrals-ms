@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Total;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class TotalFactory extends Factory
@@ -23,8 +24,8 @@ class TotalFactory extends Factory
     {
         return [
             'id' => $this->faker->uuid,
-            'user_id' => function() {
-                return \App\Models\User::all()->random()->id;
+            'user_id' => function () {
+                return User::all()->random()->id;
             },
             'username' => $this->faker->unique()->firstName(),
             'amount' => rand(1, 500),

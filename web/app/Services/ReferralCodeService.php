@@ -40,7 +40,8 @@ class ReferralCodeService
      *
      * @return null
      */
-    public static function defaultReset($application_id, $user_id){
+    public static function defaultReset($application_id, $user_id)
+    {
         $list = ReferralCode::byApplication($application_id)
             ->byOwner($user_id)
             ->get();
@@ -53,11 +54,13 @@ class ReferralCodeService
      *  Handler for uid users received from another microservice
      *
      * @param array |$data
+     *
      * @return false|object
      */
-    public static function addUniqueUser ($data)
+    public static function addUniqueUser($data)
     {
         self::checkUser($data['user1']);
+
         $result = self::checkUser($data['user2'], $data['user1']);
 
         return $result;
@@ -68,6 +71,7 @@ class ReferralCodeService
      *
      * @param string | $user1 | inviting user
      * @param string | $user2 | invited user
+     *
      * @return false | object $output_data
      */
     public static function checkUser($user2, $user1 = null)
@@ -75,15 +79,14 @@ class ReferralCodeService
         // trying to search for the invited user in the microservice structure
         $user_info = User::getUserById($user2);
 
-        if($user_info === null)
-        {
+        if ($user_info === null) {
             // save the invited unique user
             $output_data = User::create([
                 'id' => $user2,
                 'referrer_id' => $user1,
             ]);
 
-            if($user1){
+            if ($user1) {
                 // we send data to the membership microservice for information about the tariff plan and reward for the inviting user
                 RemoteService::sendData('getDataAboutPlanAndReward', $user1, 'Test');
             }

@@ -15,8 +15,7 @@ class CreateReferralCodesTable extends Migration
     {
         Schema::enableForeignKeyConstraints();
 
-        Schema::create('referral_codes', function (Blueprint $table)
-        {
+        Schema::create('referral_codes', function (Blueprint $table) {
             $table->uuid('id')->primary();
 
             $table->foreignUuid('user_id')->constrained()->onUpdate('restrict')->onDelete('restrict');

@@ -117,8 +117,8 @@ class ReferralController extends Controller
      *                 maximum=8,
      *                 description="Referral code of the inviting user",
      *                 example="1827oGRL"
-     *             ),
-     *         ),
+     *             )
+     *         )
      *     ),
      *
      *     @OA\Response(
@@ -142,7 +142,7 @@ class ReferralController extends Controller
      *                  property="code",
      *                  type="string",
      *                  description="Your request is missing a required parameter - Code"
-     *              ),
+     *              )
      *         )
      *     )
      * )

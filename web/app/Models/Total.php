@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Traits\UuidTrait;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Total extends Model
 {
@@ -14,6 +14,14 @@ class Total extends Model
     use UuidTrait;
     use SoftDeletes;
 
+    /**
+     * @var array|string[]
+     */
+    public static array $rules = [
+        'username' => 'required|string|max:255',
+        'amount' => 'integer',
+        'reward' => 'regex:/^\d*(\.\d{2})?$/',
+    ];
     /**
      * The attributes that are mass assignable.
      *
@@ -25,7 +33,6 @@ class Total extends Model
         'amount',
         'reward',
     ];
-
     /**
      * The attributes excluded from the model's JSON form.
      *
@@ -35,15 +42,6 @@ class Total extends Model
         'created_at',
         'updated_at',
         'deleted_at',
-    ];
-
-    /**
-     * @var array|string[]
-     */
-    public static array $rules = [
-        'username' => 'required|string|max:255',
-        'amount' => 'integer',
-        'reward' => 'regex:/^\d*(\.\d{2})?$/',
     ];
 
     /**

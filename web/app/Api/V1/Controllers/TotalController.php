@@ -3,16 +3,17 @@
 namespace App\Api\V1\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Total;
+use App\Services\RemoteService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
 
 class TotalController extends Controller
 {
     /**
      *  Display a listing of the users.
      *
-     *  @OA\Get(
+     * @OA\Get(
      *     path="/v1/referrals/total",
      *     description="Get all users",
      *     tags={"Total"},
@@ -123,7 +124,7 @@ class TotalController extends Controller
      *     ),
      * )
      *
-     *  @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
     {
@@ -138,8 +139,7 @@ class TotalController extends Controller
                 ], $users->toArray()),
                 200);
 
-        }
-        catch (ModelNotFoundException $e){
+        } catch (ModelNotFoundException $e) {
             return response()->jsonApi([
                 'type' => 'danger',
                 'title' => "Not operation",
@@ -153,6 +153,6 @@ class TotalController extends Controller
     {
         // Igor, this is demo data for the test. By connecting them, you don't need a remote microservice.
         // $input_data = \App\Services\TestService::showDataFromRemoteMembership();
-        return \App\Services\RemoteService::accrualRemuneration($input_data);
+        return RemoteService::accrualRemuneration($input_data);
     }
 }

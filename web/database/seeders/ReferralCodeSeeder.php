@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Services\Firebase;
-use Illuminate\Database\Seeder;
 use App\Models\ReferralCode;
+use Illuminate\Database\Seeder;
 
 class ReferralCodeSeeder extends Seeder
 {
@@ -17,7 +16,7 @@ class ReferralCodeSeeder extends Seeder
     {
         for ($a = 0; $a < 30; $a++) {
             $code = ReferralCode::factory()->create();
-          //  $code->link = Firebase::linkGenerate($code->code, $code->application_id);
+            //  $code->link = Firebase::linkGenerate($code->code, $code->application_id);
             $code->save();
         }
     }

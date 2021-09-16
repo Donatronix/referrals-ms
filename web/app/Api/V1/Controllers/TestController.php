@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Api\V1\Controllers;
 
 use App\Http\Controllers\Controller;
@@ -8,7 +7,7 @@ use App\Services\ReferralCodeService;
 
 class TestController extends Controller
 {
-    public function test ()
+    public function test()
     {
         $data = [
             "user1" => "1000",

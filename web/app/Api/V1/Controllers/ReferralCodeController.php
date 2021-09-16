@@ -6,6 +6,7 @@ use App\Models\ReferralCode;
 use App\Services\ReferralCodeService;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
 /**
@@ -529,7 +530,7 @@ class ReferralCodeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function setDefault($id): \Illuminate\Http\Response
+    public function setDefault($id): Response
     {
         try {
             $code = ReferralCode::find($id);
@@ -558,12 +559,13 @@ class ReferralCodeController extends Controller
      *  Get information on the referral link for a specific user
      *
      * @param Request $request
+     *
      * @return mixed
      */
-    public function getDataByUserId (Request $request)
+    public function getDataByUserId(Request $request)
     {
         $user_id = $request->get('user_id');
-        try{
+        try {
             $referral_data = ReferralCode::where('user_id', $user_id)->where('is_default', 1)->first();
 
             return response()->jsonApi([
@@ -572,8 +574,7 @@ class ReferralCodeController extends Controller
                 'message' => 'Changing the default а referral link was successful.',
                 'data' => $referral_data
             ], 200);
-        }
-        catch (\Exception $e){
+        } catch (Exception $e) {
             return response()->jsonApi([
                 'type' => 'danger',
                 'title' => 'Not received list',
@@ -583,12 +584,11 @@ class ReferralCodeController extends Controller
         }
     }
 
-    public function test (Request $request)
+    public function test(Request $request)
     {
         $users = ['user1' => $request->get('user1'), 'user2' => $request->get('user2')];
 
         $user = ReferralCodeService::checkUser($users['user2']);
-
 
     }
 }

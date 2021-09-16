@@ -66,7 +66,7 @@ $router->group([
                 $router->post('/template', 'TemplateController@store');
 
                 /**
-                 * Refferals
+                 * Referrals
                  */
                 $router->get('referrals-list', 'UsersController@index');
                 $router->get('referrals-list/{id:[\d]+}', 'UsersController@show');
