@@ -207,18 +207,21 @@ class ReferralController extends Controller
         // Check if the user is invited, then we are looking for the referrer by the referral code
         $parent_user_id = null;
         if ($request->has('referral_code')) {
-            $referralInfo = ReferralCode::where('code', $request->get('referral_code'))
+            $parent_user_id = ReferralCode::select('user_id')
+                ->where('code', $request->get('referral_code'))
                 ->byApplication($request->get('application_id'))
+                ->pluck('user_id')
                 ->first();
-
-            if ($referralInfo) {
-                $parent_user_id = $referralInfo->user_id;
-            }
         }
+
+        $newUser = User::find(Auth::user()->getAuthIdentifier());
+
+
+
 
         // Try to create new user with referrer link
         try {
-            User::create([
+            $newUser = User::create([
                 'id' => Auth::user()->getAuthIdentifier(),
                 'referrer_id' => $parent_user_id
             ]);
@@ -235,16 +238,10 @@ class ReferralController extends Controller
             $codeInfo = ReferralCodeService::createReferralCode([
                 'application_id' => $request->get('application_id'),
                 'is_default' => true
-            ]);
+            ], $newUser);
 
-            // Send notification to referrals book
-            $array = [
-                'user_id' => $codeInfo['user_id'],
-                'application_id' => $codeInfo['application_id'],
-                'referral_code' => $codeInfo['referral_code']
-            ];
-
-            PubSub::publish('invitedReferral', $array, config('settings.exchange_queue.referrals_book'));
+            // Send notification to contacts book
+            PubSub::publish('invitedReferral', $codeInfo->toArray(), config('settings.exchange_queue.contacts_book'));
 
             // Return response
             return response()->jsonApi([

@@ -8,19 +8,22 @@ use Illuminate\Support\Facades\Auth;
 
 class ReferralCodeService
 {
-    public static function createReferralCode($data)
+    public static function createReferralCode($data, User $user = null)
     {
-        $userId = Auth::user()->getAuthIdentifier();
+        if($user == null){
+            $user = User::find(Auth::user()->getAuthIdentifier());
+        }
+
+        dd($data);
 
         // Check if code is set as default, then reset all previous code
         if ($data['is_default']) {
-            self::defaultReset($data['application_id'], $userId);
+            self::defaultReset($data['application_id'], $user->id);
         }
 
         // Create new referral code
-        $rc = ReferralCode::create([
+        $rc = $user->referralCodes()->create([
             'application_id' => $data['application_id'],
-            'user_id' => $userId,
             'link' => 'link' . rand(1, 1000),
             'is_default' => $data['is_default'] ?? false,
             'note' => $data['note'] ?? null
@@ -77,7 +80,7 @@ class ReferralCodeService
     public static function checkUser($user2, $user1 = null)
     {
         // trying to search for the invited user in the microservice structure
-        $user_info = User::getUserById($user2);
+        $user_info = User::find($user2);
 
         if ($user_info === null) {
             // save the invited unique user

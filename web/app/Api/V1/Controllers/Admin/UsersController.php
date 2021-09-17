@@ -41,8 +41,8 @@ class UsersController extends Controller
      *     },
      *
      *     @OA\Parameter(
-     *         name="orderBy",
-     *         description="Order By",
+     *         name="sort[by]",
+     *         description="Sort by field (....)",
      *         required=false,
      *         in="query",
      *         @OA\Schema (
@@ -50,8 +50,8 @@ class UsersController extends Controller
      *         )
      *     ),
      *     @OA\Parameter(
-     *         name="orderDirection",
-     *         description="Order Direction",
+     *         name="sort[order]",
+     *         description="Sort order (asc, desc)",
      *         required=false,
      *         in="query",
      *         @OA\Schema (
@@ -77,7 +77,7 @@ class UsersController extends Controller
      *         )
      *     ),
      *     @OA\Parameter(
-     *         name="per_page",
+     *         name="limit",
      *         description="Items per page",
      *         required=false,
      *         in="query",
@@ -109,12 +109,11 @@ class UsersController extends Controller
     {
         // Validate data
         $validator = Validator::make($request->all(), [
-            'orderBy' => 'in:referral_code,referrer_id,status,id,username|nullable',
-//            'orderBy' => 'in:referral_code,referrer_id,status,id,username|nullable',
-            'orderDirection' => 'in:asc,desc|nullable',
+            'sort.by' => 'in:referral_code,referrer_id,status,id,username|nullable',
+            'sort.order' => 'in:asc,desc|nullable',
             'search' => 'string|nullable',
             'page' => 'integer|nullable',
-            'per_page' => 'integer|nullable'
+            'limit' => 'integer|nullable'
         ]);
 
         if ($validator->fails()) {

@@ -13,12 +13,11 @@ class CreateUsersTable extends Migration
      */
     public function up(): void
     {
-        $table_name = 'users';
-
-        Schema::create($table_name, function (Blueprint $table) {
-            $table->uuid('id')->index();
+        Schema::create('users', function (Blueprint $table) {
+            $table->uuid('id')->primary();
             $table->uuid('referrer_id')->nullable()->comment('The ID of the inviting user');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

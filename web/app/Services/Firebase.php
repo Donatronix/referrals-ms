@@ -8,8 +8,10 @@ use Kreait\Firebase\DynamicLink\CreateDynamicLink\FailedToCreateDynamicLink;
 class Firebase
 {
     /**
+     * Create dynamic link from google firebase service
+     *
      * @param $referralCode
-     * @param $packageName
+     * @param $application_id
      *
      * @return mixed
      */
@@ -66,7 +68,6 @@ class Firebase
                             $application_id,
                             urlencode(http_build_query($referrerData))
                         ),
-
                         //'androidMinPackageVersionCode' => ReferralCode::ANDROID_MIN_PACKAGE_VERSION
                     ],
                     /*

@@ -121,7 +121,7 @@ class LeaderboardController extends Controller
      *     @OA\Response(
      *         response="500",
      *         description="Unknown error"
-     *     ),
+     *     )
      * )
      *
      * @return \Illuminate\Http\Response

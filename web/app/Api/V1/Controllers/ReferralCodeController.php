@@ -197,7 +197,7 @@ class ReferralCodeController extends Controller
             ], 200);
         }
 
-        // Try create new code with link
+        // Try to create new code with link
         try {
             $code = ReferralCodeService::createReferralCode([
                 'application_id' => $request->get('application_id'),

@@ -6,11 +6,13 @@ use App\Traits\UuidTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Model
 {
     use HasFactory;
     use UuidTrait;
+    use SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -21,11 +23,6 @@ class User extends Model
         'id',
         'referrer_id',
     ];
-
-    public static function getUserById($user)
-    {
-        return User::find($user);
-    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
