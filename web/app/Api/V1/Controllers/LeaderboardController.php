@@ -75,7 +75,34 @@ class LeaderboardController extends Controller
      *                      description="Amount of remuneration",
      *                      example=50.50,
      *                  )
+     *                 @OA\Property(
+     *                      property="is_current",
+     *                      type="boolean",
+     *                      description="Determine the user who made the request",
+     *                  )
      *             )
+     *             @OA\Property(
+     *                 property="informer",
+     *                 type="object",
+     *                 @OA\Property(
+     *                      property="rank",
+     *                      type="integer",
+     *                      description="User rating place",
+     *                      example=1000000000,
+     *                  )
+     *                 @OA\Property(
+     *                      property="reward",
+     *                      type="integer",
+     *                      description="How much user earned",
+     *                      example=,
+     *                  )
+     *                 @OA\Property(
+     *                      property="grow_this_month",
+     *                      type="integer",
+     *                      description="",
+     *                      example="",
+     *                  )
+     *              )
      *         )
      *     ),
      *
