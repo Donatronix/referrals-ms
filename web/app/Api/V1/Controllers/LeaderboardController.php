@@ -4,7 +4,6 @@ namespace App\Api\V1\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Total;
-use App\Models\User;
 use App\Services\RemoteService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -136,12 +135,12 @@ class LeaderboardController extends Controller
             $informer = Total::getInformer($user_id);
 
             $users = Total::orderBy('amount', 'DESC')
+                ->orderBy()
                 ->paginate($request->get('limit', config('settings.pagination_limit')));
 
-            $users->map(function ($object){
+            $users->map(function ($object) use ($user_id) {
                 $isCurrent = false;
-                global $user_id;
-                if($object->user_id == $user_id){
+                if ($object->user_id == $user_id) {
                     $isCurrent = true;
                 }
                 $object->setAttribute('is_current', $isCurrent);

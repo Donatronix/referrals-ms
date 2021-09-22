@@ -54,15 +54,13 @@ class Total extends Model
         return $this->belongsTo(User::class);
     }
 
-    public static function getInformer ($user_id)
+    public static function getInformer($user_id)
     {
         $informer = [];
         $users = self::orderBy('amount', 'DESC')->get();
         $rank = 1;
-        foreach ($users as $user)
-        {
-            if($user->user_id == $user_id)
-            {
+        foreach ($users as $user) {
+            if ($user->user_id == $user_id) {
                 $informer = [
                     'rank' => $rank,
                     'reward' => $user->reward,
