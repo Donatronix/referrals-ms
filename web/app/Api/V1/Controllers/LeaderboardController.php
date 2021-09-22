@@ -135,7 +135,7 @@ class LeaderboardController extends Controller
             $informer = Total::getInformer($user_id);
 
             $users = Total::orderBy('amount', 'DESC')
-                ->orderBy()
+                ->orderBy('reward', 'DESC')
                 ->paginate($request->get('limit', config('settings.pagination_limit')));
 
             $users->map(function ($object) use ($user_id) {
