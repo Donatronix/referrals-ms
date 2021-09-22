@@ -4,9 +4,11 @@ namespace App\Api\V1\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Total;
+use App\Models\User;
 use App\Services\RemoteService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LeaderboardController extends Controller
 {
@@ -128,16 +130,30 @@ class LeaderboardController extends Controller
      */
     public function index(Request $request)
     {
-        try {
-            $users = Total::paginate($request->get('limit', config('settings.pagination_limit')));
+        $user_id = Auth::user()->getAuthIdentifier();
 
-            return response()->jsonApi(
-                array_merge([
-                    'type' => 'success',
-                    'title' => 'Operation was success',
-                    'message' => 'Users were shown successfully',
-                ], $users->toArray()),
-                200);
+        try {
+            $informer = Total::getInformer($user_id);
+
+            $users = Total::orderBy('amount', 'DESC')
+                ->paginate($request->get('limit', config('settings.pagination_limit')));
+
+            $users->map(function ($object){
+                $isCurrent = false;
+                global $user_id;
+                if($object->user_id == $user_id){
+                    $isCurrent = true;
+                }
+                $object->setAttribute('is_current', $isCurrent);
+            });
+
+            return response()->jsonApi([
+                'type' => 'success',
+                'title' => "Updating success",
+                'message' => 'The referral code (link) has been successfully updated',
+                $users->toArray(),
+                'informer' => $informer
+            ], 200);
 
         } catch (ModelNotFoundException $e) {
             return response()->jsonApi([

@@ -25,7 +25,7 @@ class UsersTableSeeder extends Seeder
         // Adding additional users
         $users = User::all();
         foreach ($users as $user){
-            User::factory()->count(100)->create([
+            User::factory()->count(30)->create([
                 'referrer_id' => $user->id
             ]);
         }

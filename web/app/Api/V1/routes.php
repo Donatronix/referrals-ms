@@ -14,7 +14,7 @@ $router->group([
 
     $router->group(
         [
-            'middleware' => 'checkUser'
+//            'middleware' => 'checkUser'
         ],
         function ($router) {
             /**

@@ -14,6 +14,6 @@ class TotalSeeder extends Seeder
      */
     public function run()
     {
-        Total::factory()->count(20)->create();
+        Total::factory()->count(100)->create();
     }
 }

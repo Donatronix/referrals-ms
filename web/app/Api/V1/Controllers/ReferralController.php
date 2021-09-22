@@ -198,6 +198,16 @@ class ReferralController extends Controller
      */
     public function inviting(Request $request): JsonApiResponse
     {
+        $newUser = User::find(Auth::user()->getAuthIdentifier());
+
+        if($newUser){
+             return response()->jsonApi([
+                'status' => 'warning',
+                'title' => 'User inviting',
+                'message' => "User already exist"
+            ], 204);
+        }
+
         // Validate input data
         $this->validate($request, [
             'application_id' => 'required|string',
@@ -214,7 +224,7 @@ class ReferralController extends Controller
                 ->first();
         }
 
-        $newUser = User::find(Auth::user()->getAuthIdentifier());
+
 
 
 

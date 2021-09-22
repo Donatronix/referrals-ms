@@ -16,6 +16,7 @@ class CreateUsersTable extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('referrer_id')->nullable()->comment('The ID of the inviting user');
+
             $table->timestamps();
             $table->softDeletes();
         });

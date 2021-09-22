@@ -53,4 +53,26 @@ class Total extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public static function getInformer ($user_id)
+    {
+        $informer = [];
+        $users = self::orderBy('amount', 'DESC')->get();
+        $rank = 1;
+        foreach ($users as $user)
+        {
+            if($user->user_id == $user_id)
+            {
+                $informer = [
+                    'rank' => $rank,
+                    'reward' => $user->reward,
+                    'grow_this_month' => User::getInvitedUsersByDate($user_id, 'current_month_count')
+                ];
+                break;
+            }
+            $rank++;
+        }
+
+        return $informer;
+    }
 }
