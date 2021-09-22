@@ -73,9 +73,36 @@ class LeaderboardController extends Controller
      *                      type="double",
      *                      description="Amount of remuneration",
      *                      example=50.50,
-     *                  )
-     *             )
-     *         )
+     *                  ),
+     *                 @OA\Property(
+     *                      property="is_current",
+     *                      type="boolean",
+     *                      description="Determine the user who made the request",
+     *                  ),
+     *             ),
+     *             @OA\Property(
+     *                 property="informer",
+     *                 type="object",
+     *                 @OA\Property(
+     *                      property="rank",
+     *                      type="integer",
+     *                      description="User rating place",
+     *                      example=1000000000,
+     *                  ),
+     *                 @OA\Property(
+     *                      property="reward",
+     *                      type="integer",
+     *                      description="How much user earned",
+     *                      example=7,
+     *                  ),
+     *                 @OA\Property(
+     *                      property="grow_this_month",
+     *                      type="integer",
+     *                      description="",
+     *                      example=100000,
+     *                  ),
+     *              ),
+     *         ),
      *     ),
      *
      *     @OA\Response(
@@ -89,34 +116,6 @@ class LeaderboardController extends Controller
      *     @OA\Response(
      *          response="404",
      *          description="User not found",
-     *          @OA\JsonContent(
-     *              type="object",
-     *              @OA\Property(
-     *                  property="id",
-     *                  type="string",
-     *                  description="ID not found"
-     *              ),
-     *              @OA\Property(
-     *                  property="username",
-     *                  type="string",
-     *                  description="username not found"
-     *              ),
-     *              @OA\Property(
-     *                  property="amount",
-     *                  type="string",
-     *                  description="amount not found"
-     *              ),
-     *              @OA\Property(
-     *                  property="reward",
-     *                  type="string",
-     *                  description="reward not found"
-     *              ),
-     *              @OA\Property(
-     *                  property="message",
-     *                  type="string",
-     *                  description="Error message"
-     *              )
-     *          )
      *     ),
      *
      *     @OA\Response(
