@@ -3,7 +3,7 @@
 namespace App\Api\V1\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Models\Transaction;
 use App\Services\ReferralCodeService;
 use Carbon\Carbon;
 
@@ -11,14 +11,19 @@ class TestController extends Controller
 {
     public function test()
     {
-        /*$data = [
-            "user1" => "1000",
-            "user2" => "942a6c6f-ef44-4f98-9264-1f03f5f664dc"
-        ];
-        ReferralCodeService::addUniqueUser($data);*/
+//        $today = getdate();
 
-        $user = "10000001-1001-1001-1001-100000000001";
-        $data = User::getInvitedUsersByDate($user, 'current_month_count');
-        dd($data);
+        $date = Carbon::now();
+        dd($date->toArray());
+        dd(Carbon::now());
+        dd($today->format('Y-m-d'));
+
+        $uploads = Transaction::where('created_at', '>=', \Carbon\Carbon::now()->subWeek())->get();
+
+        foreach($uploads as $date)
+        {
+            echo $date . '<br>';
+        }
+//        dd($data);
     }
 }

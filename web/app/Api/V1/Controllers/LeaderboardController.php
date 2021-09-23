@@ -135,6 +135,7 @@ class LeaderboardController extends Controller
             $informer = Total::getInformer($user_id);
 
             // collecting an array with data for the graph
+
             /*for($i=0; $i < config('settings.quantity_month'); $i++)
             {
 
