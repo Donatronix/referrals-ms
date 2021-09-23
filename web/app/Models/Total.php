@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\UuidTrait;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -54,6 +55,12 @@ class Total extends Model
         return $this->belongsTo(User::class);
     }
 
+    /**
+     *  We receive data for the informer and collect it
+     *
+     * @param $user_id
+     * @return array $informer
+     */
     public static function getInformer($user_id)
     {
         $informer = [];
@@ -72,5 +79,21 @@ class Total extends Model
         }
 
         return $informer;
+    }
+
+    public static function getDataInMonth($user_id, $format, $quantity = 1)
+    {
+        switch ($format)
+        {
+            case 'current_month_data':
+                return self::where('user_id', $user_id)
+                    ->whereMonth('created_at',Carbon::now()->month)
+                    ->get();
+
+            case 'last_month_data':
+                return User::where('referrer_id', $user_id)
+                    ->whereMonth('created_at',Carbon::now()->subMonth($quantity))
+                    ->get();
+        }
     }
 }

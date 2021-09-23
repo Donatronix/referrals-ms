@@ -131,7 +131,14 @@ class LeaderboardController extends Controller
         $user_id = Auth::user()->getAuthIdentifier();
 
         try {
+            // we get data for the informer
             $informer = Total::getInformer($user_id);
+
+            // collecting an array with data for the graph
+            /*for($i=0; $i < config('settings.quantity_month'); $i++)
+            {
+
+            }*/
 
             $users = Total::orderBy('amount', 'DESC')
                 ->orderBy('reward', 'DESC')
@@ -145,13 +152,14 @@ class LeaderboardController extends Controller
                 $object->setAttribute('is_current', $isCurrent);
             });
 
-            return response()->jsonApi([
-                'type' => 'success',
-                'title' => "Updating success",
-                'message' => 'The referral code (link) has been successfully updated',
-                $users->toArray(),
-                'informer' => $informer
-            ], 200);
+            return response()->jsonApi(
+                array_merge([
+                    'type' => 'success',
+                    'title' => 'Updating success',
+                    'message' => 'The referral code (link) has been successfully updated',
+                    'informer' => $informer,
+                ], $users->toArray()),
+                200);
 
         } catch (ModelNotFoundException $e) {
             return response()->jsonApi([

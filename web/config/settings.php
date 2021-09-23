@@ -63,4 +63,9 @@ return [
      *
      */
     'application_version_key' => env('APPLICATION_VERSION_KEY', null),
+
+    /**
+     *  Setting the number of months for a schedule
+     */
+    'quantity_month' => 6,
 ];
