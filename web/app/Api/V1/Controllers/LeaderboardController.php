@@ -136,10 +136,6 @@ class LeaderboardController extends Controller
 
             // collecting an array with data for the graph
 
-            /*for($i=0; $i < config('settings.quantity_month'); $i++)
-            {
-
-            }*/
 
             $users = Total::orderBy('amount', 'DESC')
                 ->orderBy('reward', 'DESC')
