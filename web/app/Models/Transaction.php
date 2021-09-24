@@ -95,30 +95,34 @@ class Transaction extends Model
     {
         switch ($format) {
             case 'current_day_data':
-                return self::select('reward', 'created_at')
+                $result = self::select('reward', 'created_at')
                     ->where('user_id', $user_id)
                     ->whereDay('created_at', Carbon::now()->day)
-                    ->first();
+                    ->get();
+                break;
 
             case 'other_day_data':
-                return self::select('reward', 'created_at')
+                $result = self::select('reward', 'created_at')
                     ->where('user_id', $user_id)
                     ->whereDay('created_at', Carbon::now()->subDay($quantity))
                     ->get();
+                break;
 
             case 'current_month_data':
-                return self::select('reward', 'created_at')
+                $result = self::select('reward', 'created_at')
                     ->where('user_id', $user_id)
                     ->whereMonth('created_at', Carbon::now()->month)
                     ->first();
+                break;
 
             case 'other_month_data':
-                return User::select('reward', 'created_at')
+                $result = User::select('reward', 'created_at')
                     ->where('referrer_id', $user_id)
                     ->whereMonth('created_at', Carbon::now()->subMonth($quantity))
                     ->get();
         }
-
+//            return $result;
+            return $result === null ? null : $result;
 
     }
 

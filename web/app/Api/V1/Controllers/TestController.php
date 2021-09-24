@@ -10,7 +10,7 @@ class TestController extends Controller
 {
     public function test()
     {
-        $data = Transaction::getDataForDate('80000008-8008-8008-8008-800000000008', 'month');
+        $data = Transaction::getDataForDate('80000008-8008-8008-8008-800000000008', 'week');
         dd($data);
     }
 }
