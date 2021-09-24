@@ -189,6 +189,7 @@ class ReferralCodeController extends Controller
             ->byApplication($request->get('application_id'))
             ->get()
             ->count();
+
         if ($codesTotal >= config('settings.referral_code.limit')) {
             return response()->jsonApi([
                 'status' => 'warning',
