@@ -4,7 +4,6 @@ namespace App\Api\V1\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
-use App\Services\ReferralCodeService;
 use Carbon\Carbon;
 
 class TestController extends Controller
@@ -20,8 +19,7 @@ class TestController extends Controller
 
         $uploads = Transaction::where('created_at', '>=', \Carbon\Carbon::now()->subWeek())->get();
 
-        foreach($uploads as $date)
-        {
+        foreach ($uploads as $date) {
             echo $date . '<br>';
         }
 //        dd($data);

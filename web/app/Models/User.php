@@ -35,26 +35,25 @@ class User extends Model
 
     public static function getInvitedUsersByDate($user_id, $format = 'data')
     {
-        switch ($format)
-        {
+        switch ($format) {
             case 'current_month_count':
                 return User::where('referrer_id', $user_id)
-                    ->whereMonth('created_at',Carbon::now()->month)
+                    ->whereMonth('created_at', Carbon::now()->month)
                     ->count();
 
             case 'last_month_count':
                 return User::where('referrer_id', $user_id)
-                    ->whereMonth('created_at',Carbon::now()->subMonth())
+                    ->whereMonth('created_at', Carbon::now()->subMonth())
                     ->count();
 
             case 'current_month_data':
                 return User::where('referrer_id', $user_id)
-                    ->whereMonth('created_at',Carbon::now()->month)
+                    ->whereMonth('created_at', Carbon::now()->month)
                     ->get();
 
             case 'last_month_data':
                 return User::where('referrer_id', $user_id)
-                    ->whereMonth('created_at',Carbon::now()->subMonth())
+                    ->whereMonth('created_at', Carbon::now()->subMonth())
                     ->get();
         }
     }

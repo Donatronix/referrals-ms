@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Traits\UuidTrait;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -59,6 +58,7 @@ class Total extends Model
      *  We receive data for the informer and collect it
      *
      * @param $user_id
+     *
      * @return array $informer
      */
     public static function getInformer($user_id)
