@@ -49,66 +49,41 @@ class Transaction extends Model
     public static function getDataForDate($user_id, $format)
     {
         $today = Carbon::now();
-        if($format == 'week' || $format == 'month')
+        if($format == 'week')
         {
-            $cnt = $format == 'week' ? $today->dayOfWeek : $today->day;
-
-            for ($i=0; $i < $cnt; $i++)
+            for ($i=0; $i < $today['dayOfWeek']; $i++)
             {
                 if ( $i == 0 ){
-                    $result[$i] = self::getDataForDateByFormat($user_id, 'current_day_data');
+                    self::getDataForDateByFormat($user_id, 'current_day_data');
                 }
                 else{
-                    $result[$i] = self::getDataForDateByFormat($user_id, 'other_day_data', $i);
+                    self::getDataForDateByFormat($user_id, 'current_month_data');
                 }
             }
         }
-
-        if($format == 'year')
-        {
-            for ($i=0; $i < $today->month; $i++)
-            {
-                if ( $i == 0 ){
-                    $result[$i] = self::getDataForDateByFormat($user_id, 'current_month_data');
-                }
-                else{
-                    $result[$i] = self::getDataForDateByFormat($user_id, 'other_month_data', $i);
-                }
-            }
-        }
-
-        return $result;
     }
 
-    public static function getDataForDateByFormat($user_id, $format, $quantity = null)
+    public static function getDataForDateByFormat($user_id, $format, $quantity = 1)
     {
         switch ($format)
         {
             case 'current_day_data':
-                return self::selectRaw('SUM(reward) AS user_reward')
-                    ->addSelect('created_at')
-                    ->where('user_id', $user_id)
+                return self::where('user_id', $user_id)
                     ->whereDay('created_at',Carbon::now()->day)
-                    ->first();
+                    ->get();
 
             case 'other_day_data':
-                return self::selectRaw('SUM(reward) AS user_reward')
-//                    ->addSelect('created_at')
-                    ->where('user_id', $user_id)
+                return self::where('user_id', $user_id)
                     ->whereDay('created_at',Carbon::now()->subDay($quantity))
                     ->get();
 
             case 'current_month_data':
-                return self::selectRaw('SUM(reward) AS user_reward')
-                    ->addSelect('created_at')
-                    ->where('user_id', $user_id)
+                return self::where('user_id', $user_id)
                     ->whereMonth('created_at',Carbon::now()->month)
-                    ->first();
+                    ->get();
 
-            case 'other_month_data':
-                return User::selectRaw('SUM(reward) AS user_reward')
-                    ->addSelect('created_at')
-                    ->where('referrer_id', $user_id)
+            case 'last_month_data':
+                return User::where('referrer_id', $user_id)
                     ->whereMonth('created_at',Carbon::now()->subMonth($quantity))
                     ->get();
         }

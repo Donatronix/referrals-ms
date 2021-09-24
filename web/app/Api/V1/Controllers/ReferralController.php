@@ -200,8 +200,8 @@ class ReferralController extends Controller
     {
         $newUser = User::find(Auth::user()->getAuthIdentifier());
 
-        if($newUser){
-             return response()->jsonApi([
+        if ($newUser) {
+            return response()->jsonApi([
                 'status' => 'warning',
                 'title' => 'User inviting',
                 'message' => "User already exist"
@@ -223,11 +223,6 @@ class ReferralController extends Controller
                 ->pluck('user_id')
                 ->first();
         }
-
-
-
-
-
 
         // Try to create new user with referrer link
         try {

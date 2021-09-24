@@ -10,7 +10,7 @@ class ReferralCodeService
 {
     public static function createReferralCode($data, User $user = null)
     {
-        if($user == null){
+        if ($user == null) {
             $user = User::find(Auth::user()->getAuthIdentifier());
         }
 
