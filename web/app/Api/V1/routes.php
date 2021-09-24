@@ -14,23 +14,14 @@ $router->group([
 
     $router->group(
         [
-//            'middleware' => 'checkUser'
+            'middleware' => 'checkUser'
         ],
         function ($router) {
             /**
-             * Leaderboard
+             * Referral
              */
-            $router->get('leaderboard', 'LeaderboardController@index');
-            /**
-             *  test
-             */
-            $router->get('test', 'TestController@test');
-
-            /**
-             *  Total
-             */
-            $router->get('referral-codes', 'LeaderboardController@index');
-            $router->post('check-totals', 'LeaderboardController@checkRemoteServices');
+            $router->get('/', 'ReferralController@index');
+            $router->post('inviting', 'ReferralController@inviting');
 
             /**
              *  Referral code
@@ -43,17 +34,22 @@ $router->group([
             $router->delete('referral-codes/{id}', 'ReferralCodeController@destroy');
             $router->put('referral-codes/{id}/default', 'ReferralCodeController@setDefault');
 
-            /*
-             * Templates
-             * */
-            $router->get('/landing-page', 'LandingPageController@index');
-            $router->post('/landing-page', 'LandingPageController@store');
+            /**
+             * Leaderboard
+             */
+            $router->get('leaderboard', 'LeaderboardController@index');
+            $router->post('check-totals', 'LeaderboardController@checkRemoteServices');
 
             /**
-             * Referral
+             *  test
              */
-            $router->get('/', 'ReferralController@index');
-            $router->post('inviting', 'ReferralController@inviting');
+            $router->get('test', 'TestController@test');
+
+            /**
+             * Templates
+             */
+            $router->get('/landing-page', 'LandingPageController@index');
+            $router->post('/landing-page', 'LandingPageController@store');
 
             /**
              * ADMIN PANEL
@@ -63,17 +59,17 @@ $router->group([
                 'namespace' => 'Admin',
                 'middleware' => 'checkAdmin'
             ], function ($router) {
-                /*
-                 * Templates
-                 * */
-                $router->get('/template', 'TemplateController@index');
-                $router->post('/template', 'TemplateController@store');
-
                 /**
                  * Referrals
                  */
                 $router->get('referrals-list', 'UsersController@index');
                 $router->get('referrals-list/{id:[\d]+}', 'UsersController@show');
+
+                /**
+                 * Templates
+                 */
+                $router->get('/template', 'TemplateController@index');
+                $router->post('/template', 'TemplateController@store');
             });
         }
     );
