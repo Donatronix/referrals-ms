@@ -14,8 +14,6 @@ class ReferralCodeService
             $user = User::find(Auth::user()->getAuthIdentifier());
         }
 
-        dd($data);
-
         // Check if code is set as default, then reset all previous code
         if ($data['is_default']) {
             self::defaultReset($data['application_id'], $user->id);
