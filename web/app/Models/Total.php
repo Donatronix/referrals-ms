@@ -64,7 +64,9 @@ class Total extends Model
     public static function getInformer($user_id)
     {
         $informer = [];
-        $users = self::orderBy('amount', 'DESC')->get();
+        $users = self::orderBy('amount', 'DESC')
+            ->orderBy('reward', 'DESC')
+            ->get();
         $rank = 1;
         foreach ($users as $user) {
             if ($user->user_id == $user_id) {
@@ -81,19 +83,4 @@ class Total extends Model
         return $informer;
     }
 
-    public static function getDataInMonth($user_id, $format, $quantity = 1)
-    {
-        switch ($format)
-        {
-            case 'current_month_data':
-                return self::where('user_id', $user_id)
-                    ->whereMonth('created_at',Carbon::now()->month)
-                    ->get();
-
-            case 'last_month_data':
-                return User::where('referrer_id', $user_id)
-                    ->whereMonth('created_at',Carbon::now()->subMonth($quantity))
-                    ->get();
-        }
-    }
 }
