@@ -41,51 +41,91 @@ class Transaction extends Model
      * @var array
      */
     protected $hidden = [
-//        'created_at',
+        'created_at',
         'updated_at',
         'deleted_at',
     ];
 
+    /**
+     *  Getting data for the graph
+     *
+     * @param string | $user_id
+     * @param string | $format
+     *
+     * @return array | $result
+     */
     public static function getDataForDate($user_id, $format)
     {
         $today = Carbon::now();
-        if($format == 'week')
-        {
-            for ($i=0; $i < $today['dayOfWeek']; $i++)
-            {
-                if ( $i == 0 ){
-                    self::getDataForDateByFormat($user_id, 'current_day_data');
-                }
-                else{
-                    self::getDataForDateByFormat($user_id, 'current_month_data');
+        if ($format == 'week' || $format == 'day') {
+            $cnt = $format == 'week' ? $today->dayOfWeek : $today->day;
+
+            for ($i = 0; $i < $cnt; $i++) {
+                if ($i == 0) {
+                    $result[$i] = self::getDataForDateByFormat($user_id, 'current_day_data');
+                } else {
+                    $result[$i] = self::getDataForDateByFormat($user_id, 'current_month_data', $i);
                 }
             }
         }
+
+        if ($format == 'month') {
+            for ($i = 0; $i < $today->month; $i++) {
+                if ($i == 0) {
+                    $result[$i] = self::getDataForDateByFormat($user_id, 'current_month_data');
+                } else {
+                    $result[$i] = self::getDataForDateByFormat($user_id, 'other_month_data', $i);
+                }
+            }
+        }
+
+        return $result;
     }
 
-    public static function getDataForDateByFormat($user_id, $format, $quantity = 1)
+    /**
+     *  Get date data (for a week, for a month, for a year) by format
+     *
+     * @param      string | $user_id
+     * @param      string | $format
+     * @param null | integer | $quantity
+     *
+     * @return object
+     */
+    public static function getDataForDateByFormat($user_id, $format, $quantity = null)
     {
-        switch ($format)
-        {
+        switch ($format) {
             case 'current_day_data':
-                return self::where('user_id', $user_id)
-                    ->whereDay('created_at',Carbon::now()->day)
-                    ->get();
+                return self::select('reward', 'created_at')
+                    ->where('user_id', $user_id)
+                    ->whereDay('created_at', Carbon::now()->day)
+                    ->first();
 
             case 'other_day_data':
-                return self::where('user_id', $user_id)
-                    ->whereDay('created_at',Carbon::now()->subDay($quantity))
+                return self::select('reward', 'created_at')
+                    ->where('user_id', $user_id)
+                    ->whereDay('created_at', Carbon::now()->subDay($quantity))
                     ->get();
 
             case 'current_month_data':
-                return self::where('user_id', $user_id)
-                    ->whereMonth('created_at',Carbon::now()->month)
-                    ->get();
+                return self::select('reward', 'created_at')
+                    ->where('user_id', $user_id)
+                    ->whereMonth('created_at', Carbon::now()->month)
+                    ->first();
 
-            case 'last_month_data':
-                return User::where('referrer_id', $user_id)
-                    ->whereMonth('created_at',Carbon::now()->subMonth($quantity))
+            case 'other_month_data':
+                return User::select('reward', 'created_at')
+                    ->where('referrer_id', $user_id)
+                    ->whereMonth('created_at', Carbon::now()->subMonth($quantity))
                     ->get();
+        }
+
+
+    }
+
+    public static function hideData($data)
+    {
+        foreach ($data as $item) {
+            unset($item);
         }
     }
 }

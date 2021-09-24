@@ -4,6 +4,7 @@ namespace App\Api\V1\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Total;
+use App\Models\Transaction;
 use App\Services\RemoteService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -35,6 +36,31 @@ class LeaderboardController extends Controller
      *              "optional": "false"
      *           },
      *     },
+     *
+     *     @OA\Parameter(
+     *         name="limit",
+     *         in="query",
+     *         description="Limit liderboard of page",
+     *         @OA\Schema(
+     *             type="number"
+     *         ),
+     *     ),
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="Count liderboard of page",
+     *         @OA\Schema(
+     *             type="number"
+     *         ),
+     *     ),
+     *     @OA\Parameter(
+     *         name="graph-sort",
+     *         in="query",
+     *         description="Sort option for the graph. Possible values: week, day, month",
+     *         @OA\Schema(
+     *             type="string",
+     *         ),
+     *     ),
      *
      *     @OA\Response(
      *         response="200",
@@ -135,7 +161,10 @@ class LeaderboardController extends Controller
             $informer = Total::getInformer($user_id);
 
             // collecting an array with data for the graph
-
+            $graph_data = Transaction::getDataForDate($user_id, 'month');
+            dd($graph_data);
+//            Transaction::hideData([$graph_data->id, $graph_data->user_id]);
+            die('END');
 
             $users = Total::orderBy('amount', 'DESC')
                 ->orderBy('reward', 'DESC')
