@@ -54,9 +54,9 @@ class LeaderboardController extends Controller
      *         ),
      *     ),
      *     @OA\Parameter(
-     *         name="graph-sort",
+     *         name="graph_filtr",
      *         in="query",
-     *         description="Sort option for the graph. Possible values: week, day, month",
+     *         description="Sort option for the graph. Possible values: week, month, year",
      *         @OA\Schema(
      *             type="string",
      *         ),
@@ -161,10 +161,7 @@ class LeaderboardController extends Controller
             $informer = Total::getInformer($user_id);
 
             // collecting an array with data for the graph
-            $graph_data = Transaction::getDataForDate($user_id, 'month');
-            dd($graph_data);
-//            Transaction::hideData([$graph_data->id, $graph_data->user_id]);
-            die('END');
+            $graph_data = Transaction::getDataForDate($user_id, $request->get('graph_filtr'));
 
             $users = Total::orderBy('amount', 'DESC')
                 ->orderBy('reward', 'DESC')
@@ -184,6 +181,7 @@ class LeaderboardController extends Controller
                     'title' => 'Updating success',
                     'message' => 'The referral code (link) has been successfully updated',
                     'informer' => $informer,
+                    'graph' => $graph_data,
                 ], $users->toArray()),
                 200);
 

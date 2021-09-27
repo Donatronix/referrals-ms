@@ -10,7 +10,8 @@ class TestController extends Controller
 {
     public function test()
     {
-        $data = Transaction::getDataForDate('80000008-8008-8008-8008-800000000008', 'week');
+//        $data = Carbon::now()->subMonth(1)->format('F');
+        $data = Transaction::getDataForDate('80000008-8008-8008-8008-800000000008', 'month');
         dd($data);
     }
 }

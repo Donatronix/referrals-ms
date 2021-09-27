@@ -56,30 +56,40 @@ class Transaction extends Model
      */
     public static function getDataForDate($user_id, $format)
     {
-        $today = Carbon::now();
-        if ($format == 'week' || $format == 'day') {
-            $cnt = $format == 'week' ? $today->dayOfWeek : $today->day;
-
-            for ($i = 0; $i < $cnt; $i++) {
-                if ($i == 0) {
-                    $result[$i] = self::getDataForDateByFormat($user_id, 'current_day_data');
-                } else {
-                    $result[$i] = self::getDataForDateByFormat($user_id, 'current_month_data', $i);
+        $data = [];
+        if ($format == 'week' || $format == 'month') {
+            $cnt = $format == 'week' ? 7 : 30;
+            for ($i = 1; $i <= $cnt; $i++) {
+                $result[$i] = self::getDataForDateByFormat($user_id, 'day_data', $cnt - $i);
+                if(!$result[$i]->isEmpty()){
+                    foreach ($result[$i] as $k => $item) {
+                        $data[$i]['date'] = $item->attributes['created_at'];
+                        $data[$i][$k]['reward'] =+ $item->attributes['reward'];
+                    }
+                }
+                else{
+                    $data[$i]['reward'] = 0;
+                    $data[$i]['date'] = Carbon::now()->subDay(30 - $i)->toDateTimeString();
                 }
             }
         }
 
-        if ($format == 'month') {
-            for ($i = 0; $i < $today->month; $i++) {
-                if ($i == 0) {
-                    $result[$i] = self::getDataForDateByFormat($user_id, 'current_month_data');
-                } else {
-                    $result[$i] = self::getDataForDateByFormat($user_id, 'other_month_data', $i);
+        if ($format == 'year') {
+            for ($i = 1; $i <= 12; $i++) {
+                $result[$i] = self::getDataForDateByFormat($user_id, 'month_data', 12 - $i);
+                if(!$result[$i]->isEmpty()){
+                    foreach ($result[$i] as $k => $item) {
+                        $data[$i]['date'] = Carbon::now()->subMonth(12 - $i)->format('F');
+                        $data[$i][$k]['reward'] =+ $item->attributes['reward'];
+                    }
+                }
+                else{
+                    $data[$i]['reward'] = 0;
+                    $data[$i]['month'] = Carbon::now()->subMonth(12 - $i)->format('F');
                 }
             }
         }
-
-        return $result;
+        return $data;
     }
 
     /**
@@ -94,36 +104,18 @@ class Transaction extends Model
     public static function getDataForDateByFormat($user_id, $format, $quantity = null)
     {
         switch ($format) {
-            case 'current_day_data':
-                $result = self::select('reward', 'created_at')
-                    ->where('user_id', $user_id)
-                    ->whereDay('created_at', Carbon::now()->day)
-                    ->get();
-                break;
-
-            case 'other_day_data':
-                $result = self::select('reward', 'created_at')
+            case 'day_data':
+                return self::select('reward', 'created_at')
                     ->where('user_id', $user_id)
                     ->whereDay('created_at', Carbon::now()->subDay($quantity))
                     ->get();
-                break;
 
-            case 'current_month_data':
-                $result = self::select('reward', 'created_at')
+            case 'month_data':
+                return self::select('reward', 'created_at')
                     ->where('user_id', $user_id)
-                    ->whereMonth('created_at', Carbon::now()->month)
-                    ->first();
-                break;
-
-            case 'other_month_data':
-                $result = User::select('reward', 'created_at')
-                    ->where('referrer_id', $user_id)
                     ->whereMonth('created_at', Carbon::now()->subMonth($quantity))
                     ->get();
         }
-//            return $result;
-            return $result === null ? null : $result;
-
     }
 
     public static function hideData($data)
