@@ -89,7 +89,7 @@ class ReferralCodeService
 
             if ($user1) {
                 // we send data to the membership microservice for information about the tariff plan and reward for the inviting user
-                RemoteService::sendData('getDataAboutPlanAndReward', $user1, 'Test');
+                RemoteService::sendData('getDataAboutPlanAndReward', $user1, 'Membership');
             }
 
 //            return $output_data;
