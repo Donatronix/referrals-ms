@@ -6,8 +6,8 @@ use Laravel\Lumen\Routing\Controller as BaseController;
 
 /**
  * @OA\Info(
- *     title="Referral API",
- *     description= "This is API Microservice Referral Program",
+ *     title="Referrals Program API Microservice",
+ *     description="This is API of Microservice Referrals Program",
  *     version="1.0",
  *
  *     @OA\Contact(
@@ -41,4 +41,6 @@ use Laravel\Lumen\Routing\Controller as BaseController;
  *
  * @package App\Api\V1\Controllers
  */
-class Controller extends BaseController{}
+class Controller extends BaseController
+{
+}

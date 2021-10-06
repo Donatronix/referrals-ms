@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use GuzzleHttp\Psr7;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Psr7;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
@@ -25,7 +25,8 @@ class MatomoAnalytics
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    private function getData($method = null){
+    private function getData($method = null)
+    {
         // Set parameters
         $queryParameters = [
             'module' => 'API',
@@ -51,7 +52,6 @@ class MatomoAnalytics
             echo Psr7\Message::toString($e->getRequest());
             echo Psr7\Message::toString($e->getResponse());
         }
-
 
         // Check received data
         if ($response->getStatusCode() !== 200) {

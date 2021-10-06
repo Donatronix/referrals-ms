@@ -19,11 +19,13 @@ class UserFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
-            'id' => $this->faker->unique()->numberBetween(1, 100),
-            'referrer_id' => $this->faker->numberBetween(1, 100)
+            'id' => $this->faker->unique()->uuid(),
+            'referrer_id' => function(){
+               return $this->faker->boolean ? User::factory()->create()->id : null;
+            }
         ];
     }
 }

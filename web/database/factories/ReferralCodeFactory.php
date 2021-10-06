@@ -1,32 +1,31 @@
 <?php
 
-
 namespace Database\Factories;
 
 use App\Models\ReferralCode;
 use App\Models\User;
-use App\Services\Firebase;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ReferralCodeFactory extends Factory
 {
     protected $model = ReferralCode::class;
+
     /**
      * @inheritDoc
      */
-    public function definition()
+    public function definition(): array
     {
         $user = User::all()->random();
-        //$app = Application::where('user_id', $user)->get();
+      //  $app = Application::byOwner($user->id)->get();
 
         return [
-            'application_id' => str_replace('-', '.', $this->faker->slug(3, false)),
+            'id' => $this->faker->uuid,
             'user_id' => $user->id,
-            'referral_link' => Firebase::linkGenerate($user->referral_code, 'net.sumra.chat'),
-          //  'referral_link' => Firebase::linkGenerate($user->referral_code, $user->package_name),
-            'code' => $user->referral_code,
-            'is_default' => $this->faker->randomElement(['0', '1']),
-            'application_id' => 'net.sumra.chat'
+            'link' => 'http://' . $this->faker->lexify('????????'),
+            //  'link' => Firebase::linkGenerate($user->referral_code, $app->application_id),
+            'is_default' => $this->faker->boolean(),
+            'note' => $this->faker->text(255),
+            'application_id' => str_replace('-', '.', $this->faker->slug(3, false)),
         ];
     }
 }

@@ -41,8 +41,8 @@ class UsersController extends Controller
      *     },
      *
      *     @OA\Parameter(
-     *         name="orderBy",
-     *         description="Order By",
+     *         name="sort[by]",
+     *         description="Sort by field (....)",
      *         required=false,
      *         in="query",
      *         @OA\Schema (
@@ -50,8 +50,8 @@ class UsersController extends Controller
      *         )
      *     ),
      *     @OA\Parameter(
-     *         name="orderDirection",
-     *         description="Order Direction",
+     *         name="sort[order]",
+     *         description="Sort order (asc, desc)",
      *         required=false,
      *         in="query",
      *         @OA\Schema (
@@ -77,7 +77,7 @@ class UsersController extends Controller
      *         )
      *     ),
      *     @OA\Parameter(
-     *         name="per_page",
+     *         name="limit",
      *         description="Items per page",
      *         required=false,
      *         in="query",
@@ -105,21 +105,20 @@ class UsersController extends Controller
      * @return string
      * @throws \Exception
      */
-    public function index(Request $request)
+    public function index(Request $request): string
     {
         // Validate data
         $validator = Validator::make($request->all(), [
-            'orderBy' => 'in:referral_code,referrer_id,status,id,username|nullable',
-//            'orderBy' => 'in:referral_code,referrer_id,status,id,username|nullable',
-            'orderDirection' => 'in:asc,desc|nullable',
+            'sort.by' => 'in:referral_code,referrer_id,status,id,username|nullable',
+            'sort.order' => 'in:asc,desc|nullable',
             'search' => 'string|nullable',
             'page' => 'integer|nullable',
-            'per_page' => 'integer|nullable'
+            'limit' => 'integer|nullable'
         ]);
 
         if ($validator->fails()) {
             return response()->jsonApi([
-                'type' => 'error',
+                'type' => 'danger',
                 'title' => 'Error',
                 'message' => 'Validation error',
                 'errors' => $validator->errors()
@@ -223,16 +222,17 @@ class UsersController extends Controller
      *
      * @return mixed
      */
-    public function show($id){
+    public function show($id)
+    {
         // Get user model
         try {
             // Get and return user data
-            $user  = User::findOrFail($id)->toArray();
+            $user = User::findOrFail($id)->toArray();
 
             return response()->jsonApi($user, 200);
         } catch (ModelNotFoundException $e) {
             return response()->jsonApi([
-                'type' => 'error',
+                'type' => 'danger',
                 'title' => 'User not found',
                 'message' => "User #{$id} not found"
             ], 404);

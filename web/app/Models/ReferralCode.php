@@ -1,39 +1,72 @@
 <?php
 
-
 namespace App\Models;
 
 use App\Services\ReferralCodeService;
+use App\Traits\OwnerTrait;
+use App\Traits\UuidTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\UuidTrait;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
-class ReferralCode extends MainModel
+class ReferralCode extends Model
 {
     use HasFactory;
+    use SoftDeletes;
     use UuidTrait;
-
+    use OwnerTrait;
 
     const CAMPAIGN = 'Referral Program';
     const MEDIUM = 'Invite Friends';
 
+    const ANDROID_PACKAGE_NAME = 'net.sumra.android';
     //const ANDROID_MIN_PACKAGE_VERSION = '20040902';
 
-    protected $appends = ['resource_url'];
-
-    protected $fillable = [
-        'user_id',
-        'referral_link',
-        'code',
-        'is_default',
-        'application_id'
+    /**
+     * @var array|string[]
+     */
+    public static array $rules = [
+        'is_default' => 'boolean',
+        'note' => 'string|max:255'
     ];
 
-    protected $dates = [
+    /**
+     * @var string[]
+     */
+    protected $appends = [
+        // 'resource_url'
+    ];
+
+    /**
+     * @var string[]
+     */
+    protected $casts = [
+        'is_default' => 'boolean'
+    ];
+
+    /**
+     * @var string[]
+     */
+    protected $fillable = [
+        'code',
+        'application_id',
+        'user_id',
+        'link',
+        'is_default',
+        'note'
+    ];
+
+    /**
+     * @var string[]
+     */
+    protected $hidden = [
         'created_at',
-        'updated_at',
+        'updated_at'
     ];
 
     /**
@@ -52,13 +85,29 @@ class ReferralCode extends MainModel
             } //check if the token already exists and if it does, try again
             while (self::where('code', $referralCode)->first());
 
-            $obj->code = (string)$referralCode;
+            $obj->setAttribute('code', (string)$referralCode);
         });
     }
 
-    public function referralcodesUser()
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get codes / links by application
+     *
+     * @param $query
+     * @param $application_id
+     *
+     * @return mixed
+     */
+    public function scopeByApplication($query, $application_id = null)
+    {
+        return $query->where('application_id', $application_id);
     }
 
     public static function getUserByReferralCode($referral_code, $application_id)
@@ -78,11 +127,12 @@ class ReferralCode extends MainModel
         return ReferralCodeService::createReferralCode($referral_info);
     }
 
-
     /* ************************ ACCESSOR ************************* */
-
-    public function getResourceUrlAttribute()
+    /**
+     * @return string
+     */
+    public function getResourceUrlAttribute(): string
     {
-        return url('/admin/links/'.$this->getKey());
+        return url('/admin/links/' . $this->getKey());
     }
 }

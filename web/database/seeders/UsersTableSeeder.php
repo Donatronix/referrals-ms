@@ -1,4 +1,5 @@
 <?php
+
 namespace Database\Seeders;
 
 use App\Models\User;
@@ -14,18 +15,19 @@ class UsersTableSeeder extends Seeder
      */
     public function run(): void
     {
-        for ($a = 0; $a < 10; $a++) {
-            $id = 0;
+        // Generate default users
+        foreach(config('settings.default_users_ids') as $uuid){
+            User::factory()->create([
+                'id' => $uuid
+            ]);
+        }
 
-            if (random_int(0, 1) === 1) {
-                $users = User::all();
-
-                if ($users->count() > 0) {
-                    $id = $users->random()->id;
-                }
-            }
-
-            User::factory()->count(5)->create();
+        // Adding additional users
+        $users = User::all();
+        foreach ($users as $user){
+            User::factory()->count(30)->create([
+                'referrer_id' => $user->id
+            ]);
         }
     }
 }

@@ -1,22 +1,20 @@
 {
-    "name": "sumra/referrals",
-    "description": "Referral Program Microservice",
+    "name": "kup/referrals",
+    "description": "Referral Program API Microservice",
     "type": "project",
     "private": true,
     "require": {
         "php": "^7.4|^8.0",
-        "ext-bcmath": "*",
-        "ext-json": "*",
-        "ext-openssl": "*",
         "darkaonline/swagger-lume": "~8",
         "doctrine/dbal": "~3",
+        "ext-json": "*",
+        "ext-openssl": "*",
         "guzzlehttp/guzzle": "~7",
         "kreait/laravel-firebase": "~2",
         "laravel/lumen-framework": "~8",
         "sumra/json-api": "*",
         "sumra/pubsub": "*",
-        "vladimir-yuldashev/laravel-queue-rabbitmq": "~11",
-        "zircote/swagger-php": "~3"
+        "vladimir-yuldashev/laravel-queue-rabbitmq": "~11"
     },
     "require-dev": {
         "fakerphp/faker": "~1",
@@ -28,10 +26,7 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        },
-        "files": [
-            "app/helpers.php"
-        ]
+        }
     },
     "autoload-dev": {
         "classmap": [

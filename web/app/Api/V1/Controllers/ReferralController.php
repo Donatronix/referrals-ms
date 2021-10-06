@@ -5,15 +5,12 @@ namespace App\Api\V1\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\ReferralCode;
 use App\Models\User;
-use App\Services\Firebase;
 use App\Services\ReferralCodeService;
-use Illuminate\Database\Eloquent\Model;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 use PubSub;
 use Sumra\JsonApi\JsonApiResponse;
-use function Psy\debug;
 
 /**
  * Class ReferralController
@@ -27,9 +24,9 @@ class ReferralController extends Controller
      *
      * @OA\Get(
      *     path="/v1/referrals",
-     *     summary="List all referrals for user",
-     *     description="List all referrals for user",
-     *     tags={"Main"},
+     *     summary="List all referrals for current user",
+     *     description="List all referrals for current user",
+     *     tags={"Referrals"},
      *
      *     security={{
      *         "default": {
@@ -47,9 +44,34 @@ class ReferralController extends Controller
      *         }
      *     },
      *
+     *     @OA\Parameter(
+     *         name="limit",
+     *         in="query",
+     *         description="Limit referrals of page",
+     *         @OA\Schema(
+     *             type="number"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="Count referrals of page",
+     *         @OA\Schema(
+     *             type="number"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="search",
+     *         in="query",
+     *         description="Search keywords",
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *
      *     @OA\Response(
      *         response="200",
-     *         description="Success join new user to referrer user"
+     *         description="Success getting list of referrals"
      *     ),
      *     @OA\Response(
      *         response=401,
@@ -65,17 +87,36 @@ class ReferralController extends Controller
      *     )
      * )
      *
-     * @return \Sumra\JsonApi\JsonApiResponse
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function index(): JsonApiResponse
+    public function index(Request $request)
     {
-        $currentUserId = Auth::user()->getAuthIdentifier();
+        try {
+            $currentUserId = Auth::user()->getAuthIdentifier();
 
-        // Get list all referrals by user id
-        $list = User::where('referrer_id', $currentUserId)->get();
+            // Get list all referrals by user id
+            $list = User::where('referrer_id', $currentUserId)
+                ->paginate($request->get('limit', config('settings.pagination_limit')));
 
-        // Return response
-        return response()->jsonApi($list, 200);
+            // Return response
+            return response()->json(array_merge(
+                [
+                    'type' => 'success',
+                    'title' => "Get referrals list",
+                    'message' => 'Contacts list received',
+                ],
+                $list->toArray()
+            ), 200);
+        } catch (Exception $e) {
+            return response()->jsonApi([
+                'type' => 'danger',
+                'title' => "Get referrals list",
+                'message' => $e->getMessage(),
+                'data' => null
+            ], 400);
+        }
     }
 
     /**
@@ -85,7 +126,7 @@ class ReferralController extends Controller
      *     path="/v1/referrals/inviting",
      *     summary="Create user invite code",
      *     description="Get user referrer invite code",
-     *     tags={"Main"},
+     *     tags={"Referrals"},
      *
      *     security={{
      *         "default": {
@@ -104,24 +145,24 @@ class ReferralController extends Controller
      *     },
      *
      *     @OA\RequestBody(
-     *          @OA\JsonContent(
-     *              type="object",
-     *              @OA\Property(
-     *                  property="application_id",
-     *                  type="string",
-     *                  maximum="50",
-     *                  description="ID of the service whose link the user clicked on",
-     *                  example="net.sumra.chat"
-     *              ),
-     *              @OA\Property(
-     *                  property="referral_code",
-     *                  type="string",
-     *                  minimum="8",
-     *                  maximum="8",
-     *                  description="Referral code of the inviting user",
-     *                  example="1827oGRL",
-     *              ),
-     *          ),
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="application_id",
+     *                 type="string",
+     *                 maximum=50,
+     *                 description="ID of the service whose link the user clicked on",
+     *                 example="net.sumra.chat"
+     *             ),
+     *             @OA\Property(
+     *                 property="referral_code",
+     *                 type="string",
+     *                 minimum=8,
+     *                 maximum=8,
+     *                 description="Referral code of the inviting user",
+     *                 example="1827oGRL"
+     *             )
+     *         )
      *     ),
      *
      *     @OA\Response(
@@ -145,86 +186,81 @@ class ReferralController extends Controller
      *                  property="code",
      *                  type="string",
      *                  description="Your request is missing a required parameter - Code"
-     *              ),
+     *              )
      *         )
      *     )
      * )
      *
-     * @param Request $request
+     * @param \Illuminate\Http\Request $request
      *
-     * @return \Sumra\JsonApi\
+     * @return mixed
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function inviting(Request $request)
+    public function inviting(Request $request): JsonApiResponse
     {
-        // POST application_id, code
-        // id=net.sumra.chat
-        // code=1827oGRL
+        $newUser = User::find(Auth::user()->getAuthIdentifier());
 
-        $rules = [
-            'application_id' => 'required|string',
-            'code' => 'string|max:8|min:8'
-        ];
-        $this->validate($request, $rules);
-        try
-        {
-            // if the user is invited, then we are looking for the referrer by the referral code
-            if($request->code){
-                $referral_info = ReferralCode::getUserByReferralCode($request->code, $request->application_id);
-                if($referral_info){
-                    return $this->createUser($request->application_id, $referral_info->user_id);
-                }
-            }
-
-            return $this->createUser($request->application_id);
+        if ($newUser) {
+            return response()->jsonApi([
+                'status' => 'warning',
+                'title' => 'User inviting',
+                'message' => "User already exist"
+            ], 204);
         }
-        catch (\Exception $e){
-            return  response()->jsonApi([
-                'type' => 'error',
-                'title' => 'Referrals link not found',
-                'message' => $e
+
+        // Validate input data
+        $this->validate($request, [
+            'application_id' => 'required|string',
+            'referral_code' => 'string|max:8|min:8'
+        ]);
+
+        // Check if the user is invited, then we are looking for the referrer by the referral code
+        $parent_user_id = null;
+        if ($request->has('referral_code')) {
+            $parent_user_id = ReferralCode::select('user_id')
+                ->where('code', $request->get('referral_code'))
+                ->byApplication($request->get('application_id'))
+                ->pluck('user_id')
+                ->first();
+        }
+
+        // Try to create new user with referrer link
+        try {
+            $newUser = User::create([
+                'id' => Auth::user()->getAuthIdentifier(),
+                'referrer_id' => $parent_user_id
+            ]);
+        } catch (Exception $e) {
+            return response()->jsonApi([
+                'status' => 'danger',
+                'title' => 'User inviting',
+                'message' => "Cannot inviting new user: " . $e->getMessage()
+            ], 404);
+        }
+
+        // Try to create new code with link
+        try {
+            $codeInfo = ReferralCodeService::createReferralCode([
+                'application_id' => $request->get('application_id'),
+                'is_default' => true
+            ], $newUser);
+
+            // Send notification to contacts book
+            PubSub::publish('invitedReferral', $codeInfo->toArray(), config('settings.exchange_queue.contacts_book'));
+
+            // Return response
+            return response()->jsonApi([
+                'status' => 'success',
+                'title' => "Referral code generate",
+                'message' => 'The creation of the referral link was successful',
+                'data' => $codeInfo->toArray()
+            ], 200);
+        } catch (Exception $e) {
+            return response()->jsonApi([
+                'status' => 'danger',
+                'title' => 'Referral code generate',
+                'message' => "There was an error while creating a referral code: " . $e->getMessage()
             ], 404);
         }
     }
-
-    public function createUser($application_id, $parrent_user_id = false)
-    {
-        $currentUserId = Auth::user()->getAuthIdentifier();
-         User::create([
-            'id' => $currentUserId,
-            'referrer_id' => $parrent_user_id
-        ]);
-
-         $user_info = ReferralCode::sendDataToCreateReferralCode($currentUserId, $application_id, true);
-
-         $array = [
-            'user_id' => $user_info['user_id'],
-            'application_id' => $user_info['application_id'],
-            'referral_code' => $user_info['referral_code']
-         ];
-
-        PubSub::publish('invitedReferral', $array, 'contactsBook');
-
-        return response()->jsonApi('User created', 200);
-    }
-
 }
-
-######################### EXAMPLE CODE ##################################
-/**
- * For wallet microservice
- */
-/*
-$array = [
-    'user_id' => $appUserId,
-    'status' => Arr::random([
-        User::STATUS_APPROVED,
-        User::STATUS_NOT_APPROVED,
-        User::STATUS_BLOCKED
-    ])
-];
-PubSub::transaction(function() {
-
-})->publish('ReferralBonus', $array, 'referral');
-*/
-######################### EXAMPLE CODE ##################################

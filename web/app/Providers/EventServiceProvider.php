@@ -16,6 +16,12 @@ class EventServiceProvider extends ServiceProvider
         'ReferralBonus' => [
             'App\Listeners\ReferralBonusListener',
         ],
+        'ReferralUserInfo' => [
+            'App\Listeners\UsersMeetListener',
+        ],
+        'SendReward' => [
+            'App\Listeners\AccrualRemunerationListener',
+        ],
         'InvitedReferralResponse' => [
             InvitedReferralResponseListener::class
         ]
