@@ -7,7 +7,7 @@ NC='\033[0m' # No Color
 git submodule init
 git submodule update --remote
 REVISION=`git rev-parse --short HEAD`
-TIME_TAG=`date  +%Y-%m-%d-%H`
+
 BRANCH=`git status |head -n 1|awk '{print $3}'`
 DEPLOY_NAME=`basename $(git remote show -n origin | grep URL|head -1 | cut -d: -f2-)|awk -F '.' '{print $1}'`
 DOCKER_ECR_REPO_URL="005279544259.dkr.ecr.us-west-2.amazonaws.com"

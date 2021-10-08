@@ -8,12 +8,19 @@ use Laravel\Lumen\Routing\Controller as BaseController;
  * @OA\Info(
  *     title="Referrals Program API Microservice",
  *     description="This is API of Microservice Referrals Program",
- *     version="1.0",
+ *     version="V1",
  *
  *     @OA\Contact(
  *         email="admin@sumra.net",
- *         name="Support Team"
+ *         name="Sumra Group Support Team"
  *     )
+ * )
+ */
+
+/**
+ *  @OA\Server(
+ *      url=SWAGGER_LUME_CONST_HOST,
+ *      description="Contacts Book API Microservice, Version 1"
  * )
  */
 
@@ -26,7 +33,7 @@ use Laravel\Lumen\Routing\Controller as BaseController;
  *
  *     @OA\Flow(
  *         flow="implicit",
- *         authorizationUrl="https://is.sumra.net/oauth2",
+ *         authorizationUrl="https://sumraid.com/oauth2",
  *         scopes={
  *             "ManagerRead"="Manager can read",
  *             "User":"User access",
@@ -41,6 +48,4 @@ use Laravel\Lumen\Routing\Controller as BaseController;
  *
  * @package App\Api\V1\Controllers
  */
-class Controller extends BaseController
-{
-}
+class Controller extends BaseController{}

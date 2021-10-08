@@ -21,7 +21,7 @@ class LandingPageController extends Controller
      * LandingPage Controller
      *
      * @OA\Get(
-     *     path="/v1/referrals/landing-pages",
+     *     path="/landing-pages",
      *     description="Get all user's landing pages",
      *     tags={"Landing pages"},
      *
@@ -87,7 +87,7 @@ class LandingPageController extends Controller
      * Landing page Controller
      *
      * @OA\Post(
-     *     path="/v1/referrals/landing-pages",
+     *     path="/landing-pages",
      *     description="Save landing page",
      *     tags={"Landing pages"},
      *

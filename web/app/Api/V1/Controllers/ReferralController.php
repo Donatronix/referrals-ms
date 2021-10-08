@@ -23,7 +23,7 @@ class ReferralController extends Controller
      * List all referrals for user
      *
      * @OA\Get(
-     *     path="/v1/referrals",
+     *     path="/referrals",
      *     summary="List all referrals for current user",
      *     description="List all referrals for current user",
      *     tags={"Referrals"},
@@ -123,7 +123,7 @@ class ReferralController extends Controller
      * Get user referrer invite code
      *
      * @OA\Post(
-     *     path="/v1/referrals/inviting",
+     *     path="/inviting",
      *     summary="Create user invite code",
      *     description="Get user referrer invite code",
      *     tags={"Referrals"},

@@ -17,7 +17,7 @@ class TemplateController extends Controller
      * Template Controller
      *
      * @OA\Get(
-     *     path="/v1/referrals/admin/template",
+     *     path="/admin/template",
      *     description="Get templates",
      *     tags={"Template"},
      *
@@ -98,7 +98,7 @@ class TemplateController extends Controller
      * Template Controller
      *
      * @OA\Post(
-     *     path="/v1/referrals/admin/template",
+     *     path="/admin/template",
      *     description="Save template",
      *     tags={"Template"},
      *

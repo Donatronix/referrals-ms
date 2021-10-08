@@ -54,7 +54,6 @@ RUN apt install -y \
 #    --with-freetype --with-jpeg
 
 RUN docker-php-ext-install -j$(nproc) \
-#    gd
     pdo \
     pdo_mysql \
     intl \

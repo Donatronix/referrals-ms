@@ -20,7 +20,7 @@ class ReferralCodeController extends Controller
      * Get referral codes and links
      *
      * @OA\Get(
-     *     path="/v1/referrals/referral-codes",
+     *     path="/referral-codes",
      *     description="Get all user's referral codes and links",
      *     tags={"Referral Code"},
      *
@@ -95,7 +95,7 @@ class ReferralCodeController extends Controller
      *  Create link and code for an existing user
      *
      * @OA\Post(
-     *     path="/v1/referrals/referral-codes",
+     *     path="/referral-codes",
      *     summary="Create link and code for an existing user",
      *     description="Create link and code for an existing user",
      *     tags={"Referral Code"},
@@ -226,7 +226,7 @@ class ReferralCodeController extends Controller
      * Show one code and link
      *
      * @OA\Get(
-     *     path="/v1/referrals/referral-codes/{id}",
+     *     path="/referral-codes/{id}",
      *     description="Show referral code and link",
      *     tags={"Referral Code"},
      *
@@ -297,7 +297,7 @@ class ReferralCodeController extends Controller
      * Update referral link and code.
      *
      * @OA\Put(
-     *     path="/v1/referrals/referral-codes/{id}",
+     *     path="/referral-codes/{id}",
      *     description="Update referral code and link",
      *     tags={"Referral Code"},
      *
@@ -405,7 +405,7 @@ class ReferralCodeController extends Controller
      * Remove referral code
      *
      * @OA\Delete(
-     *     path="/v1/referrals/referral-codes/{id}",
+     *     path="/referral-codes/{id}",
      *     description="Delete referral code",
      *     tags={"Referral Code"},
      *
@@ -487,7 +487,7 @@ class ReferralCodeController extends Controller
      * Change the default link
      *
      * @OA\Put(
-     *     path="/v1/referrals/referral-codes/{id}/default",
+     *     path="/referral-codes/{id}/default",
      *     description="Set new referral code and link",
      *     tags={"Referral Code"},
      *

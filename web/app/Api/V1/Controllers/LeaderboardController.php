@@ -16,7 +16,7 @@ class LeaderboardController extends Controller
      *  A list of leaders in the invitation referrals
      *
      * @OA\Get(
-     *     path="/v1/referrals/leaderboard",
+     *     path="/leaderboard",
      *     description="A list of leaders in the invitation referrals",
      *     tags={"Leaderboard"},
      *
