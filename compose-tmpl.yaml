@@ -6,7 +6,7 @@ services:
     image: {{DOCKER_IMAGE}}
     restart: always
     networks:
-      - sumra-net
+      - kup-net
     ports:
       - '8091:80'
       - '18091:443'
@@ -23,6 +23,6 @@ services:
 #    command: /bin/bash -c "php artisan swagger-lume:generate && php artisan queue:listen rabbitmq --queue=ReferralsMS --timeout=0 > /dev/null"
 
 networks:
-  sumra-net:
-    name: SumraNet
+  kup-net:
+    name: KeyUniversalProgramsNet
     driver: bridge
