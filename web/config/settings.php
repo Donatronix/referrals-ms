@@ -52,6 +52,7 @@ return [
      */
     'exchange_queue' => [
         'files' => env('RABBITMQ_RECEIVER_FILES', 'FilesMS'),
+        'referrals' => env('RABBITMQ_RECEIVER_REFERRALS', 'ReferralsMS'),
         'contacts_book' => env('RABBITMQ_RECEIVER_CONTACTS', 'ContactsBookMS')
     ],
 

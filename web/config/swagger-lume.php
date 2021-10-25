@@ -196,10 +196,11 @@ return [
     |--------------------------------------------------------------------------
      */
     'constants' => [
-        'SWAGGER_TITLE' => env('APP_NAME'),
-        'SWAGGER_DESCRIPTION' => env('APP_NAME') . ', Version 1',
-        'SWAGGER_VERSION' => env('APP_API_VERSION'),
+        'SWAGGER_TITLE' => config('app.name'),
+        'SWAGGER_DESCRIPTION' => config('app.name') . (env('APP_API_VERSION', 'latest') !== null ? ', Version ' . env('APP_API_VERSION', 'latest') : ''),
+        'SWAGGER_VERSION' => env('APP_API_VERSION', ''),
         'SWAGGER_CONST_HOST' => env('SWAGGER_CONST_HOST', config('app.url') . setPath()),
+        'SWAGGER_SUPPORT_EMAILS' => "support@" . env('APP_PLATFORM') . '.com'
     ],
 ];
 

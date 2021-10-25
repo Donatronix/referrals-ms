@@ -11,7 +11,7 @@ use Laravel\Lumen\Routing\Controller as BaseController;
  *     version=SWAGGER_VERSION,
  *
  *     @OA\Contact(
- *         email="admin@sumra.net",
+ *         email=SWAGGER_SUPPORT_EMAILS,
  *         name="Support Team"
  *     )
  * )
