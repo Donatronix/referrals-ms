@@ -10,6 +10,7 @@
         "ext-json": "*",
         "ext-openssl": "*",
         "guzzlehttp/guzzle": "~7",
+        "fruitcake/laravel-cors": "~2",
         "kreait/laravel-firebase": "~2",
         "laravel/lumen-framework": "~8",
         "sumra/json-api": "*",

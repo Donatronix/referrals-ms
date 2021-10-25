@@ -80,14 +80,14 @@ $app->configure('matomo-analytics');
 */
 
 $app->middleware([
-    \App\Http\Middleware\CorsMiddleware::class,
+    \Fruitcake\Cors\HandleCors::class,
     \App\Http\Middleware\TrimStrings::class,
 ]);
 
 $app->routeMiddleware([
+    //'auth' => App\Http\Middleware\Authenticate::class,
     'checkUser' => App\Http\Middleware\CheckUserMiddleware::class,
     'checkAdmin' => App\Http\Middleware\CheckAdminMiddleware::class,
-    //'auth' => App\Http\Middleware\Authenticate::class
 ]);
 
 /*
@@ -101,20 +101,32 @@ $app->routeMiddleware([
 |
 */
 
-// $app->register(App\Providers\AppServiceProvider::class);
+$app->register(App\Providers\AppServiceProvider::class);
 $app->register(App\Providers\AuthServiceProvider::class);
 $app->register(App\Providers\EventServiceProvider::class);
 
-/** Pubsub - RabbitMQ */
+/**
+ * Enable CORS policy
+ */
+$app->configure('cors');
+$app->register(Fruitcake\Cors\CorsServiceProvider::class);
+
+/**
+ * Pubsub - RabbitMQ
+ */
 $app->configure('queues');
 $app->register(VladimirYuldashev\LaravelQueueRabbitMQ\LaravelQueueRabbitMQServiceProvider::class);
 class_alias(\Illuminate\Support\Facades\App::class, 'App');
 $app->register(\Sumra\PubSub\PubSubServiceProvider::class);
 
-/** Json API */
+/**
+ * Json API
+ */
 $app->register(\Sumra\JsonApi\JsonApiServiceProvider::class);
 
-/** Swagger */
+/**
+ * Swagger
+ */
 $app->configure('swagger-lume');
 $app->register(\SwaggerLume\ServiceProvider::class);
 

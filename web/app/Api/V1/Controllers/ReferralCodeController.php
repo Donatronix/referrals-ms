@@ -243,7 +243,7 @@ class ReferralCodeController extends Controller
      *          "throttling-tier": "Unlimited",
      *          "wso2-application-security": {
      *              "security-types": {"oauth2"},
-     *              "optimal": "false"
+     *              "optional": "false"
      *          }
      *     },
      *
@@ -503,7 +503,7 @@ class ReferralCodeController extends Controller
      *          "throttling-tier": "Unlimited",
      *          "wso2-application-security": {
      *              "security-types": {"oauth2"},
-     *              "optimal": "false"
+     *              "optional": "false"
      *          }
      *     },
      *
