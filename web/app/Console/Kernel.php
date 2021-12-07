@@ -34,7 +34,7 @@ class Kernel extends ConsoleKernel
 
 //        $schedule->call(new MatomoAnalytics, ['method' => 'UserId.getUsers'])->everyMinute();
 //        $schedule->call(new MatomoAnalytics, ['method' => 'Live.getMostRecentVisitorId'])->everyMinute();
-        $schedule->call(new MatomoAnalytics, ['method' => 'Actions.getPageUrls'])->everyMinute();
+       // $schedule->call(new MatomoAnalytics, ['method' => 'Actions.getPageUrls'])->everyMinute();
     }
 
     /**

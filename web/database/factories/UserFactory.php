@@ -22,7 +22,6 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'id' => $this->faker->unique()->uuid(),
             'referrer_id' => function(){
                return $this->faker->boolean ? User::factory()->create()->id : null;
             }
