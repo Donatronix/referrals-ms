@@ -11,10 +11,14 @@ class LandingPage extends Model
     use HasFactory;
     use OwnerTrait;
 
+    protected $casts = [
+      'metadata' => 'object'
+    ];
+
     protected $fillable = [
         'user_id',
         'template_id',
-        'json' => '[]', // json array of user's texts
+        'metadata'
     ];
 
     public function template()

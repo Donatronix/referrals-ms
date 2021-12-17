@@ -17,7 +17,7 @@ class CreateTemplatesTable extends Migration
             $table->uuid('id')->primary();
             $table->char("title");
             $table->longText("html");
-            $table->longText("json");
+            $table->json("metadata");
             $table->timestamps();
         });
     }

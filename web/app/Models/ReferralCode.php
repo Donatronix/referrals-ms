@@ -21,9 +21,6 @@ class ReferralCode extends Model
     const CAMPAIGN = 'Referral Program';
     const MEDIUM = 'Invite Friends';
 
-    const ANDROID_PACKAGE_NAME = 'net.sumra.android';
-    //const ANDROID_MIN_PACKAGE_VERSION = '20040902';
-
     /**
      * @var array|string[]
      */

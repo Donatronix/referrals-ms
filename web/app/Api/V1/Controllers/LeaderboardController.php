@@ -2,7 +2,6 @@
 
 namespace App\Api\V1\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Total;
 use App\Models\Transaction;
 use App\Services\RemoteService;
@@ -21,20 +20,20 @@ class LeaderboardController extends Controller
      *     tags={"Leaderboard"},
      *
      *     security={{
-     *          "default" :{
-     *              "ManagerRead",
-     *              "User",
-     *              "ManagerWrite"
-     *          },
+     *         "default" :{
+     *             "ManagerRead",
+     *             "User",
+     *             "ManagerWrite"
+     *         }
      *     }},
      *
      *     x={
-     *          "auth-type": "Application & Application User",
-     *          "throttling-tier": "Unlimited",
-     *          "wso2-application-security": {
-     *              "security-types": {"oauth2"},
-     *              "optional": "false"
-     *           },
+     *         "auth-type": "Application & Application User",
+     *         "throttling-tier": "Unlimited",
+     *         "wso2-application-security": {
+     *             "security-types": {"oauth2"},
+     *             "optional": "false"
+     *         }
      *     },
      *
      *     @OA\Parameter(
@@ -43,7 +42,7 @@ class LeaderboardController extends Controller
      *         description="Limit liderboard of page",
      *         @OA\Schema(
      *             type="number"
-     *         ),
+     *         )
      *     ),
      *     @OA\Parameter(
      *         name="page",
@@ -51,7 +50,7 @@ class LeaderboardController extends Controller
      *         description="Count liderboard of page",
      *         @OA\Schema(
      *             type="number"
-     *         ),
+     *         )
      *     ),
      *     @OA\Parameter(
      *         name="graph_filtr",
@@ -59,7 +58,7 @@ class LeaderboardController extends Controller
      *         description="Sort option for the graph. Possible values: week, month, year",
      *         @OA\Schema(
      *             type="string",
-     *         ),
+     *         )
      *     ),
      *
      *     @OA\Response(
@@ -88,23 +87,23 @@ class LeaderboardController extends Controller
      *                     description="username",
      *                     example="Lonzo",
      *                 ),
-     *                  @OA\Property(
+     *                 @OA\Property(
      *                      property="amount",
      *                      type="integer",
      *                      description="Number of invited users",
      *                      example=100,
-     *                  ),
+     *                 ),
      *                 @OA\Property(
      *                      property="reward",
      *                      type="double",
      *                      description="Amount of remuneration",
      *                      example=50.50,
-     *                  ),
+     *                 ),
      *                 @OA\Property(
      *                      property="is_current",
      *                      type="boolean",
      *                      description="Determine the user who made the request",
-     *                  ),
+     *                 ),
      *             ),
      *             @OA\Property(
      *                 property="informer",
@@ -114,21 +113,21 @@ class LeaderboardController extends Controller
      *                      type="integer",
      *                      description="User rating place",
      *                      example=1000000000,
-     *                  ),
+     *                 ),
      *                 @OA\Property(
      *                      property="reward",
      *                      type="integer",
      *                      description="How much user earned",
      *                      example=7,
-     *                  ),
+     *                 ),
      *                 @OA\Property(
      *                      property="grow_this_month",
      *                      type="integer",
      *                      description="",
      *                      example=100000,
-     *                  ),
-     *              ),
-     *         ),
+     *                 )
+     *             )
+     *         )
      *     ),
      *
      *     @OA\Response(
@@ -197,8 +196,38 @@ class LeaderboardController extends Controller
 
     public function checkRemoteServices($input_data)
     {
-        // Igor, this is demo data for the test. By connecting them, you don't need a remote microservice.
-        // $input_data = \App\Services\TestService::showDataFromRemoteMembership();
+        // This is demo data for the test. By connecting them, you don't need a remote microservice.
+        // $input_data = return [
+        //            "id" => "2561dbee-2207-30ff-9241-b1b5ee79a03d",
+        //            "program_type_id" => 1,
+        //            "enabled" => 0,
+        //            "level_id" => "a39b4c05-ed3f-39e5-91da-53cdbcb98a75",
+        //            "created_at" => "2021-09-02T10:02:35.000000Z",
+        //            "updated_at" => "2021-09-02T10:02:35.000000Z",
+        //            "program_type" => [
+        //                "id" => 1,
+        //                "name" => "pioneer",
+        //                "key" => "pioneer",
+        //                "created_at" => "2021-09-02T10:02:35.000000Z",
+        //                "updated_at" => "2021-09-02T10:02:35.000000Z",
+        //            ],
+        //            "level" => [
+        //                "id" => "a39b4c05-ed3f-39e5-91da-53cdbcb98a75",
+        //                "name" => "bronze",
+        //                "price" => 99.0,
+        //                "currency" => "BDT",
+        //                "period" => "month",
+        //                "program_type_id" => 1,
+        //            ],
+        //            "key" => "pioneer.get_give",
+        //            "title" => "For each Referral you get $8. Your referred contacts give $5. Earn Unlimited",
+        //            "value" => [
+        //                0 => 8,
+        //                1 => 5,
+        //            ],
+        //            "format" => "$",
+        //        ];
+
         return RemoteService::accrualRemuneration($input_data);
     }
 }

@@ -16,7 +16,6 @@ class CreateLandingPagesTable extends Migration
         Schema::create('landing_pages', function (Blueprint $table) {
             $table->uuid('id')->primary();
 
-
             $table->foreignUuid('user_id')
                 ->constrained()
                 ->onUpdate('cascade')
@@ -27,7 +26,7 @@ class CreateLandingPagesTable extends Migration
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
 
-            $table->longText("json");
+            $table->json("metadata");
             $table->timestamps();
         });
     }

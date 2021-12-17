@@ -16,11 +16,7 @@ class CreateTotalsTable extends Migration
         $table_name = 'totals';
 
         Schema::create($table_name, function (Blueprint $table) {
-            $table->uuid('id')
-                ->primary();
-
-            $table->string('username')
-                ->default('');
+            $table->uuid('id')->primary();
 
             $table->integer('amount')
                 ->unsigned()

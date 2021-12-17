@@ -9,9 +9,13 @@ class Template extends Model
 {
     use HasFactory;
 
+    protected $casts = [
+        'metadata' => 'object'
+    ];
+
     protected $fillable = [
-        'title', // title
+        'title',
         'html', // html or react template
-        'json' => '[]', // default json array of changeable texts
+        'metadata'
     ];
 }

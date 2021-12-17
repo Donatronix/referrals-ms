@@ -566,8 +566,16 @@ class ReferralCodeController extends Controller
     public function getDataByUserId(Request $request)
     {
         $user_id = $request->get('user_id');
+
+        // Check Package Name
+        $application_id = $request->get('application_id', null);
+
         try {
-            $referral_data = ReferralCode::where('user_id', $user_id)->where('is_default', 1)->first();
+            // Get default referral code by user_id and application
+            $referral_data = ReferralCode::where('user_id', $user_id)
+                ->where('application_id', $application_id)
+                ->where('is_default', 1)
+                ->first();
 
             return response()->jsonApi([
                 'type' => 'success',

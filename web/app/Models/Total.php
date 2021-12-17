@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\UuidTrait;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -18,7 +19,6 @@ class Total extends Model
      * @var array|string[]
      */
     public static array $rules = [
-        'username' => 'required|string|max:255',
         'amount' => 'integer',
         'reward' => 'regex:/^\d*(\.\d{2})?$/',
     ];
@@ -30,7 +30,6 @@ class Total extends Model
      */
     protected $fillable = [
         'user_id',
-        'username',
         'amount',
         'reward',
     ];
@@ -73,7 +72,7 @@ class Total extends Model
                 $informer = [
                     'rank' => $rank,
                     'reward' => $user->reward,
-                    'grow_this_month' => User::getInvitedUsersByDate($user_id, 'current_month_count')
+                    'grow_this_month' => Total::getInvitedUsersByDate($user_id, 'current_month_count')
                 ];
                 break;
             }
@@ -81,6 +80,31 @@ class Total extends Model
         }
 
         return $informer;
+    }
+
+    public static function getInvitedUsersByDate($user_id, $format = 'data')
+    {
+        switch ($format) {
+            case 'current_month_count':
+                return User::where('referrer_id', $user_id)
+                    ->whereMonth('created_at', Carbon::now()->month)
+                    ->count();
+
+            case 'last_month_count':
+                return User::where('referrer_id', $user_id)
+                    ->whereMonth('created_at', Carbon::now()->subMonth())
+                    ->count();
+
+            case 'current_month_data':
+                return User::where('referrer_id', $user_id)
+                    ->whereMonth('created_at', Carbon::now()->month)
+                    ->get();
+
+            case 'last_month_data':
+                return User::where('referrer_id', $user_id)
+                    ->whereMonth('created_at', Carbon::now()->subMonth())
+                    ->get();
+        }
     }
 
 }

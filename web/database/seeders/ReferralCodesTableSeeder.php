@@ -8,7 +8,7 @@ use App\Models\User;
 use App\Services\Firebase;
 use Illuminate\Database\Seeder;
 
-class ReferralCodeSeeder extends Seeder
+class ReferralCodesTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.

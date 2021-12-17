@@ -27,7 +27,7 @@ class AuthServiceProvider extends ServiceProvider
         $this->app['auth']->viaRequest('api', function ($request) {
             return new GenericUser([
                 'id' => (string) $request->header('user-id'),
-                'username' => (string) $request->header('username', null)
+                'username' => (string) Auth::user()->username
             ]);
         });
     }

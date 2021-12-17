@@ -33,11 +33,6 @@ $router->group([
     $router->post('check-totals', 'LeaderboardController@checkRemoteServices');
 
     /**
-     *  test
-     */
-    $router->get('test', 'TestController@test');
-
-    /**
      * Templates
      */
     $router->get('/landing-page', 'LandingPageController@index');

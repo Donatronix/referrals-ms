@@ -152,7 +152,8 @@ class ReferralController extends Controller
      *                 type="string",
      *                 maximum=50,
      *                 description="ID of the service whose link the user clicked on",
-     *                 example="net.sumra.chat"
+     *                 example="net.sumra.chat",
+     *                 required=true
      *             ),
      *             @OA\Property(
      *                 property="referral_code",
@@ -198,6 +199,7 @@ class ReferralController extends Controller
      */
     public function inviting(Request $request): JsonApiResponse
     {
+        // Find app user object
         $newUser = User::find(Auth::user()->getAuthIdentifier());
 
         if ($newUser) {
@@ -228,6 +230,7 @@ class ReferralController extends Controller
         try {
             $newUser = User::create([
                 'id' => Auth::user()->getAuthIdentifier(),
+                'user_name' => Auth::user()->username,
                 'referrer_id' => $parent_user_id
             ]);
         } catch (Exception $e) {

@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             UsersTableSeeder::class,
-            ReferralCodeSeeder::class,
+            ReferralCodesTableSeeder::class,
             TotalSeeder::class,
             TransactionSeeder::class,
         ]);

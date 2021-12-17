@@ -26,35 +26,21 @@ class User extends Model
     ];
 
     /**
+     * The attributes excluded from the model's JSON form.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+        'deleted_at',
+    ];
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function referralCodes(): HasMany
     {
         return $this->hasMany(ReferralCode::class);
-    }
-
-    public static function getInvitedUsersByDate($user_id, $format = 'data')
-    {
-        switch ($format) {
-            case 'current_month_count':
-                return User::where('referrer_id', $user_id)
-                    ->whereMonth('created_at', Carbon::now()->month)
-                    ->count();
-
-            case 'last_month_count':
-                return User::where('referrer_id', $user_id)
-                    ->whereMonth('created_at', Carbon::now()->subMonth())
-                    ->count();
-
-            case 'current_month_data':
-                return User::where('referrer_id', $user_id)
-                    ->whereMonth('created_at', Carbon::now()->month)
-                    ->get();
-
-            case 'last_month_data':
-                return User::where('referrer_id', $user_id)
-                    ->whereMonth('created_at', Carbon::now()->subMonth())
-                    ->get();
-        }
     }
 }
