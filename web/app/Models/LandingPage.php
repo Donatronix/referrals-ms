@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Traits\OwnerTrait;
+use Sumra\SDK\Traits\OwnerTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 

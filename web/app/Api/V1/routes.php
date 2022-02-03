@@ -11,25 +11,33 @@ $router->group([
     /**
      * Referrals
      */
-    $router->get('/', 'ReferralController@index');
-    $router->post('/', 'ReferralController@create');
-    $router->post('inviting', 'ReferralController@inviting');
+    $router->group([
+        'prefix' => 'referrals',
+    ], function ($router) {
+        $router->get('/', 'ReferralController@index');
+        $router->post('/', 'ReferralController@create');
+    });
 
     /**
      *  Referral code
      */
-    $router->get('referral-codes', 'ReferralCodeController@index');
-    $router->get('referral-codes/user', 'ReferralCodeController@getDataByUserId');
-    $router->post("referral-codes", 'ReferralCodeController@store');
-    $router->get("referral-codes/{id}", 'ReferralCodeController@show');
-    $router->put('referral-codes/{id}', 'ReferralCodeController@update');
-    $router->delete('referral-codes/{id}', 'ReferralCodeController@destroy');
-    $router->put('referral-codes/{id}/default', 'ReferralCodeController@setDefault');
+    $router->group([
+        'prefix' => 'referral-codes',
+    ], function ($router) {
+        $router->get('/', 'ReferralCodeController@index');
+        $router->get('/user', 'ReferralCodeController@getDataByUserId');
+        $router->post('/', 'ReferralCodeController@store');
+        $router->get('/{id}', 'ReferralCodeController@show');
+        $router->put('/{id}', 'ReferralCodeController@update');
+        $router->delete('/{id}', 'ReferralCodeController@destroy');
+        $router->put('/{id}/default', 'ReferralCodeController@setDefault');
+    });
+
 
     /**
      * Leaderboard
      */
-    $router->get('leaderboard', 'LeaderboardController@index');
+    $router->get('leaderboards', 'LeaderboardController@index');
     $router->post('check-totals', 'LeaderboardController@checkRemoteServices');
 
     /**

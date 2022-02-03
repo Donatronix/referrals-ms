@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
-use App\Services\ReferralCodeService;
-use App\Traits\OwnerTrait;
-use App\Traits\UuidTrait;
+use Sumra\SDK\Traits\OwnerTrait;
+use Sumra\SDK\Traits\UuidTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 class ReferralCode extends Model
 {
@@ -84,7 +85,7 @@ class ReferralCode extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function user(): BelongsTo
     {
@@ -95,30 +96,28 @@ class ReferralCode extends Model
      * Get codes / links by application
      *
      * @param $query
-     * @param $application_id
-     *
+     * @param string|null $application_id
      * @return mixed
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
-    public function scopeByApplication($query, $application_id = null)
+    public function scopeByApplication($query, string $application_id = null): mixed
     {
-        return $query->where('application_id', $application_id);
+        return $query->where('application_id', $application_id ?? request()->get('application_id'));
     }
 
-    public static function getUserByReferralCode($referral_code, $application_id)
+    /**
+     * Get codes / links by referral code
+     *
+     * @param $query
+     * @param string|null $referral_code
+     * @return mixed
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    public static function scopeByReferralCode($query, string $referral_code = null): mixed
     {
-        return $referral_code ? self::where('code', $referral_code)->where('application_id', $application_id)
-            ->first() : NULL;
-    }
-
-    public static function sendDataToCreateReferralCode($currentUserId, $application_id, $default = false)
-    {
-        $referral_info = [
-            'user_id' => $currentUserId,
-            'application_id' => $application_id,
-            'is_default' => $default
-        ];
-
-        return ReferralCodeService::createReferralCode($referral_info);
+        return $query->where('code', $referral_code ?? request()->get('referral_code'));
     }
 
     /* ************************ ACCESSOR ************************* */

@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Traits\UuidTrait;
+use Sumra\SDK\Traits\UuidTrait;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

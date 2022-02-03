@@ -68,8 +68,8 @@ class ReferralCodeController extends Controller
     {
         try {
             $codes = ReferralCode::byOwner()
-                ->when($request->has('application_id'), function ($q) use ($request) {
-                    return $q->byApplication($request->get('application_id'));
+                ->when($request->has('application_id'), function ($q) {
+                    return $q->byApplication();
                 })
                 ->get();
 
@@ -185,10 +185,7 @@ class ReferralCodeController extends Controller
         );
 
         // Check amount generated codes for current user
-        $codesTotal = ReferralCode::byOwner()
-            ->byApplication($request->get('application_id'))
-            ->get()
-            ->count();
+        $codesTotal = ReferralCode::byOwner()->byApplication()->get()->count();
 
         if ($codesTotal >= config('settings.referral_code.limit')) {
             return response()->jsonApi([
@@ -200,11 +197,7 @@ class ReferralCodeController extends Controller
 
         // Try to create new code with link
         try {
-            $code = ReferralCodeService::createReferralCode([
-                'application_id' => $request->get('application_id'),
-                'is_default' => $request->boolean('is_default'),
-                'note' => $request->get('note', null)
-            ]);
+            $code = ReferralCodeService::createReferralCode($request);
 
             return response()->jsonApi([
                 'type' => 'success',
@@ -372,13 +365,13 @@ class ReferralCodeController extends Controller
         // Validate input data
         $this->validate($request, ReferralCode::$rules);
 
-        // Try find referral code and update it
+        // Try to find referral code and update it
         try {
             $data = ReferralCode::find($id);
 
             // Check if has is_default parameter, then reset all previous code
             if ($request->has('is_default')) {
-                ReferralCodeService::defaultReset($data->application_id, $data->user_id);
+                ReferralCodeService::defaultReset($data->user_id, $data->application_id);
 
                 $data->is_default = $request->boolean('is_default');
             }
@@ -537,7 +530,7 @@ class ReferralCodeController extends Controller
             $code = ReferralCode::find($id);
 
             // Reset defaults
-            ReferralCodeService::defaultReset($code->application_id, $code->user_id);
+            ReferralCodeService::defaultReset($code->user_id, $code->application_id);
 
             // Set new default code
             $code->update(['is_default' => true]);
@@ -567,13 +560,10 @@ class ReferralCodeController extends Controller
     {
         $user_id = $request->get('user_id');
 
-        // Check Package Name
-        $application_id = $request->get('application_id', null);
-
         try {
             // Get default referral code by user_id and application
             $referral_data = ReferralCode::where('user_id', $user_id)
-                ->where('application_id', $application_id)
+                ->byApplication()
                 ->where('is_default', 1)
                 ->first();
 
@@ -591,13 +581,5 @@ class ReferralCodeController extends Controller
                 'data' => null
             ], 404);
         }
-    }
-
-    public function test(Request $request)
-    {
-        $users = ['user1' => $request->get('user1'), 'user2' => $request->get('user2')];
-
-        $user = ReferralCodeService::checkUser($users['user2']);
-
     }
 }

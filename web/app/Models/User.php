@@ -2,8 +2,7 @@
 
 namespace App\Models;
 
-use App\Traits\UuidTrait;
-use Carbon\Carbon;
+use Sumra\SDK\Traits\UuidTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -23,6 +22,7 @@ class User extends Model
     protected $fillable = [
         'id',
         'referrer_id',
+        'application_id'
     ];
 
     /**
@@ -37,7 +37,7 @@ class User extends Model
     ];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function referralCodes(): HasMany
     {

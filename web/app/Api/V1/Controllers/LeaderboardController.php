@@ -103,7 +103,7 @@ class LeaderboardController extends Controller
      *                      property="is_current",
      *                      type="boolean",
      *                      description="Determine the user who made the request",
-     *                 ),
+     *                 )
      *             ),
      *             @OA\Property(
      *                 property="informer",
@@ -194,7 +194,7 @@ class LeaderboardController extends Controller
         }
     }
 
-    public function checkRemoteServices($input_data)
+    public function checkRemoteServices($input_data): bool
     {
         // This is demo data for the test. By connecting them, you don't need a remote microservice.
         // $input_data = return [

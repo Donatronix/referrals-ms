@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUsersTable extends Migration
+class CreateApplicationUserTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,16 @@ class CreateUsersTable extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->uuid('id')->primary()->index();
+        Schema::create('application_user', function (Blueprint $table) {
+            $table->foreignUuid('user_id')
+                ->constrained()
+                ->onUpdate('restrict')
+                ->onDelete('restrict');
 
-            $table->uuid('referrer_id')
-                ->nullable()
-                ->comment('The ID of the inviting user');
+            $table->string('application_id', 50)
+                ->comment('Application ID / Package Name');
 
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

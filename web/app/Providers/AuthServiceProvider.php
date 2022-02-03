@@ -8,16 +8,6 @@ use Illuminate\Support\ServiceProvider;
 class AuthServiceProvider extends ServiceProvider
 {
     /**
-     * Register any application services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        //
-    }
-
-    /**
      * Boot the authentication services for the application.
      *
      * @return void
@@ -27,7 +17,7 @@ class AuthServiceProvider extends ServiceProvider
         $this->app['auth']->viaRequest('api', function ($request) {
             return new GenericUser([
                 'id' => (string) $request->header('user-id'),
-                'username' => (string) Auth::user()->username
+                'username' => (string) $request->header('username', null)
             ]);
         });
     }

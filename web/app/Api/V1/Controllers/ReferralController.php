@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\ReferralCode;
 use App\Models\User;
 use App\Services\ReferralCodeService;
+use App\Services\ReferralService;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use PubSub;
@@ -87,9 +89,9 @@ class ReferralController extends Controller
      *     )
      * )
      *
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function index(Request $request)
     {
@@ -120,12 +122,13 @@ class ReferralController extends Controller
     }
 
     /**
-     * Get user referrer invite code
+     * Joining a new user to the referral program in the presence of the referral code of the inviter
+     * Save data for first start, after registration
      *
      * @OA\Post(
-     *     path="/inviting",
-     *     summary="Create user invite code",
-     *     description="Get user referrer invite code",
+     *     path="/referrals",
+     *     summary="Joining a new user to the referral program in the presence of the referral code of the inviter",
+     *     description="Joining a new user to the referral program in the presence of the referral code of the inviter",
      *     tags={"Referrals"},
      *
      *     security={{
@@ -145,6 +148,7 @@ class ReferralController extends Controller
      *     },
      *
      *     @OA\RequestBody(
+     *         required=true,
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(
@@ -152,8 +156,7 @@ class ReferralController extends Controller
      *                 type="string",
      *                 maximum=50,
      *                 description="ID of the service whose link the user clicked on",
-     *                 example="net.sumra.chat",
-     *                 required=true
+     *                 example="net.sumra.chat"
      *             ),
      *             @OA\Property(
      *                 property="referral_code",
@@ -182,87 +185,69 @@ class ReferralController extends Controller
      *         response=404,
      *         description="not found",
      *         @OA\JsonContent(
-     *              type="object",
-     *              @OA\Property(
-     *                  property="code",
-     *                  type="string",
-     *                  description="Your request is missing a required parameter - Code"
-     *              )
+     *             type="object",
+     *             @OA\Property(
+     *                 property="code",
+     *                 type="string",
+     *                 description="Your request is missing a required parameter - Code"
+     *             )
      *         )
      *     )
      * )
      *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return mixed
+     * @param Request $request
+     * @return JsonApiResponse
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function inviting(Request $request): JsonApiResponse
+    public function create(Request $request): JsonApiResponse
     {
-        // Find app user object
-        $newUser = User::find(Auth::user()->getAuthIdentifier());
-
-        if ($newUser) {
-            return response()->jsonApi([
-                'status' => 'warning',
-                'title' => 'User inviting',
-                'message' => "User already exist"
-            ], 204);
-        }
-
         // Validate input data
         $this->validate($request, [
-            'application_id' => 'required|string',
-            'referral_code' => 'string|max:8|min:8'
+            'application_id' => [
+                'required',
+                'string',
+                'min:10',
+                'regex:/[a-z0-9.]/'
+            ],
+            'referral_code' => 'string|nullable|max:8|min:8'
         ]);
 
-        // Check if the user is invited, then we are looking for the referrer by the referral code
+        // Find Referrer ID by its referral code and application ID
         $parent_user_id = null;
         if ($request->has('referral_code')) {
             $parent_user_id = ReferralCode::select('user_id')
-                ->where('code', $request->get('referral_code'))
-                ->byApplication($request->get('application_id'))
+                ->byReferralCode()
+                ->byApplication()
                 ->pluck('user_id')
                 ->first();
         }
 
-        // Try to create new user with referrer link
+        // We are trying to register a new user to the referral program
         try {
-            $newUser = User::create([
-                'id' => Auth::user()->getAuthIdentifier(),
-                'user_name' => Auth::user()->username,
-                'referrer_id' => $parent_user_id
-            ]);
-        } catch (Exception $e) {
-            return response()->jsonApi([
-                'status' => 'danger',
-                'title' => 'User inviting',
-                'message' => "Cannot inviting new user: " . $e->getMessage()
-            ], 404);
-        }
+            // Register new inviting user in the referral program
+            $newUser = ReferralService::getUser(Auth::user()->getAuthIdentifier());
 
-        // Try to create new code with link
-        try {
-            $codeInfo = ReferralCodeService::createReferralCode([
-                'application_id' => $request->get('application_id'),
-                'is_default' => true
-            ], $newUser);
+            // Adding an inviter to a new user
+            ReferralService::setInviter($newUser, $parent_user_id);
+
+            // Try to create new referral code with link
+            $userInfo = ReferralCodeService::createReferralCode($request, $newUser, true);
 
             // Send notification to contacts book
-            PubSub::publish('invitedReferral', $codeInfo->toArray(), config('settings.exchange_queue.contacts_book'));
+            PubSub::publish('invitedReferral', $userInfo->toArray(), config('settings.exchange_queue.contacts_book'));
 
             // Return response
             return response()->jsonApi([
                 'status' => 'success',
-                'title' => "Referral code generate",
-                'message' => 'The creation of the referral link was successful',
-                'data' => $codeInfo->toArray()
+                'title' => "Joining user to the referral program",
+                'message' => 'User added successfully and referral code created',
+                'data' => $userInfo->toArray()
             ], 200);
         } catch (Exception $e) {
             return response()->jsonApi([
                 'status' => 'danger',
-                'title' => 'Referral code generate',
-                'message' => "There was an error while creating a referral code: " . $e->getMessage()
+                'title' => 'Joining user to the referral program',
+                'message' => "Cannot joining user to the referral program: " . $e->getMessage()
             ], 404);
         }
     }
