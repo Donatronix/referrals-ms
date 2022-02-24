@@ -5,7 +5,6 @@
     "private": true,
     "require": {
         "php": "^7.4|^8.0",
-        "darkaonline/swagger-lume": "~8",
         "doctrine/dbal": "~3",
         "ext-bcmath": "*",
         "ext-json": "*",
@@ -17,8 +16,7 @@
         "robbrazier/piwik": "~4",
         "sumra/baum": "*",
         "sumra/json-api": "*",
-        "sumra/pubsub": "*",
-        "vladimir-yuldashev/laravel-queue-rabbitmq": "~11"
+        "sumra/pubsub": "*"
     },
     "require-dev": {
         "fakerphp/faker": "~1",
