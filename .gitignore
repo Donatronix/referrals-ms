@@ -1,4 +1,4 @@
 .idea
-/logs/*
+/sumra-sdk
 docker-compose.yaml
 xdebug.ini
