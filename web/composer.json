@@ -11,8 +11,6 @@
         "guzzlehttp/guzzle": "~7",
         "kreait/laravel-firebase": "~2",
         "laravel/lumen-framework": "~8",
-        "sumra/json-api": "*",
-        "sumra/pubsub": "*",
         "sumra/sdk": "*"
     },
     "require-dev": {
@@ -44,20 +42,6 @@
         {
             "type": "path",
             "url": "../sumra-sdk",
-            "options": {
-                "symlink": false
-            }
-        },
-        {
-            "type": "path",
-            "url": "../pubsub",
-            "options": {
-                "symlink": false
-            }
-        },
-        {
-            "type": "path",
-            "url": "../json-api",
             "options": {
                 "symlink": false
             }

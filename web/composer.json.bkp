@@ -14,9 +14,7 @@
         "kreait/laravel-firebase": "~2",
         "laravel/lumen-framework": "~8",
         "robbrazier/piwik": "~4",
-        "sumra/baum": "*",
-        "sumra/json-api": "*",
-        "sumra/pubsub": "*"
+        "sumra/baum": "*"
     },
     "require-dev": {
         "fakerphp/faker": "~1",
@@ -43,20 +41,6 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "repositories": [
-        {
-            "type": "path",
-            "url": "../pubsub",
-            "options": {
-                "symlink": false
-            }
-        },
-        {
-            "type": "path",
-            "url": "../json-api",
-            "options": {
-                "symlink": false
-            }
-        },
         {
             "type": "path",
             "url": "../baum",
