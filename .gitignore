@@ -1,7 +1,4 @@
-/.idea
-/baum
-/json-api
+.idea
 /logs/*
-/pubsub
 docker-compose.yaml
 xdebug.ini
