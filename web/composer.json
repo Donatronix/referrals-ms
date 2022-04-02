@@ -2,6 +2,7 @@
     "name": "kup/referrals-ms",
     "description": "Referral Program API Microservice",
     "type": "project",
+    "license": "MIT",
     "private": true,
     "require": {
         "php": "^8.0",
@@ -20,21 +21,25 @@
     },
     "autoload": {
         "psr-4": {
-            "Tests\\": "tests/",
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         }
     },
     "autoload-dev": {
-        "classmap": [
-            "tests/"
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "post-root-package-install": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
         ]
     },
     "config": {
+        "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true,
-        "optimize-autoloader": true
+        "sort-packages": true
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
@@ -46,10 +51,5 @@
                 "symlink": false
             }
         }
-    ],
-    "scripts": {
-        "post-root-package-install": [
-            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
-        ]
-    }
+    ]
 }
