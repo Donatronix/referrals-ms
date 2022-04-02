@@ -129,6 +129,11 @@ $app->register(\Sumra\SDK\JsonApiServiceProvider::class);
 $app->configure('swagger-lume');
 $app->register(\SwaggerLume\ServiceProvider::class);
 
+/**
+ * Artisan Commands Lumen Generator
+ */
+$app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
+
 /** Firebase */
 $app->register(Kreait\Laravel\Firebase\ServiceProvider::class);
 

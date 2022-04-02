@@ -1,11 +1,9 @@
 /.idea
+/.vscode
+/__bkp
 /public/hot
 /public/storage
-/storage/api-docs
-/storage/app
-/storage/framework
-/storage/logs
 /vendor
 .env
-.phpunit.result.cache
 composer.lock
+.phpunit.result.cache
