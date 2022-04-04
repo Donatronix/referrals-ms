@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\ReferralCode;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -12,11 +13,12 @@ class ReferralCodeService
     /**
      * Create a referral code
      *
-     * @param Request $request
+     * @param Request   $request
      * @param User|null $user
-     * @param bool $is_default
+     * @param bool      $is_default
+     *
      * @return ReferralCode
-     * @throws \Exception
+     * @throws Exception
      */
     public static function createReferralCode(Request $request, User $user = null, bool $is_default = false): ReferralCode
     {
@@ -36,7 +38,7 @@ class ReferralCodeService
                 'application_id' => $request->get('application_id'),
                 'link' => 'link' . rand(1, 1000),
                 'is_default' => $request->boolean('is_default', $is_default),
-                'note' => $request->get('note', null)
+                'note' => $request->get('note', null),
             ]);
 
             $generate_link = (string)Firebase::linkGenerate($rc->code, $request->get('application_id'));
@@ -44,15 +46,16 @@ class ReferralCodeService
 
             return $rc;
         } catch (Exception $e) {
-            throw new \Exception("There was an error while creating a referral code: " . $e->getMessage());
+            throw new Exception("There was an error while creating a referral code: " . $e->getMessage());
         }
     }
 
     /**
      * Reset all default codes by user and application
      *
-     * @param $user_id
+     * @param             $user_id
      * @param string|null $application_id
+     *
      * @return null
      */
     public static function defaultReset($user_id, string $application_id = null)
