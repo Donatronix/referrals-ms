@@ -7,6 +7,7 @@ use App\Models\Transaction;
 use App\Services\RemoteService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
 class LeaderboardController extends Controller
@@ -149,9 +150,9 @@ class LeaderboardController extends Controller
      *     )
      * )
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
-    public function index(Request $request)
+    public function index(Request $request): Response
     {
         $user_id = Auth::user()->getAuthIdentifier();
 
@@ -172,6 +173,7 @@ class LeaderboardController extends Controller
                     $isCurrent = true;
                 }
                 $object->setAttribute('is_current', $isCurrent);
+                $object->save();
             });
 
             return response()->jsonApi(
@@ -189,7 +191,7 @@ class LeaderboardController extends Controller
                 'type' => 'danger',
                 'title' => "Not operation",
                 'message' => "Error showing all users",
-                'data' => null
+                'data' => null,
             ], 404);
         }
     }
