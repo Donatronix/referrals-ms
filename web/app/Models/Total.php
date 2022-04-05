@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
-use Sumra\SDK\Traits\UuidTrait;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Sumra\SDK\Traits\UuidTrait;
 
 class Total extends Model
 {
@@ -32,6 +33,7 @@ class Total extends Model
         'user_id',
         'amount',
         'reward',
+        'is_current',
     ];
 
     /**
@@ -46,21 +48,13 @@ class Total extends Model
     ];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    /**
      *  We receive data for the informer and collect it
      *
      * @param $user_id
      *
      * @return array $informer
      */
-    public static function getInformer($user_id)
+    public static function getInformer($user_id): array
     {
         $informer = [];
         $users = self::orderBy('amount', 'DESC')
@@ -72,7 +66,7 @@ class Total extends Model
                 $informer = [
                     'rank' => $rank,
                     'reward' => $user->reward,
-                    'grow_this_month' => Total::getInvitedUsersByDate($user_id, 'current_month_count')
+                    'grow_this_month' => Total::getInvitedUsersByDate($user_id, 'current_month_count'),
                 ];
                 break;
             }
@@ -82,29 +76,37 @@ class Total extends Model
         return $informer;
     }
 
-    public static function getInvitedUsersByDate($user_id, $format = 'data')
+    /**
+     * @param        $user_id
+     * @param string $format
+     *
+     * @return int|Collection|null
+     */
+    public static function getInvitedUsersByDate($user_id, string $format = 'data'): Collection|int|null
     {
-        switch ($format) {
-            case 'current_month_count':
-                return User::where('referrer_id', $user_id)
-                    ->whereMonth('created_at', Carbon::now()->month)
-                    ->count();
+        return match ($format) {
+            'current_month_count' => User::where('referrer_id', $user_id)
+                ->whereMonth('created_at', Carbon::now()->month)
+                ->count(),
+            'last_month_count' => User::where('referrer_id', $user_id)
+                ->whereMonth('created_at', Carbon::now()->subMonth())
+                ->count(),
+            'current_month_data' => User::where('referrer_id', $user_id)
+                ->whereMonth('created_at', Carbon::now()->month)
+                ->get(),
+            'last_month_data' => User::where('referrer_id', $user_id)
+                ->whereMonth('created_at', Carbon::now()->subMonth())
+                ->get(),
+            default => null,
+        };
+    }
 
-            case 'last_month_count':
-                return User::where('referrer_id', $user_id)
-                    ->whereMonth('created_at', Carbon::now()->subMonth())
-                    ->count();
-
-            case 'current_month_data':
-                return User::where('referrer_id', $user_id)
-                    ->whereMonth('created_at', Carbon::now()->month)
-                    ->get();
-
-            case 'last_month_data':
-                return User::where('referrer_id', $user_id)
-                    ->whereMonth('created_at', Carbon::now()->subMonth())
-                    ->get();
-        }
+    /**
+     * @return BelongsTo
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
 }

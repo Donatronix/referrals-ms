@@ -48,7 +48,7 @@ class LeaderboardController extends Controller
      *     @OA\Parameter(
      *         name="page",
      *         in="query",
-     *         description="Count liderboard of page",
+     *         description="Count leaderboard of page",
      *         @OA\Schema(
      *             type="number"
      *         )
@@ -150,11 +150,13 @@ class LeaderboardController extends Controller
      *     )
      * )
      *
+     * @param Request $request
+     *
      * @return Response
      */
     public function index(Request $request): Response
     {
-        $user_id = Auth::user()->getAuthIdentifier();
+        $user_id = AUth::id() ?? Auth::user()->getAuthIdentifier();
 
         try {
             // we get data for the informer

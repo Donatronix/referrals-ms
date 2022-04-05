@@ -275,7 +275,7 @@ paths:
         -
           name: page
           in: query
-          description: 'Count liderboard of page'
+          description: 'Count leaderboard of page'
           schema:
             type: number
         -

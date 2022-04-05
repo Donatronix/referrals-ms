@@ -25,7 +25,7 @@ class ReferralCodeService
         try {
             // Check user object
             if (!$user) {
-                $user = User::find(Auth::user()->getAuthIdentifier());
+                $user = Auth::user() ?? User::find(Auth::user()->getAuthIdentifier());
             }
 
             // Check if code is set as default, then reset all previous code
