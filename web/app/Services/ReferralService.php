@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\User;
+use Exception;
 use Illuminate\Support\Facades\Log;
 
 class ReferralService
@@ -12,7 +13,9 @@ class ReferralService
      * if not exist, then register a new user
      *
      * @param string $user_id
+     *
      * @return mixed
+     * @throws Exception
      */
     public static function getUser(string $user_id): mixed
     {
@@ -24,16 +27,16 @@ class ReferralService
             // If not exist, then create a new user
             if (!$user) {
                 $user = User::create([
-                    'id' => $user_id
+                    'id' => $user_id,
                 ]);
 
                 Log::info('New user added successfully in referral program');
-            }else{
+            } else {
                 Log::info('The current user is already a member of the referral program');
             }
 
             return $user;
-        } catch (\Exception $e){
+        } catch (Exception $e) {
             throw new Exception($e->getMessage());
         }
     }
@@ -42,9 +45,11 @@ class ReferralService
      * Updating the referral tree.
      * Adding an inviter to a new user
      *
-     * @param User $newUser
+     * @param User        $newUser
      * @param string|null $parent_user_id
+     *
      * @return User
+     * @throws Exception
      */
     public static function setInviter(User $newUser, string $parent_user_id = null): User
     {
@@ -57,7 +62,7 @@ class ReferralService
                 $newUser->save();
 
                 Log::info('The user was successfully added to their inviter');
-            } else{
+            } else {
                 Log::info('The user already has an inviter');
             }
 
@@ -65,15 +70,12 @@ class ReferralService
             // Adding an Inviter to the Leaderboard
 
 
-
-
-
             // We send data to the membership microservice for information
             // about the tariff plan and reward for the inviting user
 //            RemoteService::sendData('getDataAboutPlanAndReward', $newUser->id, 'Membership');
 
             return $newUser;
-        } catch (\Exception $e){
+        } catch (Exception $e) {
             throw new Exception($e->getMessage());
         }
     }

@@ -156,7 +156,7 @@ class LeaderboardController extends Controller
      */
     public function index(Request $request): Response
     {
-        $user_id = AUth::id() ?? Auth::user()->getAuthIdentifier();
+        $user_id = Auth::user()->getAuthIdentifier();
 
         try {
             // we get data for the informer
