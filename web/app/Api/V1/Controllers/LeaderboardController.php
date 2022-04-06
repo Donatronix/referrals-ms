@@ -4,6 +4,7 @@ namespace App\Api\V1\Controllers;
 
 use App\Models\Total;
 use App\Models\Transaction;
+use App\Models\User;
 use App\Services\RemoteService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -233,5 +234,20 @@ class LeaderboardController extends Controller
         //        ];
 
         return RemoteService::accrualRemuneration($input_data);
+    }
+
+
+    public function showLeaderboard(Request $request)
+    {
+        $referrers = User::select('referrer_id')->distinct('referrer_id')->get();
+
+        return response()->jsonApi(
+            array_merge([
+                'type' => 'success',
+                'title' => 'Updating success',
+                'message' => 'The referral code (link) has been successfully updated',
+
+            ], ['leaderboard' => $leaderboard]),
+            200);
     }
 }

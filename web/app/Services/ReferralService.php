@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Total;
 use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\Log;
@@ -68,6 +69,8 @@ class ReferralService
                 $newUser->referrer_id = $parent_user_id;
                 $newUser->country = $country;
                 $newUser->save();
+
+                Total::where('user_id', $parent_user_id)->first()->increment('amount');
 
                 Log::info('The user was successfully added to their inviter');
             } else {
