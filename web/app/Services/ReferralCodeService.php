@@ -23,6 +23,7 @@ class ReferralCodeService
     public static function createReferralCode(Request $request, User $user = null, bool $is_default = false): ReferralCode
     {
         try {
+
             // Check user object
             if (!$user) {
                 $user = Auth::user() ?? User::find(Auth::user()->getAuthIdentifier());

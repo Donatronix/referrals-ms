@@ -24,6 +24,8 @@ class ExampleTest extends TestCase
             // we get data for the informer
             $informer = Total::getInformer($user_id);
 
+            dd($informer);
+
             // collecting an array with data for the graph
             $graph_data = Transaction::getDataForDate($user_id, request()->get('graph_filtr', 'week'));
 

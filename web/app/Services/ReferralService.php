@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\Log;
+use Stevebauman\Location\Facades\Location;
 
 class ReferralService
 {
@@ -58,7 +59,14 @@ class ReferralService
             // Checking if the user has an inviter / sponsor
             // If not, then set the inviter / sponsor
             if ($newUser->referrer_id === null) {
+                $country = null;
+                if ($position = Location::get()) {
+                    // Successfully retrieved position.
+                    $country = $position->countryName;
+                }
+
                 $newUser->referrer_id = $parent_user_id;
+                $newUser->country = $country;
                 $newUser->save();
 
                 Log::info('The user was successfully added to their inviter');

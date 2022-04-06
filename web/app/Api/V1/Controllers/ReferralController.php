@@ -11,6 +11,7 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 use PubSub;
 use Sumra\SDK\JsonApiResponse;
 
@@ -116,7 +117,7 @@ class ReferralController extends Controller
                 'type' => 'danger',
                 'title' => "Get referrals list",
                 'message' => $e->getMessage(),
-                'data' => null
+                'data' => null,
             ], 400);
         }
     }
@@ -196,8 +197,9 @@ class ReferralController extends Controller
      * )
      *
      * @param Request $request
+     *
      * @return JsonApiResponse
-     * @throws \Illuminate\Validation\ValidationException
+     * @throws ValidationException
      */
     public function create(Request $request): JsonApiResponse
     {
@@ -207,9 +209,9 @@ class ReferralController extends Controller
                 'required',
                 'string',
                 'min:10',
-                'regex:/[a-z0-9.]/'
+                'regex:/[a-z0-9.]/',
             ],
-            'referral_code' => 'string|nullable|max:8|min:8'
+            'referral_code' => 'string|nullable|max:8|min:8',
         ]);
 
         // Find Referrer ID by its referral code and application ID
@@ -221,6 +223,7 @@ class ReferralController extends Controller
                 ->pluck('user_id')
                 ->first();
         }
+
 
         // We are trying to register a new user to the referral program
         try {
@@ -241,13 +244,13 @@ class ReferralController extends Controller
                 'status' => 'success',
                 'title' => "Joining user to the referral program",
                 'message' => 'User added successfully and referral code created',
-                'data' => $userInfo->toArray()
+                'data' => $userInfo->toArray(),
             ], 200);
         } catch (Exception $e) {
             return response()->jsonApi([
                 'status' => 'danger',
                 'title' => 'Joining user to the referral program',
-                'message' => "Cannot joining user to the referral program: " . $e->getMessage()
+                'message' => "Cannot joining user to the referral program: " . $e->getMessage(),
             ], 404);
         }
     }

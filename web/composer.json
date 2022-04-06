@@ -5,12 +5,13 @@
     "private": true,
     "require": {
         "php": "^8.0",
-        "doctrine/dbal": "~3",
         "ext-json": "*",
         "ext-openssl": "*",
+        "doctrine/dbal": "~3",
         "guzzlehttp/guzzle": "~7",
         "kreait/laravel-firebase": "~2",
         "laravel/lumen-framework": "~8",
+        "stevebauman/location": "^6.3",
         "sumra/sdk": "*"
     },
     "require-dev": {
