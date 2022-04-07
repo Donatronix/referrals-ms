@@ -2,12 +2,8 @@
 
 namespace App\Exceptions;
 
-use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
 use Laravel\Lumen\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -32,45 +28,43 @@ class Handler extends ExceptionHandler
      *
      * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
      *
-     * @param Throwable $e
-     *
+     * @param  \Throwable  $exception
      * @return void
      *
-     * @throws Exception
+     * @throws \Exception
      */
-    public function report(Throwable $e)
+    public function report(Throwable $exception)
     {
-        parent::report($e);
+        parent::report($exception);
     }
 
     /**
      * Render an exception into an HTTP response.
      *
-     * @param Request $request
-     * @param Throwable $e
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Throwable  $exception
+     * @return \Illuminate\Http\Response|\Illuminate\Http\JsonResponse
      *
-     * @return Response|JsonResponse
-     *
-     * @throws Throwable
+     * @throws \Throwable
      */
-    public function render($request, Throwable $e): Response|JsonResponse
+    public function render($request, Throwable $exception)
     {
-        if ($e instanceof ModelNotFoundException) {
-            $classFullName = $e->getModel();
+        if ($exception instanceof ModelNotFoundException) {
+            $classFullName = $exception->getModel();
             $className = substr($classFullName, strrpos($classFullName, '\\') + 1);
 
             return response()->json(config('constants.errors.' . $className . 'NotFound'), 404);
         }
 
-        if ($e instanceof ValidationException) {
+        if ($exception instanceof ValidationException) {
             return response()->json([
                 'message' => 'YOUR CUSTOM MESSAGE HERE',
-                'errors' => $e->validator->getMessageBag(),
-                $e->errors(),
-                $e->status
+                'errors' => $exception->validator->getMessageBag(),
+                $exception->errors(),
+                $exception->status
             ], 422);
         }
 
-        return parent::render($request, $e);
+        return parent::render($request, $exception);
     }
 }

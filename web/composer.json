@@ -1,15 +1,13 @@
 {
     "name": "kup/referrals-ms",
     "description": "Referral Program API Microservice",
-    "type": "project",
     "license": "MIT",
+    "type": "project",
     "private": true,
     "require": {
         "php": "^8.0",
-        "doctrine/dbal": "~3",
         "ext-json": "*",
         "ext-openssl": "*",
-        "guzzlehttp/guzzle": "~7",
         "kreait/laravel-firebase": "~2",
         "laravel/lumen-framework": "~8",
         "sumra/sdk": "*"
@@ -31,6 +29,15 @@
             "Tests\\": "tests/"
         }
     },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../sumra-sdk",
+            "options": {
+                "symlink": false
+            }
+        }
+    ],
     "scripts": {
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
@@ -42,14 +49,5 @@
         "sort-packages": true
     },
     "minimum-stability": "dev",
-    "prefer-stable": true,
-    "repositories": [
-        {
-            "type": "path",
-            "url": "../sumra-sdk",
-            "options": {
-                "symlink": false
-            }
-        }
-    ]
+    "prefer-stable": true
 }
