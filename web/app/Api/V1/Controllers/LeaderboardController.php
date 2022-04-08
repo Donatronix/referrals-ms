@@ -129,6 +129,34 @@ class LeaderboardController extends Controller
      *                      example=100000,
      *                 )
      *             )
+     *             @OA\Property(
+     *                 property="leaderboard",
+     *                 type="array",
+     *                 @OA\Property(
+     *                      property="rank",
+     *                      type="integer",
+     *                      description="User rating place",
+     *                      example=1000000000,
+     *                 ),
+     *                  @OA\Property(
+     *                      property="amount",
+     *                      type="integer",
+     *                      description="Number of invitees",
+     *                      example=100000,
+     *                 )
+     *                 @OA\Property(
+     *                      property="reward",
+     *                      type="integer",
+     *                      description="How much user earned",
+     *                      example=7,
+     *                 ),
+     *                 @OA\Property(
+     *                      property="grow_this_month",
+     *                      type="integer",
+     *                      description="",
+     *                      example=100000,
+     *                 )
+     *             )
      *         )
      *     ),
      *
@@ -177,6 +205,7 @@ class LeaderboardController extends Controller
                 }
                 $object->setAttribute('is_current', $isCurrent);
                 $object->save();
+
             });
 
             return response()->jsonApi(
@@ -186,7 +215,10 @@ class LeaderboardController extends Controller
                     'message' => 'The referral code (link) has been successfully updated',
                     'informer' => $informer,
                     'graph' => $graph_data,
-                ], $users->toArray()),
+                ], [
+                    'data' => $users->toArray(),
+                    'leaderboard' => $this->getLeaderboard(),
+                ]),
                 200);
 
         } catch (ModelNotFoundException $e) {
@@ -236,18 +268,28 @@ class LeaderboardController extends Controller
         return RemoteService::accrualRemuneration($input_data);
     }
 
-
-    public function showLeaderboard(Request $request)
+    protected function getLeaderboard()
     {
-        $referrers = User::select('referrer_id')->distinct('referrer_id')->get();
+        $leaderboard = [];
+        $referrers = User::distinct('referrer_id')->get(['referrer_id'])->toArray();
 
-        return response()->jsonApi(
-            array_merge([
-                'type' => 'success',
-                'title' => 'Updating success',
-                'message' => 'The referral code (link) has been successfully updated',
+        $users = Total::orderBy('amount', 'DESC')->orderBy('reward', 'DESC')->get();
+        $rank = 1;
+        foreach ($users as $user) {
+            if (in_array($user->referrer_id, $referrers)) {
+                $leaderboard[] = [
+                    'rank' => $rank,
+                    'name' => 'Referrer name',
+                    'country' => 'Referrer country',
+                    'invitees' => $user->amount,
+                    'reward' => $user->reward,
+                    'grow_this_month' => Total::getInvitedUsersByDate($user->referrer_id, 'current_month_count'),
+                ];
+                $rank++;
+            }
 
-            ], ['leaderboard' => $leaderboard]),
-            200);
+        }
+
+        return $leaderboard;
     }
 }
