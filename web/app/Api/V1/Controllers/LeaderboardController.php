@@ -2,10 +2,13 @@
 
 namespace App\Api\V1\Controllers;
 
+use App\Models\ReferralCode;
 use App\Models\Total;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Services\RemoteService;
+use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -268,28 +271,127 @@ class LeaderboardController extends Controller
         return RemoteService::accrualRemuneration($input_data);
     }
 
-    protected function getLeaderboard()
+
+    /**
+     * @param string      $country
+     * @param string|null $city
+     *
+     * @return array
+     */
+    protected function getUserIDByCountryCity(string $country, string $city = null)
+    {
+        if ($country and $city != null) {
+            //TODO get user id by country and city from identity ms
+            return [];
+        }
+        //TODO get user id by country from identity ms
+        return [];
+    }
+
+    /**
+     * @param $query
+     * @param $filter
+     *
+     * @return mixed
+     */
+    protected function getFilterQuery($query, $filter)
+    {
+        $en = CarbonImmutable::now()->locale('en_US');
+        return match ($filter) {
+            'this week' => $query->whereBetween('created_at', [$en->startOfWeek(), $en->endOfWeek()]),
+            'this month' => $query->whereMonth('created_at', Carbon::now()->month),
+            'this year' => $query->whereYear('created_at', Carbon::now()->year),
+            'country' => $query->whereIn('referrer_id', $this->getUserIDByCountryCity(request()->country)),
+            'country_and_city' => $query->whereIn('user_id', $this->getUserIDByCountryCity(request()->country, request()->city)),
+            default => $query,
+        };
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return array
+     */
+    protected function getLeaderboard(Request $request): array
     {
         $leaderboard = [];
+
+        $filter = strtolower($request->filter);
+
         $referrers = User::distinct('referrer_id')->get(['referrer_id'])->toArray();
 
-        $users = Total::orderBy('amount', 'DESC')->orderBy('reward', 'DESC')->get();
-        $rank = 1;
-        foreach ($users as $user) {
-            if (in_array($user->referrer_id, $referrers)) {
-                $leaderboard[] = [
-                    'rank' => $rank,
-                    'name' => 'Referrer name',
-                    'country' => 'Referrer country',
-                    'invitees' => $user->amount,
-                    'reward' => $user->reward,
-                    'grow_this_month' => Total::getInvitedUsersByDate($user->referrer_id, 'current_month_count'),
-                ];
-                $rank++;
-            }
+        $query = $this->getFilterQuery(User::whereIn('referrer_id', $referrers), $filter);
 
+        $invitedUsersFilter = match ($filter) {
+            'this week' => 'current_week_count',
+            'this month' => 'current_month_count',
+            default => 'current_year_count',
+        };
+
+        $rank = 1;
+        foreach ($referrers as $referrer) {
+            $user = $this->getUserProfile($referrer);
+            $leaderboard[] = [
+                'rank' => $rank,
+                'name' => $user['name'] ?? null,
+                'country' => $user['country'] ?? null,
+                'invitees' => $query->where('referrer_id', $referrer)->count(),
+                'reward' => $this->getTotalReward($referrer, $filter),
+                'grow_this_month' => Total::getInvitedUsersByDate($referrer, $invitedUsersFilter),
+            ];
+            $rank++;
         }
 
-        return $leaderboard;
+        return collect($leaderboard)->sortByDesc('reward')->values()->all();
+    }
+
+    /**
+     * @param $user_id
+     *
+     * @return array
+     */
+    protected function getUserProfile($user_id): array
+    {
+        //TODO get user profile from identity ms API
+        return [];
+    }
+
+    /**
+     * @param $user_id
+     *
+     * @return int|float
+     */
+    protected function getUserPlatformReward($user_id): float|int
+    {
+        $platforms = [
+            'Ultainfinity Wealth LaunchPad',
+            'Ultainfinity Wallet',
+            'Ultainfinity Exchange',
+        ];
+        $value = 1;
+        $application_id = ReferralCode::where('user_id', $user_id)->first()->application_id;
+        //TODO API to retrieve the platform name using application id
+        //TODO transform platform name to uppercase words
+        //TODO check if platform matches those that have rewards and multiply by three
+        //TODO Convert to user currency or default currency
+        //TODO Return value
+        return $value;
+    }
+
+    /**
+     * @param $referrer_id
+     * @param $filter
+     *
+     * @return int|float
+     */
+    protected function getTotalReward($referrer_id, $filter): int|float
+    {
+        $reward = 0;
+
+        $invitees = $this->getFilterQuery(User::where('referrer_id', $referrer_id), $filter)->get(['user_id']);
+        foreach ($invitees as $invited) {
+            $reward += $this->getUserPlatformReward($invited->user_id);
+        }
+        return $reward;
     }
 }

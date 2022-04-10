@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -84,9 +85,16 @@ class Total extends Model
      */
     public static function getInvitedUsersByDate($user_id, string $format = 'data'): Collection|int|null
     {
+        $en = CarbonImmutable::now()->locale('en_US');
         return match ($format) {
+            'current_week_count' => User::where('referrer_id', $user_id)
+                ->whereBetween('created_at', [$en->startOfWeek(), $en->endOfWeek()])
+                ->count(),
             'current_month_count' => User::where('referrer_id', $user_id)
                 ->whereMonth('created_at', Carbon::now()->month)
+                ->count(),
+            'current_year_count' => User::where('referrer_id', $user_id)
+                ->whereYear('created_at', Carbon::now()->year)
                 ->count(),
             'last_month_count' => User::where('referrer_id', $user_id)
                 ->whereMonth('created_at', Carbon::now()->subMonth())

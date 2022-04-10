@@ -14,6 +14,7 @@ class ReferralBonusListener
      * @param
      *
      * @return void
+     * @throws Exception
      */
     public function handle($data)
     {
