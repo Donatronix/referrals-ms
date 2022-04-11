@@ -2,8 +2,11 @@
 
 namespace Tests;
 
-use Laravel\Lumen\Testing\DatabaseMigrations;
-use Laravel\Lumen\Testing\DatabaseTransactions;
+use App\Models\Total;
+use App\Models\Transaction;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 class ExampleTest extends TestCase
 {

@@ -47,7 +47,7 @@ class LeaderboardController extends Controller
      *         description="Limit liderboard of page",
      *         @OA\Schema(
      *             type="number"
-     *         )
+     *         ),
      *     ),
      *     @OA\Parameter(
      *         name="page",
@@ -55,7 +55,7 @@ class LeaderboardController extends Controller
      *         description="Count leaderboard of page",
      *         @OA\Schema(
      *             type="number"
-     *         )
+     *         ),
      *     ),
      *     @OA\Parameter(
      *         name="graph_filtr",
@@ -63,7 +63,7 @@ class LeaderboardController extends Controller
      *         description="Sort option for the graph. Possible values: week, month, year",
      *         @OA\Schema(
      *             type="string",
-     *         )
+     *         ),
      *     ),
      *
      *     @OA\Response(
@@ -108,7 +108,7 @@ class LeaderboardController extends Controller
      *                      property="is_current",
      *                      type="boolean",
      *                      description="Determine the user who made the request",
-     *                 )
+     *                 ),
      *             ),
      *             @OA\Property(
      *                 property="informer",
@@ -130,11 +130,11 @@ class LeaderboardController extends Controller
      *                      type="integer",
      *                      description="",
      *                      example=100000,
-     *                 )
-     *             )
+     *                 ),
+     *             ),
      *             @OA\Property(
      *                 property="leaderboard",
-     *                 type="array",
+     *                 type="object",
      *                 @OA\Property(
      *                      property="rank",
      *                      type="integer",
@@ -146,7 +146,7 @@ class LeaderboardController extends Controller
      *                      type="integer",
      *                      description="Number of invitees",
      *                      example=100000,
-     *                 )
+     *                 ),
      *                 @OA\Property(
      *                      property="reward",
      *                      type="integer",
@@ -158,11 +158,10 @@ class LeaderboardController extends Controller
      *                      type="integer",
      *                      description="",
      *                      example=100000,
-     *                 )
-     *             )
-     *         )
+     *                 ),
+     *             ),
+     *         ),
      *     ),
-     *
      *     @OA\Response(
      *          response="401",
      *          description="Unauthorized"
@@ -175,11 +174,10 @@ class LeaderboardController extends Controller
      *          response="404",
      *          description="User not found",
      *     ),
-     *
      *     @OA\Response(
      *         response="500",
      *         description="Unknown error"
-     *     )
+     *     ),
      * )
      *
      * @param Request $request
