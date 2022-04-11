@@ -26,4 +26,14 @@ class EventServiceProvider extends ServiceProvider
             InvitedReferralResponseListener::class
         ]
     ];
+
+    /**
+     * Determine if events and listeners should be automatically discovered.
+     *
+     * @return bool
+     */
+    public function shouldDiscoverEvents()
+    {
+        return false;
+    }
 }

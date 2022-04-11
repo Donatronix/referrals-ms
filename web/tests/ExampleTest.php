@@ -1,10 +1,9 @@
 <?php
 
-use App\Models\Total;
-use App\Models\Transaction;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
+namespace Tests;
+
+use Laravel\Lumen\Testing\DatabaseMigrations;
+use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class ExampleTest extends TestCase
 {
@@ -15,10 +14,10 @@ class ExampleTest extends TestCase
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function testExample()
+    public function test_that_base_endpoint_returns_a_successful_response()
     {
         $user_id = '00000000-1000-1000-1000-000000000000';
-//        $user_id = AUth::id() ?? Auth::user()->getAuthIdentifier();
+        //        $user_id = AUth::id() ?? Auth::user()->getAuthIdentifier();
 
         try {
             // we get data for the informer
@@ -51,7 +50,6 @@ class ExampleTest extends TestCase
                     'graph' => $graph_data,
                 ], $users->toArray())
             );
-
         } catch (ModelNotFoundException $e) {
             dd([
                 'type' => 'danger',
