@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Events\NewUserRegistered;
 use App\Listeners\InvitedReferralResponseListener;
+use App\Listeners\NewUserRegisteredListener;
 use Laravel\Lumen\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -23,8 +25,11 @@ class EventServiceProvider extends ServiceProvider
             'App\Listeners\AccrualRemunerationListener',
         ],
         'InvitedReferralResponse' => [
-            InvitedReferralResponseListener::class
-        ]
+            InvitedReferralResponseListener::class,
+        ],
+        NewUserRegistered::class => [
+            NewUserRegisteredListener::class,
+        ],
     ];
 
     /**
