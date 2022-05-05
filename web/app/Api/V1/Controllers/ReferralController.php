@@ -100,7 +100,7 @@ class ReferralController extends Controller
             $currentUserId = Auth::user()->getAuthIdentifier();
 
             // Get list all referrals by user id
-            $list = User::where('referrer_id', $currentUserId)
+            $list = User::query()->where('referrer_id', $currentUserId)
                 ->paginate($request->get('limit', config('settings.pagination_limit')));
 
             // Return response
@@ -217,7 +217,7 @@ class ReferralController extends Controller
         // Find Referrer ID by its referral code and application ID
         $parent_user_id = null;
         if ($request->has('referral_code')) {
-            $parent_user_id = ReferralCode::select('user_id')
+            $parent_user_id = ReferralCode::query()->select('user_id')
                 ->byReferralCode()
                 ->byApplication()
                 ->pluck('user_id')

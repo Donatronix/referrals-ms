@@ -3,7 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\NewUserRegistered;
-use App\Models\Subscriber;
+use App\Models\User;
 use App\Traits\GetCountryTrait;
 
 class NewUserRegisteredListener
@@ -37,7 +37,7 @@ class NewUserRegisteredListener
         $username = $user->username;
         $id = $user->id;
 
-        Subscriber::query()->create([
+        User::query()->create([
             'user_id' => $id,
             'username' => $username,
         ]);
