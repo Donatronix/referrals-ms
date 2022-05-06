@@ -30,16 +30,17 @@ class NewUserRegisteredListener
     public function handle(mixed $event)
     {
         $user = $event->user;
+        $referrer_id = $event->referrer_id;
 
         //get country from phone number
         $country = $this->getCountry($user->phone_number);
 
-        $username = $user->username;
         $id = $user->id;
 
         User::query()->create([
-            'user_id' => $id,
-            'username' => $username,
+            'id' => $id,
+            'country' => $country,
+            'referrer_id' => $referrer_id,
         ]);
 
     }
