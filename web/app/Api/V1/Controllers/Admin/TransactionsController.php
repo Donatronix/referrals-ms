@@ -26,7 +26,7 @@ class TransactionsController extends Controller
      * @OA\Get(
      *     path="/admin/transactions",
      *     description="Get all transactions",
-     *     tags={"Transactions"},
+     *     tags={"Admin / Transactions"},
      *
      *     security={{
      *          "default" :{
@@ -171,12 +171,12 @@ class TransactionsController extends Controller
     }
 
     /**
-     *  Get transaction details
+     *  Display a transaction.
      *
      * @OA\Get(
      *     path="/admin/transactions/{id}",
-     *     description="Get all transactions",
-     *     tags={"Transactions"},
+     *     description="Get transaction by id",
+     *     tags={"Admin / Transactions"},
      *
      *     security={{
      *          "default" :{
@@ -200,6 +200,7 @@ class TransactionsController extends Controller
      *         description="Output data",
      *
      *         @OA\JsonContent(
+     *              type="object",
      *             @OA\Property(
      *                 property="data",
      *                 type="object",
@@ -286,7 +287,7 @@ class TransactionsController extends Controller
      *     ),
      * )
      *
-     * @param Request $request
+     * @param $id
      *
      * @return mixed
      */
@@ -298,11 +299,12 @@ class TransactionsController extends Controller
             $transaction = Transaction::query()->findOrFail($id)->toArray();
 
             return response()->jsonApi(
-                array_merge([
+                [
                     'type' => 'success',
                     'title' => 'Operation was success',
                     'message' => 'The data was displayed successfully',
-                ], $transaction),
+                    'data' => $transaction,
+                ],
                 200);
 
         } catch (ModelNotFoundException $e) {
@@ -587,7 +589,7 @@ class TransactionsController extends Controller
      * @OA\Delete(
      *     path="/admin/transactions/{id}",
      *     description="Delete transaction",
-     *     tags={"Transactions"},
+     *     tags={"Admin / Transactions"},
      *
      *     security={{
      *          "default" :{
