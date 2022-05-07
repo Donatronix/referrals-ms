@@ -50,61 +50,39 @@ class TransactionsController extends Controller
      *         description="Output data",
      *
      *         @OA\JsonContent(
-     *              type="object",
-     *              @OA\Property(
-     *                  property="type",
-     *                  type="string",
-     *                  description="Danger"
-     *              ),
-     *              @OA\Property(
-     *                  property="title",
-     *                  type="string",
-     *                  description="Message title"
-     *              ),
-     *              @OA\Property(
-     *                  property="message",
-     *                  type="string",
-     *                  description="Error message"
-     *              ),
      *             @OA\Property(
      *                 property="data",
      *                 type="object",
-     *                 description="Transaction parameter list",
-     *                 @OA\Property(
-     *                     property="id",
-     *                     type="string",
-     *                     description="Transaction uuid",
-     *                     example="9443407b-7eb8-4f21-8a5c-9614b4ec1bf9",
-     *                 ),
+     *                 description="Description of data parameters",
      *                 @OA\Property(
      *                     property="user_id",
      *                     type="string",
-     *                     description="user id",
-     *                     example="Vasya",
+     *                     description="User id",
+     *                     example=500,
      *                 ),
      *                 @OA\Property(
      *                     property="user_plan",
      *                     type="string",
-     *                     description="user plan",
+     *                     description="User plan",
      *                     example="Basic",
      *                 ),
      *                 @OA\Property(
      *                     property="reward",
-     *                     type="string",
+     *                     type="integer",
      *                     description="User reward",
-     *                     example="100000",
+     *                     example=200,
      *                 ),
      *                 @OA\Property(
      *                     property="currency",
      *                     type="string",
-     *                     description="Transaction currency",
+     *                     description="User currency",
      *                     example="$",
      *                 ),
      *                 @OA\Property(
      *                     property="operation_name",
      *                     type="string",
-     *                     description="Operation name",
-     *                     example="Type of transaction operation",
+     *                     description="Name of operation being carried out",
+     *                     example="Store",
      *                 ),
      *             ),
      *         ),
@@ -125,19 +103,29 @@ class TransactionsController extends Controller
      *          @OA\JsonContent(
      *              type="object",
      *              @OA\Property(
-     *                  property="type",
+     *                  property="user_id",
      *                  type="string",
-     *                  description="Danger"
+     *                  description="Uuid transaction not found"
      *              ),
      *              @OA\Property(
-     *                  property="title",
+     *                  property="user_plane",
      *                  type="string",
-     *                  description="Message title"
+     *                  description="User plan not found"
      *              ),
      *              @OA\Property(
-     *                  property="message",
+     *                  property="reward",
+     *                  type="integer",
+     *                  description="Reward not found"
+     *              ),
+     *              @OA\Property(
+     *                  property="Currency",
      *                  type="string",
-     *                  description="Error message"
+     *                  description="Currency not found"
+     *              ),
+     *              @OA\Property(
+     *                  property="operation_name",
+     *                  type="string",
+     *                  description="No operation name declared"
      *              ),
      *          ),
      *     ),
@@ -152,18 +140,18 @@ class TransactionsController extends Controller
      *
      * @return mixed
      */
-    public function index(Request $request): string
+    public function index(Request $request): mixed
     {
         try {
             $transactions = Transaction::query()->orderBy('created_at')->paginate($request->get('limit', config('settings.pagination_limit')));
 
             return response()->jsonApi(
-                array_merge([
+                [
                     'type' => 'success',
                     'title' => 'Operation was success',
                     'message' => 'The data was displayed successfully',
-                ], $transactions->toArray()),
-                200);
+                    'data' => $transactions->toArray(),
+                ], 200);
 
         } catch (ModelNotFoundException $e) {
             return response()->jsonApi([
@@ -183,134 +171,122 @@ class TransactionsController extends Controller
     }
 
     /**
-     * Get detail info about transaction
+     *  Get transaction details
      *
      * @OA\Get(
      *     path="/admin/transactions/{id}",
-     *     summary="Get detail info about transaction",
-     *     description="Get detail info about transaction",
-     *     tags={"Admin"},
+     *     description="Get all transactions",
+     *     tags={"Transactions"},
      *
      *     security={{
-     *         "default": {
-     *             "ManagerRead",
-     *             "Transaction",
-     *             "ManagerWrite"
-     *         }
+     *          "default" :{
+     *              "ManagerRead",
+     *              "Transaction",
+     *              "ManagerWrite"
+     *          },
      *     }},
-     *     x={
-     *         "auth-type": "Application & Application Transaction",
-     *         "throttling-tier": "Unlimited",
-     *         "wso2-application-security": {
-     *             "security-types": {"oauth2"},
-     *             "optional": "false"
-     *         }
-     *     },
      *
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         description="Transaction ID",
-     *         required=true,
-     *         @OA\Schema(
-     *             type="string"
-     *         )
-     *     ),
-     *     @OA\Response(
-     *          response="200",
-     *          description="Data of transaction"
+     *     x={
+     *          "auth-type": "Applecation & Application Use",
+     *          "throttling-tier": "Unlimited",
+     *          "wso2-appliocation-security": {
+     *              "security-types": {"oauth2"},
+     *              "optional": "false"
+     *           },
+     *     },
      *
      *     @OA\Response(
      *         response="200",
      *         description="Output data",
      *
      *         @OA\JsonContent(
-     *              type="object",
-     *              @OA\Property(
-     *                  property="type",
-     *                  type="string",
-     *                  description="Danger"
-     *              ),
-     *              @OA\Property(
-     *                  property="title",
-     *                  type="string",
-     *                  description="Message title"
-     *              ),
-     *              @OA\Property(
-     *                  property="message",
-     *                  type="string",
-     *                  description="Error message"
-     *              ),
      *             @OA\Property(
      *                 property="data",
      *                 type="object",
-     *                 description="Transaction parameter list",
-     *                 @OA\Property(
-     *                     property="id",
-     *                     type="string",
-     *                     description="Transaction uuid",
-     *                     example="9443407b-7eb8-4f21-8a5c-9614b4ec1bf9",
-     *                 ),
+     *                 description="Description of data parameters",
      *                 @OA\Property(
      *                     property="user_id",
      *                     type="string",
-     *                     description="user id",
-     *                     example="Vasya",
+     *                     description="User id",
+     *                     example=500,
      *                 ),
      *                 @OA\Property(
      *                     property="user_plan",
      *                     type="string",
-     *                     description="user plan",
+     *                     description="User plan",
      *                     example="Basic",
      *                 ),
      *                 @OA\Property(
      *                     property="reward",
-     *                     type="string",
+     *                     type="integer",
      *                     description="User reward",
-     *                     example="100000",
+     *                     example=200,
      *                 ),
      *                 @OA\Property(
      *                     property="currency",
      *                     type="string",
-     *                     description="Transaction currency",
+     *                     description="User currency",
      *                     example="$",
      *                 ),
      *                 @OA\Property(
      *                     property="operation_name",
      *                     type="string",
-     *                     description="Operation name",
-     *                     example="Type of transaction operation",
+     *                     description="Name of operation being carried out",
+     *                     example="Store",
      *                 ),
      *             ),
      *         ),
      *     ),
+     *
+     *     @OA\Response(
+     *          response="401",
+     *          description="Unauthorized"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request"
+     *     ),
+     *
      *     @OA\Response(
      *          response="404",
-     *          description="Transaction not found",
-     *
+     *          description="Not found",
      *          @OA\JsonContent(
      *              type="object",
      *              @OA\Property(
-     *                  property="error",
-     *                  type="object",
-     *                  @OA\Property(
-     *                      property="code",
-     *                      type="string",
-     *                      description="code of error"
-     *                  ),
-     *                  @OA\Property(
-     *                      property="message",
-     *                      type="string",
-     *                      description="error message"
-     *                  )
-     *              )
-     *          )
-     *     )
+     *                  property="user_id",
+     *                  type="string",
+     *                  description="Uuid transaction not found"
+     *              ),
+     *              @OA\Property(
+     *                  property="user_plane",
+     *                  type="string",
+     *                  description="User plan not found"
+     *              ),
+     *              @OA\Property(
+     *                  property="reward",
+     *                  type="integer",
+     *                  description="Reward not found"
+     *              ),
+     *              @OA\Property(
+     *                  property="Currency",
+     *                  type="string",
+     *                  description="Currency not found"
+     *              ),
+     *              @OA\Property(
+     *                  property="operation_name",
+     *                  type="string",
+     *                  description="No operation name declared"
+     *              ),
+     *          ),
+     *     ),
+     *
+     *     @OA\Response(
+     *         response="500",
+     *         description="Unknown error"
+     *     ),
      * )
      *
-     * Get detail info of transaction
-     *
-     * @param $id
+     * @param Request $request
      *
      * @return mixed
      */
@@ -326,7 +302,7 @@ class TransactionsController extends Controller
                     'type' => 'success',
                     'title' => 'Operation was success',
                     'message' => 'The data was displayed successfully',
-                ], $transaction->toArray()),
+                ], $transaction),
                 200);
 
         } catch (ModelNotFoundException $e) {
@@ -368,7 +344,7 @@ class TransactionsController extends Controller
      *          in="query",
      *          @OA\Schema (
      *              type="string"
-     *          )
+     *          ),
      *     ),
      *     @OA\Parameter(
      *          name="user_plan",
@@ -376,7 +352,7 @@ class TransactionsController extends Controller
      *          in="query",
      *          @OA\Schema (
      *              type="string",
-     *          )
+     *          ),
      *     ),
      *     @OA\Parameter(
      *          name="reward",
@@ -384,7 +360,7 @@ class TransactionsController extends Controller
      *          in="query",
      *          @OA\Schema (
      *              type="integer",
-     *          )
+     *          ),
      *     ),
      *     @OA\Parameter(
      *          name="currency",
@@ -392,7 +368,7 @@ class TransactionsController extends Controller
      *          in="query",
      *          @OA\Schema (
      *              type="string"
-     *          )
+     *          ),
      *     ),
      *     @OA\Parameter(
      *          name="operation_name",
@@ -400,7 +376,7 @@ class TransactionsController extends Controller
      *          in="query",
      *          @OA\Schema (
      *              type="string"
-     *          )
+     *          ),
      *     ),
      *     @OA\Response(
      *          response=200,
