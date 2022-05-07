@@ -15,6 +15,8 @@ class User extends Model
     use UuidTrait;
     use SoftDeletes;
 
+    const REFERRER_POINTS = 3;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -23,7 +25,7 @@ class User extends Model
     protected $fillable = [
         'id',
         'referrer_id',
-        'application_id'
+        'application_id',
     ];
 
     /**

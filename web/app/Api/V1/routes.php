@@ -73,5 +73,14 @@ $router->group([
          */
         $router->get('/template', 'TemplateController@index');
         $router->post('/template', 'TemplateController@store');
+
+        /**
+         * Referrals
+         */
+        $router->get('transactions', 'TransactionsController@index');
+        $router->get('transactions/{id}', 'TransactionsController@show');
+        $router->post('transactions', 'TransactionsController@store');
+        $router->patch('transactions/{id}', 'TransactionsController@update');
+        $router->delete('transactions/{id}', 'TransactionsController@destroy');
     });
 });
