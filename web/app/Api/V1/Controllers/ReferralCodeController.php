@@ -189,9 +189,9 @@ class ReferralCodeController extends Controller
 
         if ($codesTotal >= config('settings.referral_code.limit')) {
             return response()->jsonApi([
-                'status' => 'warning',
+                'type' => 'warning',
                 'title' => "Exceeded the limit",
-                'message' => 'You have exceeded the limit on the number of links to this service'
+                'message' => sprintf("You can generate up to %s codes for the current service", config('settings.referral_code.limit'))
             ], 200);
         }
 
