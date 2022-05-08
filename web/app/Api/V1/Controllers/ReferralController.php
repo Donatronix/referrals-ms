@@ -238,14 +238,14 @@ class ReferralController extends Controller
 
             // Return response
             return response()->jsonApi([
-                'status' => 'success',
+                'type' => 'success',
                 'title' => "Joining user to the referral program",
                 'message' => 'User added successfully and referral code created',
                 'data' => $userInfo->toArray()
             ], 200);
         } catch (Exception $e) {
             return response()->jsonApi([
-                'status' => 'danger',
+                'type' => 'danger',
                 'title' => 'Joining user to the referral program',
                 'message' => "Cannot joining user to the referral program: " . $e->getMessage()
             ], 404);
