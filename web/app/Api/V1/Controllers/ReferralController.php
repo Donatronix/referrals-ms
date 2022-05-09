@@ -94,13 +94,13 @@ class ReferralController extends Controller
      *
      * @return JsonResponse
      */
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
         try {
             $currentUserId = Auth::user()->getAuthIdentifier();
 
             // Get list all referrals by user id
-            $list = User::query()->where('referrer_id', $currentUserId)
+            $users = User::query()->where('referrer_id', $currentUserId)
                 ->paginate($request->get('limit', config('settings.pagination_limit')));
 
             // Return response
@@ -110,7 +110,7 @@ class ReferralController extends Controller
                     'title' => "Get referrals list",
                     'message' => 'Contacts list received',
                 ],
-                $list->toArray()
+                $users->toArray()
             ), 200);
         } catch (Exception $e) {
             return response()->jsonApi([
