@@ -7,13 +7,11 @@ use App\Models\ReferralCode;
 use App\Models\Total;
 use App\Models\User;
 use App\Traits\GetCountryTrait;
-use App\Traits\TextToImageTrait;
 use Illuminate\Support\Facades\DB;
 
 class NewUserRegisteredListener
 {
     use GetCountryTrait;
-    use TextToImageTrait;
 
     /**
      * Create the event listener.
@@ -50,7 +48,7 @@ class NewUserRegisteredListener
             'referrer_id' => $referral->user_id,
             'username' => $user->username,
             'name' => $user->name,
-            'avatar' => $this->createImage(strtoupper(substr($user->name, 0, 1)))->showImage(),
+            'avatar' => substr($user->name, 0, 1),
         ]);
 
         DB::table('application_user')->insert([

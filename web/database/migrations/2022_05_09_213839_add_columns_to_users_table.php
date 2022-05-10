@@ -20,9 +20,6 @@ class AddColumnsToUsersTable extends Migration
             $table->string('username')
                 ->nullable()
                 ->comment('The username of the invited user');
-            $table->string('avatar')
-                ->nullable()
-                ->comment('The avatar of the invited user');
         });
     }
 
@@ -34,7 +31,8 @@ class AddColumnsToUsersTable extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            //
+            $table->dropColumn('name');
+            $table->dropColumn('username');
         });
     }
 }

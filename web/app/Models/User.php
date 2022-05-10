@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\TextToImageTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -14,6 +15,7 @@ class User extends Model
     use HasFactory;
     use UuidTrait;
     use SoftDeletes;
+    use TextToImageTrait;
 
     const REFERRER_POINTS = 3;
 
@@ -39,6 +41,8 @@ class User extends Model
         'deleted_at',
     ];
 
+    protected $appends = ['avatar'];
+
     /**
      * @return HasMany
      */
@@ -53,6 +57,11 @@ class User extends Model
     public function total(): HasOne
     {
         return $this->hasOne(Total::class);
+    }
+
+    public function getAvatarAttribute(): string
+    {
+        return $this->createImage(strtoupper(substr($this->name, 0, 1)))->showImage();
     }
 
 
