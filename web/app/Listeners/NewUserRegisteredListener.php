@@ -30,7 +30,7 @@ class NewUserRegisteredListener
      *
      * @return void
      */
-    public function handle(mixed $event)
+    public function handle(mixed $event): void
     {
         $user = $event->user;
         $referralCode = $event->referralCode;
@@ -42,23 +42,25 @@ class NewUserRegisteredListener
         //get country from phone number
         $id = $user->id;
 
-        User::query()->create([
-            'id' => $id,
-            'country' => $this->getCountry($user->phone_number),
-            'referrer_id' => $referral->user_id,
-            'username' => $user->username,
-            'name' => $user->name,
-            'avatar' => substr($user->name, 0, 1),
-        ]);
+        if (User::find($user->id)->isEmpty()) {
 
-        DB::table('application_user')->insert([
-            'user_id' => $id,
-            'application_id' => $referral->application_id,
-        ]);
+            User::query()->create([
+                'id' => $id,
+                'country' => $this->getCountry($user->phone_number),
+                'referrer_id' => $referral->user_id,
+                'username' => $user->username ?? null,
+                'name' => $user->name ?? null,
+            ]);
 
-        $referrerTotal = Total::query()->where('user_id', $referral->user_id)->first();
-        $referrerTotal->increment('amount');
-        $referrerTotal->increment('reward', User::REFERRER_POINTS);
+            DB::table('application_user')->insert([
+                'user_id' => $id,
+                'application_id' => $referral->application_id,
+            ]);
+
+            $referrerTotal = Total::query()->where('user_id', $referral->user_id)->first();
+            $referrerTotal->increment('amount');
+            $referrerTotal->increment('reward', User::REFERRER_POINTS);
+        }
 
     }
 }
