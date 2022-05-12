@@ -44,7 +44,7 @@ class NewUserRegisteredListener
 
         if (User::find($user->id)->isEmpty()) {
 
-            User::query()->create([
+            $user = User::create([
                 'id' => $id,
                 'country' => $this->getCountry($user->phone_number),
                 'referrer_id' => $referral->user_id,
@@ -53,7 +53,7 @@ class NewUserRegisteredListener
             ]);
 
             DB::table('application_user')->insert([
-                'user_id' => $id,
+                'user_id' => $user->id,
                 'application_id' => $referral->application_id,
             ]);
 
