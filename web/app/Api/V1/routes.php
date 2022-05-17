@@ -43,12 +43,6 @@ $router->group([
          */
         $router->get('leaderboard', 'LeaderboardController@index');
         $router->post('check-totals', 'LeaderboardController@checkRemoteServices');
-
-        /**
-         * Templates
-         */
-        $router->get('/landing-page', 'LandingPageController@index');
-        $router->post('/landing-page', 'LandingPageController@store');
     });
 
     /**
@@ -67,12 +61,6 @@ $router->group([
          */
         $router->get('referrals-list', 'UsersController@index');
         $router->get('referrals-list/{id:[\d]+}', 'UsersController@show');
-
-        /**
-         * Templates
-         */
-        $router->get('/template', 'TemplateController@index');
-        $router->post('/template', 'TemplateController@store');
 
         /**
          * Referrals
