@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use Sumra\SDK\Traits\UuidTrait;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Sumra\SDK\Traits\UuidTrait;
 
 class Transaction extends Model
 {
@@ -18,6 +18,7 @@ class Transaction extends Model
      * @var array|string[]
      */
     public static array $rules = [
+        'user_id' => 'required|string|max:255',
         'user_plan' => 'required|string|max:255',
         'reward' => 'integer',
         'currency' => 'string|max:5',
@@ -61,13 +62,12 @@ class Transaction extends Model
             $cnt = $format == 'week' ? 7 : 30;
             for ($i = 1; $i <= $cnt; $i++) {
                 $result[$i] = self::getDataForDateByFormat($user_id, 'day_data', $cnt - $i);
-                if(!$result[$i]->isEmpty()){
+                if (!$result[$i]->isEmpty()) {
                     foreach ($result[$i] as $k => $item) {
                         $data[$i]['date'] = $item->attributes['created_at'];
-                        $data[$i][$k]['reward'] =+ $item->attributes['reward'];
+                        $data[$i][$k]['reward'] = +$item->attributes['reward'];
                     }
-                }
-                else{
+                } else {
                     $data[$i]['reward'] = 0;
                     $data[$i]['date'] = Carbon::now()->subDay(30 - $i)->toDateTimeString();
                 }
@@ -77,13 +77,12 @@ class Transaction extends Model
         if ($format == 'year') {
             for ($i = 1; $i <= 12; $i++) {
                 $result[$i] = self::getDataForDateByFormat($user_id, 'month_data', 12 - $i);
-                if(!$result[$i]->isEmpty()){
+                if (!$result[$i]->isEmpty()) {
                     foreach ($result[$i] as $k => $item) {
                         $data[$i]['date'] = Carbon::now()->subMonth(12 - $i)->format('F');
-                        $data[$i][$k]['reward'] =+ $item->attributes['reward'];
+                        $data[$i][$k]['reward'] = +$item->attributes['reward'];
                     }
-                }
-                else{
+                } else {
                     $data[$i]['reward'] = 0;
                     $data[$i]['month'] = Carbon::now()->subMonth(12 - $i)->format('F');
                 }
@@ -95,8 +94,8 @@ class Transaction extends Model
     /**
      *  Get date data (for a week, for a month, for a year) by format
      *
-     * @param      string | $user_id
-     * @param      string | $format
+     * @param string |         $user_id
+     * @param string |         $format
      * @param null | integer | $quantity
      *
      * @return object

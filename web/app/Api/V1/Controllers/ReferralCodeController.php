@@ -8,6 +8,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 /**
  * Referral code Controller
@@ -77,7 +78,7 @@ class ReferralCodeController extends Controller
                 'type' => 'success',
                 'title' => "List referral",
                 'message' => 'list referral successfully received',
-                'data' => $codes->toArray()
+                'data' => $codes->toArray(),
             ], 200);
         } catch (Exception $e) {
             $currentUserId = Auth::user()->getAuthIdentifier();
@@ -86,7 +87,7 @@ class ReferralCodeController extends Controller
                 'type' => 'danger',
                 'title' => "Not received list",
                 'message' => "Data #{$currentUserId} not found",
-                'data' => null
+                'data' => null,
             ], 404);
         }
     }
@@ -129,7 +130,7 @@ class ReferralCodeController extends Controller
      *             @OA\Property(
      *                 property="is_default",
      *                 type="boolean",
-     *                 description="Is Defailt referral code / link. Accept 1, 0, true, false",
+     *                 description="Is Default referral code / link. Accept 1, 0, true, false",
      *                 example="false"
      *             ),
      *             @OA\Property(
@@ -171,10 +172,10 @@ class ReferralCodeController extends Controller
      *     ),
      * )
      *
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      *
      * @return mixed
-     * @throws \Illuminate\Validation\ValidationException
+     * @throws ValidationException
      */
     public function store(Request $request)
     {
@@ -203,14 +204,14 @@ class ReferralCodeController extends Controller
                 'type' => 'success',
                 'title' => "Referral code generate",
                 'message' => 'The creation of the referral link was successful',
-                'data' => $code->toArray()
+                'data' => $code->toArray(),
             ], 200);
         } catch (Exception $e) {
             return response()->jsonApi([
                 'type' => 'danger',
                 'title' => 'Referral code generate',
                 'message' => "There was an error while creating a referral code: " . $e->getMessage(),
-                'data' => null
+                'data' => null,
             ], 404);
         }
     }
@@ -327,7 +328,7 @@ class ReferralCodeController extends Controller
      *              @OA\Property(
      *                  property="is_default",
      *                  type="boolean",
-     *                  description="Is Defailt referral code / link. Accept 1, 0, true, false",
+     *                  description="Is Default referral code / link. Accept 1, 0, true, false",
      *                  example="false"
      *              ),
      *              @OA\Property(
@@ -354,11 +355,11 @@ class ReferralCodeController extends Controller
      *     ),
      * )
      *
-     * @param \Illuminate\Http\Request $request
+     * @param Request                  $request
      * @param                          $id
      *
      * @return mixed
-     * @throws \Illuminate\Validation\ValidationException
+     * @throws ValidationException
      */
     public function update(Request $request, $id)
     {
@@ -383,13 +384,13 @@ class ReferralCodeController extends Controller
             return response()->jsonApi([
                 'type' => 'success',
                 'title' => "Updating success",
-                'message' => 'The referral code (link) has been successfully updated'
+                'message' => 'The referral code (link) has been successfully updated',
             ], 200);
         } catch (Exception $e) {
             return response()->jsonApi([
                 'type' => 'danger',
                 'title' => 'Referrals link not found',
-                'message' => "Referral code #{$id} updated error: " . $e->getMessage()
+                'message' => "Referral code #{$id} updated error: " . $e->getMessage(),
             ], 404);
         }
     }
@@ -465,13 +466,13 @@ class ReferralCodeController extends Controller
             return response()->jsonApi([
                 'type' => 'success',
                 'title' => "Deleting success",
-                'message' => 'The referral link field has been successfully deleted'
+                'message' => 'The referral link field has been successfully deleted',
             ], 200);
         } catch (Exception $e) {
             return response()->jsonApi([
                 'type' => 'danger',
                 'title' => 'Not found',
-                'message' => "Referrals link #{$id} for deleted not found"
+                'message' => "Referrals link #{$id} for deleted not found",
             ], 404);
         }
     }
@@ -522,7 +523,7 @@ class ReferralCodeController extends Controller
      *
      * @param $id
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function setDefault($id): Response
     {
@@ -538,13 +539,13 @@ class ReferralCodeController extends Controller
             return response()->jsonApi([
                 'type' => 'success',
                 'title' => "Update was success",
-                'message' => 'Changing the default а referral link was successful.'
+                'message' => 'Changing the default а referral link was successful.',
             ], 200);
         } catch (Exception $e) {
             return response()->jsonApi([
                 'type' => 'danger',
                 'title' => 'Operation not successful',
-                'message' => "Changing the default a referral link was not successful."
+                'message' => "Changing the default a referral link was not successful.",
             ], 404);
         }
     }
@@ -571,14 +572,14 @@ class ReferralCodeController extends Controller
                 'type' => 'success',
                 'title' => "Update was success",
                 'message' => 'Changing the default а referral link was successful.',
-                'data' => $referral_data
+                'data' => $referral_data,
             ], 200);
         } catch (Exception $e) {
             return response()->jsonApi([
                 'type' => 'danger',
                 'title' => 'Not received list',
                 'message' => "Data of referral code not found",
-                'data' => null
+                'data' => null,
             ], 404);
         }
     }

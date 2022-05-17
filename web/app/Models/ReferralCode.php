@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use Sumra\SDK\Traits\OwnerTrait;
-use Sumra\SDK\Traits\UuidTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,6 +9,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use Sumra\SDK\Traits\OwnerTrait;
+use Sumra\SDK\Traits\UuidTrait;
 
 class ReferralCode extends Model
 {
@@ -27,7 +27,7 @@ class ReferralCode extends Model
      */
     public static array $rules = [
         'is_default' => 'boolean',
-        'note' => 'string|max:255'
+        'note' => 'string|max:255',
     ];
 
     /**
@@ -41,7 +41,7 @@ class ReferralCode extends Model
      * @var string[]
      */
     protected $casts = [
-        'is_default' => 'boolean'
+        'is_default' => 'boolean',
     ];
 
     /**
@@ -53,7 +53,7 @@ class ReferralCode extends Model
         'user_id',
         'link',
         'is_default',
-        'note'
+        'note',
     ];
 
     /**
@@ -61,8 +61,36 @@ class ReferralCode extends Model
      */
     protected $hidden = [
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
+
+    /**
+     * @param             $query
+     * @param string|null $user_id
+     *
+     * @return mixed
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    public static function scopeByOwner($query, string $user_id = null): mixed
+    {
+        return $query->where('user_id', $user_id ?? request()->get('user_id'));
+    }
+
+    /**
+     * Get codes / links by referral code
+     *
+     * @param             $query
+     * @param string|null $referral_code
+     *
+     * @return mixed
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    public static function scopeByReferralCode($query, string $referral_code = null): mixed
+    {
+        return $query->where('code', $referral_code ?? request()->get('referral_code'));
+    }
 
     /**
      * Boot the model.
@@ -95,8 +123,9 @@ class ReferralCode extends Model
     /**
      * Get codes / links by application
      *
-     * @param $query
+     * @param             $query
      * @param string|null $application_id
+     *
      * @return mixed
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
@@ -106,21 +135,8 @@ class ReferralCode extends Model
         return $query->where('application_id', $application_id ?? request()->get('application_id'));
     }
 
-    /**
-     * Get codes / links by referral code
-     *
-     * @param $query
-     * @param string|null $referral_code
-     * @return mixed
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     */
-    public static function scopeByReferralCode($query, string $referral_code = null): mixed
-    {
-        return $query->where('code', $referral_code ?? request()->get('referral_code'));
-    }
-
     /* ************************ ACCESSOR ************************* */
+
     /**
      * @return string
      */

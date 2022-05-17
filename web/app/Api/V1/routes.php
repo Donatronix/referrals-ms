@@ -5,13 +5,13 @@
  */
 $router->group([
     'prefix' => env('APP_API_VERSION', ''),
-    'namespace' => '\App\Api\V1\Controllers'
+    'namespace' => '\App\Api\V1\Controllers',
 ], function ($router) {
     /**
      * Internal access
      */
     $router->group([
-        'middleware' => 'checkUser'
+        'middleware' => 'checkUser',
     ], function ($router) {
         /**
          * Referrals
@@ -41,7 +41,7 @@ $router->group([
         /**
          * Leaderboard
          */
-        $router->get('leaderboards', 'LeaderboardController@index');
+        $router->get('leaderboard', 'LeaderboardController@index');
         $router->post('check-totals', 'LeaderboardController@checkRemoteServices');
 
         /**
@@ -59,8 +59,8 @@ $router->group([
         'namespace' => 'Admin',
         'middleware' => [
             'checkUser',
-            'checkAdmin'
-        ]
+            'checkAdmin',
+        ],
     ], function ($router) {
         /**
          * Referrals
@@ -73,5 +73,14 @@ $router->group([
          */
         $router->get('/template', 'TemplateController@index');
         $router->post('/template', 'TemplateController@store');
+
+        /**
+         * Referrals
+         */
+        $router->get('transactions', 'TransactionsController@index');
+        $router->get('transactions/{id}', 'TransactionsController@show');
+        $router->post('transactions', 'TransactionsController@store');
+        $router->patch('transactions/{id}', 'TransactionsController@update');
+        $router->delete('transactions/{id}', 'TransactionsController@destroy');
     });
 });

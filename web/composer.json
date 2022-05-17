@@ -10,7 +10,9 @@
         "ext-openssl": "*",
         "kreait/laravel-firebase": "~2",
         "laravel/lumen-framework": "~8",
-        "sumra/sdk": "*"
+        "stevebauman/location": "^6.3",
+        "sumra/sdk": "*",
+        "ext-gd": "*"
     },
     "require-dev": {
         "fakerphp/faker": "~1",

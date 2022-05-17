@@ -2,17 +2,22 @@
 
 namespace App\Models;
 
-use Sumra\SDK\Traits\UuidTrait;
+use App\Traits\TextToImageTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Sumra\SDK\Traits\UuidTrait;
 
 class User extends Model
 {
     use HasFactory;
     use UuidTrait;
     use SoftDeletes;
+    use TextToImageTrait;
+
+    const REFERRER_POINTS = 3;
 
     /**
      * The attributes that are mass assignable.
@@ -22,7 +27,7 @@ class User extends Model
     protected $fillable = [
         'id',
         'referrer_id',
-        'application_id'
+        'application_id',
     ];
 
     /**
@@ -36,6 +41,8 @@ class User extends Model
         'deleted_at',
     ];
 
+    protected $appends = ['avatar'];
+
     /**
      * @return HasMany
      */
@@ -43,4 +50,19 @@ class User extends Model
     {
         return $this->hasMany(ReferralCode::class);
     }
+
+    /**
+     * @return HasOne
+     */
+    public function total(): HasOne
+    {
+        return $this->hasOne(Total::class);
+    }
+
+    public function getAvatarAttribute(): string
+    {
+        return $this->createImage(strtoupper(substr($this->name, 0, 1)))->showImage();
+    }
+
+
 }

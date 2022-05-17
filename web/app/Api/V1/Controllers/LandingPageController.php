@@ -60,26 +60,26 @@ class LandingPageController extends Controller
     {
         $user_id = intval(Auth::user()->getAuthIdentifier());
         try {
-            $userspages = LandingPage::byOwner($user_id);
+            $usersPages = LandingPage::byOwner($user_id);
             $pages = [];
-            foreach ($userspages as $p) {
+            foreach ($usersPages as $p) {
                 $pages[] = [
                     'template_id' => $p->template_id,
                     'html' => $p->template->html,
-                    'jasonarray' => json_decode($p->json)
+                    'jsonarray' => json_decode($p->json),
                 ];
             }
         } catch (Exception $e) {
             return response()->json([
                 'success' => false,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 400);
         }
 
         // Return response
         return response()->json([
             'success' => true,
-            'data' => $pages
+            'data' => $pages,
         ], 200);
     }
 
@@ -160,14 +160,14 @@ class LandingPageController extends Controller
         } catch (Exception $e) {
             return response()->json([
                 'success' => false,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 400);
         }
 
         // Return response
         return response()->json([
             'success' => true,
-            'data' => $page->id
+            'data' => $page->id,
         ], 200);
     }
 }
