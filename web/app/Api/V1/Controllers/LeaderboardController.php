@@ -525,7 +525,7 @@ class LeaderboardController extends Controller
         return [];
     }
 
-    protected function getChannels($referrerId)
+    protected function getChannels($referrer)
     {
         $users = User::where('referrer_id', $referrer)->get(['id'])->toArray();
         return ReferralCode::whereIn('user_id', $users)->get(['application_id'])->toArray();
