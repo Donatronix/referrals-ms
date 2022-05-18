@@ -44,7 +44,7 @@ class NewUserRegisteredListener
 
         if (User::find($user->id)->isEmpty()) {
 
-            $user = User::create([
+            User::query()->create([
                 'id' => $id,
                 'country' => $this->getCountry($user->phone_number),
                 'referrer_id' => $referral->user_id,
@@ -53,11 +53,11 @@ class NewUserRegisteredListener
             ]);
 
             DB::table('application_user')->insert([
-                'user_id' => $user->id,
+                'user_id' => $id,
                 'application_id' => $referral->application_id,
             ]);
 
-            $referrerTotal = Total::query()->where('user_id', $referral->user_id)->first();
+            $referrerTotal = Total::where('user_id', $referral->user_id)->first();
             $referrerTotal->increment('amount');
             $referrerTotal->increment('reward', User::REFERRER_POINTS);
         }

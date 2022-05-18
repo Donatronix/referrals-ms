@@ -43,6 +43,7 @@ $router->group([
          */
         $router->get('leaderboard', 'LeaderboardController@index');
         $router->post('check-totals', 'LeaderboardController@checkRemoteServices');
+        $router->get('/invited-users/{id}', 'LeaderboardController@show');
 
         /**
          * Templates
