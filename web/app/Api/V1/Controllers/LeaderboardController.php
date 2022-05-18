@@ -139,20 +139,32 @@ class LeaderboardController extends Controller
      *                 @OA\Property(
      *                      property="rank",
      *                      type="integer",
-     *                      description="User rating place",
-     *                      example=1000000000,
+     *                      description="User ranking place",
+     *                      example=1,
      *                 ),
      *                  @OA\Property(
-     *                      property="amount",
-     *                      type="integer",
-     *                      description="Number of invitees",
-     *                      example=100000,
+     *                      property="name",
+     *                      type="string",
+     *                      description="User name",
+     *                      example="Vsaya",
+     *                 ),
+     *                  @OA\Property(
+     *                      property="channels",
+     *                      type="string",
+     *                      description="Platform used for referral",
+     *                      example="WhatsApp",
      *                 ),
      *                 @OA\Property(
-     *                      property="reward",
+     *                      property="invitees",
      *                      type="integer",
-     *                      description="How much user earned",
-     *                      example=7,
+     *                      description="Number of invited users",
+     *                      example=10,
+     *                 ),
+     *                 @OA\Property(
+     *                      property="Country",
+     *                      type="string",
+     *                      description="User country",
+     *                      example="Ukraine",
      *                 ),
      *                 @OA\Property(
      *                      property="growth_this_month",
@@ -474,21 +486,31 @@ class LeaderboardController extends Controller
             default => 'current_year_count',
         };
 
-        $rank = 1;
         foreach ($referrers as $referrer) {
             $user = $this->getUserProfile($referrer);
             $leaderboard[] = [
-                'rank' => $rank,
                 'name' => $user['name'] ?? null,
+                'channels' => $this->getChannels($referrer),
                 'country' => $user['country'] ?? null,
                 'invitees' => $query->where('referrer_id', $referrer)->count(),
                 'reward' => $this->getTotalReward($referrer, $filter),
-                'growth_this_month' => Total::getInvitedUsersByDate($referrer, $invitedUsersFilter),
+                'growth_this_month' => Total::getInvitedUsersByDate($referrer, 'current_month_count'),
             ];
+
+        }
+
+        $columns = array_column($leaderboard, 'reward');
+        array_multisort($columns, SORT_DESC, SORT_NUMERIC, $leaderboard);
+
+        $retVal = [];
+        $rank = 1;
+        foreach ($leaderboard as $board) {
+            $retVal[] = array_merge($board, ['rank' => $rank]);
             $rank++;
         }
 
-        return collect($leaderboard)->sortByDesc('reward')->values()->all();
+
+        return $retVal;
     }
 
 
@@ -501,6 +523,12 @@ class LeaderboardController extends Controller
     {
         //TODO get user profile from identity ms API
         return [];
+    }
+
+    protected function getChannels($referrerId)
+    {
+        $users = User::where('referrer_id', $referrer)->get(['id'])->toArray();
+        return ReferralCode::whereIn('user_id', $users)->get(['application_id'])->toArray();
     }
 
     /**
