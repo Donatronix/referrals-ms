@@ -2,7 +2,6 @@
 
 namespace App\Api\V1\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\ReferralCode;
 use App\Models\User;
 use App\Services\ReferralCodeService;

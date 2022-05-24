@@ -2,7 +2,7 @@
 
 namespace App\Api\V1\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Api\V1\Controllers\Controller;
 use App\Models\Transaction;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;

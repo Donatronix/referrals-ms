@@ -2,7 +2,7 @@
 
 namespace App\Api\V1\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Api\V1\Controllers\Controller;
 use App\Models\Template;
 use Exception;
 
@@ -83,14 +83,14 @@ class TemplateController extends Controller
         } catch (Exception $e) {
             return response()->json([
                 'success' => false,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 400);
         }
 
         // Return response
         return response()->json([
             'success' => true,
-            'data' => $templates
+            'data' => $templates,
         ], 200);
     }
 
@@ -173,14 +173,14 @@ class TemplateController extends Controller
         } catch (Exception $e) {
             return response()->json([
                 'success' => false,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 400);
         }
 
         // Return response
         return response()->json([
             'success' => true,
-            'data' => $template->id
+            'data' => $template->id,
         ], 200);
     }
 }

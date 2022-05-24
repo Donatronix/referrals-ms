@@ -2,7 +2,6 @@
 
 namespace App\Api\V1\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\LandingPage;
 use Exception;
 use Illuminate\Http\JsonResponse;
