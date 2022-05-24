@@ -5,13 +5,17 @@
  */
 $router->group([
     'prefix' => env('APP_API_VERSION', ''),
-    'namespace' => '\App\Api\V1\Controllers',
+    'namespace' => '\App\Api\V1\Controllers'
 ], function ($router) {
     /**
-     * Internal access
+     * PUBLIC ACCESS
+     */
+
+    /**
+     * PRIVATE ACCESS
      */
     $router->group([
-        'middleware' => 'checkUser',
+        'middleware' => 'checkUser'
     ], function ($router) {
         /**
          * Referrals
@@ -53,27 +57,21 @@ $router->group([
     });
 
     /**
-     * ADMIN PANEL
+     * ADMIN PANEL ACCESS
      */
     $router->group([
         'prefix' => 'admin',
         'namespace' => 'Admin',
         'middleware' => [
             'checkUser',
-            'checkAdmin',
-        ],
+            'checkAdmin'
+        ]
     ], function ($router) {
         /**
          * Referrals
          */
         $router->get('referrals-list', 'UsersController@index');
         $router->get('referrals-list/{id:[\d]+}', 'UsersController@show');
-
-        /**
-         * Templates
-         */
-        $router->get('/template', 'TemplateController@index');
-        $router->post('/template', 'TemplateController@store');
 
         /**
          * Referrals
