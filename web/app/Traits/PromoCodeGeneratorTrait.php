@@ -24,9 +24,7 @@ trait PromoCodeGeneratorTrait
     public function getCode($length = 5)
     {
         $token = "";
-        $codeAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        $codeAlphabet .= "abcdefghijklmnopqrstuvwxyz";
-        $codeAlphabet .= "0123456789";
+        $codeAlphabet = "0123456789";
         $max = strlen($codeAlphabet); // edited
 
         for ($i = 0; $i < $length; $i++) {
