@@ -184,7 +184,7 @@ class PromoCodeController extends Controller
                 'code' => 'required|string|exists:promo_codes,code',
             ]);
 
-            $code = PromoCode::query()->where('code', $request->code)->get();
+            $code = PromoCode::query()->where('code', $request->code)->first();
 
             return response()->jsonApi([
                 'type' => 'success',
