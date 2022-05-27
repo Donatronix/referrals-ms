@@ -2,8 +2,8 @@
 
 namespace App\Api\V1\Controllers\Admin;
 
+use App\Api\V1\Controllers\Controller;
 use App\Helpers\AdminListing;
-use App\Http\Controllers\Controller;
 use App\Models\User;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;

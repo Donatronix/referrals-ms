@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Throwable;
 
 class LeaderboardController extends Controller
 {
@@ -44,7 +45,7 @@ class LeaderboardController extends Controller
      *     @OA\Parameter(
      *         name="limit",
      *         in="query",
-     *         description="Limit liderboard of page",
+     *         description="Limit leaderboard of page",
      *         @OA\Schema(
      *             type="number"
      *         ),
@@ -126,7 +127,7 @@ class LeaderboardController extends Controller
      *                      example=7,
      *                 ),
      *                 @OA\Property(
-     *                      property="grow_this_month",
+     *                      property="growth_this_month",
      *                      type="integer",
      *                      description="",
      *                      example=100000,
@@ -138,23 +139,35 @@ class LeaderboardController extends Controller
      *                 @OA\Property(
      *                      property="rank",
      *                      type="integer",
-     *                      description="User rating place",
-     *                      example=1000000000,
+     *                      description="User ranking place",
+     *                      example=1,
      *                 ),
      *                  @OA\Property(
-     *                      property="amount",
-     *                      type="integer",
-     *                      description="Number of invitees",
-     *                      example=100000,
+     *                      property="name",
+     *                      type="string",
+     *                      description="User name",
+     *                      example="Vsaya",
+     *                 ),
+     *                  @OA\Property(
+     *                      property="channels",
+     *                      type="string",
+     *                      description="Platform used for referral",
+     *                      example="WhatsApp",
      *                 ),
      *                 @OA\Property(
-     *                      property="reward",
+     *                      property="invitees",
      *                      type="integer",
-     *                      description="How much user earned",
-     *                      example=7,
+     *                      description="Number of invited users",
+     *                      example=10,
      *                 ),
      *                 @OA\Property(
-     *                      property="grow_this_month",
+     *                      property="Country",
+     *                      type="string",
+     *                      description="User country",
+     *                      example="Ukraine",
+     *                 ),
+     *                 @OA\Property(
+     *                      property="growth_this_month",
      *                      type="integer",
      *                      description="",
      *                      example=100000,
@@ -218,7 +231,7 @@ class LeaderboardController extends Controller
                     'graph' => $graph_data,
                 ], [
                     'data' => $users->toArray(),
-                    'leaderboard' => $this->getLeaderboard(),
+                    'leaderboard' => $this->getLeaderboard($request),
                 ]),
                 200);
 
@@ -231,6 +244,152 @@ class LeaderboardController extends Controller
             ], 404);
         }
     }
+
+    /**
+     *  A list of invited users by the current user in invitation referrals
+     *
+     * @OA\Get(
+     *     path="/invited-users/{id}",
+     *     description="A list of leaders in the invitation referrals",
+     *     tags={"Invited Users"},
+     *
+     *     security={{
+     *         "default" :{
+     *             "ManagerRead",
+     *             "User",
+     *             "ManagerWrite"
+     *         }
+     *     }},
+     *
+     *     x={
+     *         "auth-type": "Application & Application User",
+     *         "throttling-tier": "Unlimited",
+     *         "wso2-application-security": {
+     *             "security-types": {"oauth2"},
+     *             "optional": "false"
+     *         }
+     *     },
+     *
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="User id",
+     *         @OA\Schema(
+     *             type="string"
+     *         ),
+     *     ),
+     *     @OA\Parameter(
+     *         name="graph_filtr",
+     *         in="query",
+     *         description="Sort option for the graph. Possible values: week, month, year",
+     *         @OA\Schema(
+     *             type="string",
+     *         ),
+     *     ),
+     *
+     *     @OA\Response(
+     *         response="200",
+     *         description="invited referrals",
+     *
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(
+     *                      property="fullname",
+     *                      type="string",
+     *                      description="User fullname",
+     *                      example="Vsaya",
+     *                 ),
+     *                  @OA\Property(
+     *                      property="username",
+     *                      type="string",
+     *                      description="Username",
+     *                      example="Lonzo",
+     *                 ),
+     *                 @OA\Property(
+     *                      property="Platform",
+     *                      type="string",
+     *                      description="Platform through which user was referred",
+     *                      example="WhatsApp",
+     *                 ),
+     *                 @OA\Property(
+     *                      property="RegistrationDate",
+     *                      type="string",
+     *                      description="Date user was registered",
+     *                      example="2022-05-17",
+     *                 ),
+     *                 @OA\Property(
+     *                      property="CodeUsed",
+     *                      type="string",
+     *                      description="Referral code used by invitee",
+     *                      example="qawdnasfkm",
+     *                 ),
+     *             ),
+     *         ),
+     *     ),
+     *     @OA\Response(
+     *          response="401",
+     *          description="Unauthorized"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request"
+     *     ),
+     *     @OA\Response(
+     *          response="404",
+     *          description="User not found",
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Unknown error"
+     *     ),
+     * )
+     *
+     * @param Request $request
+     *
+     * @return mixed
+     */
+    public function show(Request $request): mixed
+    {
+        try {
+            $referrerId = $request->user()->id ?? Auth::user()->getAuthIdentifier();
+            $filter = strtolower($request->key('filter'));
+            $query = User::where('referrer_id', $referrerId);
+            $users = $this->getFilterQuery($query, $filter)->get();
+
+            $retVal = [];
+            foreach ($users as $user) {
+                $referralCode = ReferralCode::where('user_id', $user->id)->first();
+                $retVal[] = [
+                    'Full name' => $user->name,
+                    'Username' => $user->username,
+                    'Platform' => $referralCode->application_id,
+                    'Registration date' => $user->created_at,
+                    'Code used' => $referralCode->code,
+                ];
+            }
+
+            return response()->jsonApi(
+                array_merge([
+                    'type' => 'success',
+                    'title' => 'Retrieval success',
+                    'message' => 'The referral code (link) has been successfully updated',
+                ], [
+                    'data' => $retVal,
+                ]),
+                200);
+        } catch (Throwable $e) {
+            return response()->jsonApi([
+                'type' => 'danger',
+                'title' => "Not operation",
+                'message' => $e->getMessage(),
+                'data' => null,
+            ], 404);
+        }
+
+    }
+
 
     public function checkRemoteServices($input_data): bool
     {
@@ -276,7 +435,7 @@ class LeaderboardController extends Controller
      *
      * @return array
      */
-    protected function getUserIDByCountryCity(string $country, string $city = null)
+    protected function getUserIDByCountryCity(string $country, string $city = null): array
     {
         if ($country and $city != null) {
             //TODO get user id by country and city from identity ms
@@ -292,15 +451,16 @@ class LeaderboardController extends Controller
      *
      * @return mixed
      */
-    protected function getFilterQuery($query, $filter)
+    protected function getFilterQuery($query, $filter): mixed
     {
         $en = CarbonImmutable::now()->locale('en_US');
         return match ($filter) {
+            'today' => $query->whereDate('created_at', Carbon::now()->toDateString()),
             'this week' => $query->whereBetween('created_at', [$en->startOfWeek(), $en->endOfWeek()]),
-            'this month' => $query->whereMonth('created_at', Carbon::now()->month),
-            'this year' => $query->whereYear('created_at', Carbon::now()->year),
-            'country' => $query->whereIn('referrer_id', $this->getUserIDByCountryCity(request()->country)),
-            'country_and_city' => $query->whereIn('user_id', $this->getUserIDByCountryCity(request()->country, request()->city)),
+            'this month' => $query->whereBetween('created_at', [$en->startOfMonth(), $en->endOfMonth()]),
+            'this year' => $query->whereBetween('created_at', [$en->startOfYear(), $en->endOfYear()]),
+            'country' => $query->whereIn('country', request()->country ?? null),
+//            'country_and_city' => $query->whereIn('user_id', $this->getUserIDByCountryCity(request()->country, request()->city)),
             default => $query,
         };
     }
@@ -326,22 +486,33 @@ class LeaderboardController extends Controller
             default => 'current_year_count',
         };
 
-        $rank = 1;
         foreach ($referrers as $referrer) {
             $user = $this->getUserProfile($referrer);
             $leaderboard[] = [
-                'rank' => $rank,
                 'name' => $user['name'] ?? null,
+                'channels' => $this->getChannels($referrer),
                 'country' => $user['country'] ?? null,
                 'invitees' => $query->where('referrer_id', $referrer)->count(),
                 'reward' => $this->getTotalReward($referrer, $filter),
-                'grow_this_month' => Total::getInvitedUsersByDate($referrer, $invitedUsersFilter),
+                'growth_this_month' => Total::getInvitedUsersByDate($referrer, 'current_month_count'),
             ];
+
+        }
+
+        $columns = array_column($leaderboard, 'reward');
+        array_multisort($columns, SORT_DESC, SORT_NUMERIC, $leaderboard);
+
+        $retVal = [];
+        $rank = 1;
+        foreach ($leaderboard as $board) {
+            $retVal[] = array_merge($board, ['rank' => $rank]);
             $rank++;
         }
 
-        return collect($leaderboard)->sortByDesc('reward')->values()->all();
+
+        return $retVal;
     }
+
 
     /**
      * @param $user_id
@@ -352,6 +523,12 @@ class LeaderboardController extends Controller
     {
         //TODO get user profile from identity ms API
         return [];
+    }
+
+    protected function getChannels($referrer)
+    {
+        $users = User::where('referrer_id', $referrer)->get(['id'])->toArray();
+        return ReferralCode::whereIn('user_id', $users)->get(['application_id'])->toArray();
     }
 
     /**
@@ -392,4 +569,6 @@ class LeaderboardController extends Controller
         }
         return $reward;
     }
+
+
 }

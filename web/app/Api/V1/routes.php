@@ -5,7 +5,7 @@
  */
 $router->group([
     'prefix' => env('APP_API_VERSION', ''),
-    'namespace' => '\App\Api\V1\Controllers'
+    'namespace' => '\App\Api\V1\Controllers',
 ], function ($router) {
     /**
      * PUBLIC ACCESS
@@ -15,7 +15,7 @@ $router->group([
      * PRIVATE ACCESS
      */
     $router->group([
-        'middleware' => 'checkUser'
+        'middleware' => 'checkUser',
     ], function ($router) {
         /**
          * Referrals
@@ -25,6 +25,16 @@ $router->group([
         ], function ($router) {
             $router->get('/', 'ReferralController@index');
             $router->post('/', 'ReferralController@create');
+        });
+
+        /**
+         * Promo codes
+         */
+        $router->group([
+            'prefix' => 'promo-codes',
+        ], function ($router) {
+            $router->get('/generate', 'PromoCodeController@getPromoCode');
+            $router->post('/validate', 'PromoCodeController@validatePromoCode');
         });
 
         /**
@@ -47,6 +57,13 @@ $router->group([
          */
         $router->get('leaderboard', 'LeaderboardController@index');
         $router->post('check-totals', 'LeaderboardController@checkRemoteServices');
+        $router->get('/invited-users/{id}', 'LeaderboardController@show');
+
+        /**
+         * Templates
+         */
+        $router->get('/landing-page', 'LandingPageController@index');
+        $router->post('/landing-page', 'LandingPageController@store');
     });
 
     /**
@@ -57,8 +74,8 @@ $router->group([
         'namespace' => 'Admin',
         'middleware' => [
             'checkUser',
-            'checkAdmin'
-        ]
+            'checkAdmin',
+        ],
     ], function ($router) {
         /**
          * Referrals
