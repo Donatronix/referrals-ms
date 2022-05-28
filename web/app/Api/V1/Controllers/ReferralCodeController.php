@@ -6,7 +6,6 @@ use App\Models\ReferralCode;
 use App\Services\ReferralCodeService;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
@@ -192,7 +191,7 @@ class ReferralCodeController extends Controller
             return response()->jsonApi([
                 'type' => 'warning',
                 'title' => "Exceeded the limit",
-                'message' => sprintf("You can generate up to %s codes for the current service", config('settings.referral_code.limit'))
+                'message' => sprintf("You can generate up to %s codes for the current service", config('settings.referral_code.limit')),
             ], 200);
         }
 
@@ -361,7 +360,7 @@ class ReferralCodeController extends Controller
      * @return mixed
      * @throws ValidationException
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id): mixed
     {
         // Validate input data
         $this->validate($request, ReferralCode::$rules);
@@ -523,9 +522,9 @@ class ReferralCodeController extends Controller
      *
      * @param $id
      *
-     * @return Response
+     * @return mixed
      */
-    public function setDefault($id): Response
+    public function setDefault($id): mixed
     {
         try {
             $code = ReferralCode::find($id);
@@ -557,7 +556,7 @@ class ReferralCodeController extends Controller
      *
      * @return mixed
      */
-    public function getDataByUserId(Request $request)
+    public function getDataByUserId(Request $request): mixed
     {
         $user_id = $request->get('user_id');
 
