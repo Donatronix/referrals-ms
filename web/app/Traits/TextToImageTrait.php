@@ -17,9 +17,8 @@ trait TextToImageTrait
      */
     public function createImage($text, $fontSize = 20, $imgWidth = 400, $imgHeight = 80): self
     {
-
         //text font path
-        $font = storage_path('app/arial.ttf');
+        $font = resource_path('fonts/arial.ttf');
 
         //create the image
         $this->img = imagecreatetruecolor($imgWidth, $imgHeight);

@@ -52,7 +52,6 @@ return [
      */
     'exchange_queue' => [
         'files' => env('RABBITMQ_RECEIVER_FILES', 'FilesMS'),
-        'referrals' => env('RABBITMQ_RECEIVER_REFERRALS', 'ReferralsMS'),
         'contacts_book' => env('RABBITMQ_RECEIVER_CONTACTS', 'ContactsBookMS')
     ],
 
@@ -63,11 +62,6 @@ return [
     'referral_code' => [
         'limit' => env('REFERRAL_CODES_LIMIT', 10)
     ],
-
-    /**
-     *
-     */
-    'application_version_key' => env('APPLICATION_VERSION_KEY', null),
 
     /**
      *  Setting the number of months for a schedule
