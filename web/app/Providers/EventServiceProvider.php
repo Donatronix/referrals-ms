@@ -30,6 +30,4 @@ class EventServiceProvider extends ServiceProvider
             NewUserRegisteredListener::class,
         ],
     ];
-
-   
 }

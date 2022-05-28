@@ -58,12 +58,6 @@ $router->group([
         $router->get('leaderboard', 'LeaderboardController@index');
         $router->post('check-totals', 'LeaderboardController@checkRemoteServices');
         $router->get('/invited-users/{id}', 'LeaderboardController@show');
-
-        /**
-         * Templates
-         */
-        $router->get('/landing-page', 'LandingPageController@index');
-        $router->post('/landing-page', 'LandingPageController@store');
     });
 
     /**

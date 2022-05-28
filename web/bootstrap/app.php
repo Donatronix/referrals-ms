@@ -57,7 +57,6 @@ $app->singleton(
 | the default version. You may register other files below as needed.
 |
 */
-
 $app->configure('app');
 $app->configure('settings');
 
@@ -65,7 +64,7 @@ $app->configure('settings');
 $app->configure('database');
 
 // Matomo analytics
-$app->configure('matomo-analytics');
+//$app->configure('matomo-analytics');
 
 /*
 |--------------------------------------------------------------------------
