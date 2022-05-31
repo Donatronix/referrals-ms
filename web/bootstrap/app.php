@@ -1,5 +1,14 @@
 <?php
 
+use App\Http\Middleware\CheckAdminMiddleware;
+use App\Http\Middleware\CheckMSMiddleware;
+use App\Http\Middleware\CheckUserMiddleware;
+use App\Http\Middleware\TrimStrings;
+use Fruitcake\Cors\HandleCors;
+use Sumra\SDK\JsonApiServiceProvider;
+use Sumra\SDK\PubSubServiceProvider;
+use SwaggerLume\ServiceProvider;
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 (new Laravel\Lumen\Bootstrap\LoadEnvironmentVariables(
@@ -78,14 +87,15 @@ $app->configure('database');
 */
 
 $app->middleware([
-    \Fruitcake\Cors\HandleCors::class,
-    \Sumra\SDK\Middleware\TrimStrings::class,
+    HandleCors::class,
+    TrimStrings::class,
 ]);
 
 $app->routeMiddleware([
     //'auth' => App\Http\Middleware\Authenticate::class,
-    'checkUser' => \Sumra\SDK\Middleware\CheckUserMiddleware::class,
-    'checkAdmin' => \Sumra\SDK\Middleware\CheckAdminMiddleware::class,
+    'checkUser' => CheckUserMiddleware::class,
+    'checkAdmin' => CheckAdminMiddleware::class,
+    'checkMS' => CheckMSMiddleware::class,
 ]);
 
 /*
@@ -115,18 +125,18 @@ $app->register(Fruitcake\Cors\CorsServiceProvider::class);
 $app->configure('queues');
 $app->register(VladimirYuldashev\LaravelQueueRabbitMQ\LaravelQueueRabbitMQServiceProvider::class);
 class_alias(\Illuminate\Support\Facades\App::class, 'App');
-$app->register(\Sumra\SDK\PubSubServiceProvider::class);
+$app->register(PubSubServiceProvider::class);
 
 /**
  * Json API
  */
-$app->register(\Sumra\SDK\JsonApiServiceProvider::class);
+$app->register(JsonApiServiceProvider::class);
 
 /**
  * Swagger
  */
 $app->configure('swagger-lume');
-$app->register(\SwaggerLume\ServiceProvider::class);
+$app->register(ServiceProvider::class);
 
 /**
  * Artisan Commands Lumen Generator
