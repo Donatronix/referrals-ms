@@ -86,4 +86,20 @@ $router->group([
         $router->patch('transactions/{id}', 'TransactionsController@update');
         $router->delete('transactions/{id}', 'TransactionsController@destroy');
     });
+
+    /**
+     * ADMIN PANEL ACCESS
+     */
+    $router->group([
+        'prefix' => 'admin',
+        'namespace' => 'Admin',
+        'middleware' => [
+            'checkMS',
+        ],
+    ], function ($router) {
+        /**
+         * Referrals
+         */
+        $router->get('total-reward', 'ReferralController@getReferralTotals');
+    });
 });
