@@ -92,14 +92,13 @@ $router->group([
      */
     $router->group([
         'prefix' => 'admin',
-        'namespace' => 'Admin',
         'middleware' => [
             'checkMS',
         ],
     ], function ($router) {
         /**
-         * Referrals
+         * Referrals total earnings
          */
-        $router->get('total-reward', 'ReferralController@getReferralTotals');
+        $router->get('total-earnings', 'ReferralController@getReferralTotals');
     });
 });

@@ -252,18 +252,65 @@ class ReferralController extends Controller
         }
     }
 
+    /**
+     * Get the total earnings
+     *
+     * @OA\Get(
+     *     path="/admin/total-earnings",
+     *     summary="Get total earnings",
+     *     description="Get total earnings",
+     *     tags={"Referrals"},
+     *
+     *     security={{
+     *         "default": {
+     *             "ManagerRead",
+     *             "Reward",
+     *             "ManagerWrite"
+     *         }
+     *     }},
+     *     x={
+     *         "auth-type": "Application & Application User",
+     *         "throttling-tier": "Unlimited",
+     *         "wso2-application-security": {
+     *             "security-types": {"oauth2"},
+     *             "optional": "false"
+     *         }
+     *     },
+     *
+     *     @OA\Response(
+     *         response="200",
+     *         description="Total reward successfully retrieved"
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="not found"
+     *     )
+     * )
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
     public function getReferralTotals(Request $request)
     {
         try {
 
-            $response = Total::query()->sum('reward');
+            $total = Total::all()->sum('reward');
 
             // Return response
             return response()->jsonApi([
                 'type' => 'success',
                 'title' => "Total Reward",
                 'message' => 'Total reward successfully retrieved',
-                'data' => $response,
+                'data' => $total,
             ], 200);
         } catch (Exception $e) {
             return response()->jsonApi([
@@ -274,13 +321,4 @@ class ReferralController extends Controller
         }
     }
 
-    /**
-     * @param $time
-     *
-     * @return array
-     */
-    protected function getPeriod($time): array
-    {
-
-    }
 }
