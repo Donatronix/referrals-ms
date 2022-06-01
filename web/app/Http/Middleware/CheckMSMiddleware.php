@@ -19,7 +19,7 @@ class CheckMSMiddleware
     {
         $microservices = explode(',', env('SUMRA_MS', ''));
 //        dd($request->header('app-id'));
-        if (empty($microservices) || !in_array($request->header('app_id', null), $microservices)) {
+        if (empty($microservices) || !in_array($request->header('app-id', null), $microservices)) {
             return response()->jsonApi([
                 'type' => 'danger',
                 'title' => 'Access error',
