@@ -3,6 +3,7 @@
 namespace App\Api\V1\Controllers;
 
 use App\Models\ReferralCode;
+use App\Models\Total;
 use App\Models\User;
 use App\Services\ReferralCodeService;
 use App\Services\ReferralService;
@@ -103,14 +104,12 @@ class ReferralController extends Controller
                 ->paginate($request->get('limit', config('settings.pagination_limit')));
 
             // Return response
-            return response()->json(array_merge(
-                [
-                    'type' => 'success',
-                    'title' => "Get referrals list",
-                    'message' => 'Contacts list received',
-                ],
-                $users->toArray()
-            ), 200);
+            return response()->json([
+                'type' => 'success',
+                'title' => "Get referrals list",
+                'message' => 'Referrals list received',
+                'data' => $users->toArray(),
+            ], 200);
         } catch (Exception $e) {
             return response()->jsonApi([
                 'type' => 'danger',
@@ -223,7 +222,6 @@ class ReferralController extends Controller
                 ->first();
         }
 
-
         // We are trying to register a new user to the referral program
         try {
             // Register new inviting user in the referral program
@@ -252,5 +250,37 @@ class ReferralController extends Controller
                 'message' => "Cannot joining user to the referral program: " . $e->getMessage(),
             ], 404);
         }
+    }
+
+    public function getReferralTotals(Request $request)
+    {
+        try {
+
+            $response = Total::query()->sum('reward');
+
+            // Return response
+            return response()->jsonApi([
+                'type' => 'success',
+                'title' => "Total Reward",
+                'message' => 'Total reward successfully retrieved',
+                'data' => $response,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->jsonApi([
+                'type' => 'danger',
+                'title' => 'Total reward',
+                'message' => "Error retrieving total reward: " . $e->getMessage(),
+            ], 404);
+        }
+    }
+
+    /**
+     * @param $time
+     *
+     * @return array
+     */
+    protected function getPeriod($time): array
+    {
+
     }
 }

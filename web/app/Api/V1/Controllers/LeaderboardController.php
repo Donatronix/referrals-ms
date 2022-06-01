@@ -223,17 +223,15 @@ class LeaderboardController extends Controller
             });
 
             return response()->jsonApi(
-                array_merge([
+                [
                     'type' => 'success',
-                    'title' => 'Updating success',
-                    'message' => 'The referral code (link) has been successfully updated',
+                    'title' => 'Retrieval success',
+                    'message' => 'Leaderboard successfully generated',
                     'informer' => $informer,
                     'graph' => $graph_data,
-                ], [
                     'data' => $users->toArray(),
                     'leaderboard' => $this->getLeaderboard($request),
-                ]),
-                200);
+                ], 200);
 
         } catch (ModelNotFoundException $e) {
             return response()->jsonApi([
