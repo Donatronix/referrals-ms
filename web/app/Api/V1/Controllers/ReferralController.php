@@ -302,8 +302,11 @@ class ReferralController extends Controller
     public function getReferralTotals(Request $request)
     {
         try {
-
-            $total = Total::all()->sum('reward');
+            if ($request->has('user_id')) {
+                $total = Total::where('user_id', $request->user_id)->get()->sum('reward');
+            } else {
+                $total = Total::all()->sum('reward');
+            }
 
             // Return response
             return response()->jsonApi([
