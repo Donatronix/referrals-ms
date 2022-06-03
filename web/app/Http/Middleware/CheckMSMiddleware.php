@@ -18,12 +18,12 @@ class CheckMSMiddleware
     public function handle(Request $request, Closure $next)
     {
         $microservices = explode(',', env('SUMRA_MS', ''));
-
+//        dd($request->header('app-id'));
         if (empty($microservices) || !in_array($request->header('app-id', null), $microservices)) {
             return response()->jsonApi([
                 'type' => 'danger',
                 'title' => 'Access error',
-                'message' => "You have not permissions to access",
+                'message' => "You have not permissions to access this service",
             ], 403);
         }
 
