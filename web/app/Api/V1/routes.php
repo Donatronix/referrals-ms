@@ -18,6 +18,13 @@ $router->group([
         'middleware' => 'checkUser'
     ], function ($router) {
         /**
+         * Leaderboard
+         */
+        $router->get('leaderboard', 'LeaderboardController@index');
+        //$router->post('check-totals', 'LeaderboardController@checkRemoteServices');
+        $router->get('invited-users/{id}', 'LeaderboardController@show');
+
+        /**
          * Referrals
          */
         $router->group([
@@ -25,13 +32,6 @@ $router->group([
         ], function ($router) {
             $router->get('/', 'ReferralController@index');
             $router->post('/', 'ReferralController@create');
-
-            /**
-             * Leaderboard
-             */
-            $router->get('leaderboard', 'LeaderboardController@index');
-            $router->post('check-totals', 'LeaderboardController@checkRemoteServices');
-            $router->get('/invited-users/{id}', 'LeaderboardController@show');
         });
 
         /**
