@@ -2,7 +2,7 @@
 
 namespace App\Console;
 
-use App\Services\MatomoAnalytics;
+//use App\Services\MatomoAnalytics;
 use Illuminate\Console\Scheduling\Schedule;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
 
