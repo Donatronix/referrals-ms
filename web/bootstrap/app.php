@@ -1,9 +1,11 @@
 <?php
 
-use App\Http\Middleware\CheckAdminMiddleware;
-use App\Http\Middleware\CheckMSMiddleware;
-use App\Http\Middleware\CheckUserMiddleware;
+use Fruitcake\Cors\HandleCors;
 use Sumra\SDK\JsonApiServiceProvider;
+use Sumra\SDK\Middleware\CheckAdminMiddleware;
+use Sumra\SDK\Middleware\CheckMSMiddleware;
+use Sumra\SDK\Middleware\CheckUserMiddleware;
+use Sumra\SDK\Middleware\TrimStrings;
 use Sumra\SDK\PubSubServiceProvider;
 use SwaggerLume\ServiceProvider;
 
@@ -85,8 +87,8 @@ $app->configure('database');
 */
 
 $app->middleware([
-    \Fruitcake\Cors\HandleCors::class,
-    \Sumra\SDK\Middleware\TrimStrings::class,
+    HandleCors::class,
+    TrimStrings::class,
 ]);
 
 $app->routeMiddleware([
