@@ -58,8 +58,6 @@ $router->group([
             $router->delete('/{id}', 'ReferralCodeController@destroy');
             $router->put('/{id}/default', 'ReferralCodeController@setDefault');
         });
-
-
     });
 
     /**

@@ -52,7 +52,7 @@ return [
      */
     'exchange_queue' => [
         'files' => env('RABBITMQ_RECEIVER_FILES', 'FilesMS'),
-        'contacts_book' => env('RABBITMQ_RECEIVER_CONTACTS', 'ContactsBookMS')
+        'contacts_book' => env('RABBITMQ_RECEIVER_CONTACTS', 'ContactsBooksMS')
     ],
 
     /**
