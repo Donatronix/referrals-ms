@@ -11,7 +11,6 @@ use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Throwable;
 
@@ -195,9 +194,9 @@ class LeaderboardController extends Controller
      *
      * @param Request $request
      *
-     * @return Response
+     * @return mixed
      */
-    public function index(Request $request): Response
+    public function index(Request $request): mixed
     {
         $user_id = Auth::user()->getAuthIdentifier();
 
@@ -472,7 +471,11 @@ class LeaderboardController extends Controller
 
         $filter = strtolower($request->filter);
 
-        $referrers = User::distinct('referrer_id')->get(['referrer_id'])->toArray();
+        $referrers = User::get(['referrer_id'])
+            ->map(function ($item) {
+                return $item->referrer_id;
+            })
+            ->toArray();
 
         $query = $this->getFilterQuery(User::whereIn('referrer_id', $referrers), $filter);
 
@@ -522,8 +525,15 @@ class LeaderboardController extends Controller
 
     protected function getChannels($referrer)
     {
-        $users = User::where('referrer_id', $referrer)->get(['id'])->toArray();
-        return ReferralCode::whereIn('user_id', $users)->get(['application_id'])->toArray();
+        $users = User::where('referrer_id', $referrer)->get();
+        $users = $users->map(function ($user) {
+            return $user->id;
+        })->toArray();
+
+        $retVal = ReferralCode::whereIn('user_id', $users)->get(['application_id']);
+        return $retVal->map(function ($item) {
+            return $item->application_id;
+        })->toArray();
     }
 
     /**
@@ -557,10 +567,10 @@ class LeaderboardController extends Controller
     protected function getTotalReward($referrer_id, $filter): int|float
     {
         $reward = 0;
+        $invitees = $this->getFilterQuery(User::where('referrer_id', $referrer_id), $filter)->get();
 
-        $invitees = $this->getFilterQuery(User::where('referrer_id', $referrer_id), $filter)->get(['user_id']);
         foreach ($invitees as $invited) {
-            $reward += $this->getUserPlatformReward($invited->user_id);
+            $reward += $this->getUserPlatformReward($invited->id);
         }
         return $reward;
     }

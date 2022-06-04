@@ -50,12 +50,12 @@ class Transaction extends Model
     /**
      *  Getting data for the graph
      *
-     * @param string | $user_id
-     * @param string | $format
+     * @param string $user_id
+     * @param string $format
      *
-     * @return array | $result
+     * @return array $result
      */
-    public static function getDataForDate($user_id, $format)
+    public static function getDataForDate(string $user_id, $format)
     {
         $data = [];
         if ($format == 'week' || $format == 'month') {

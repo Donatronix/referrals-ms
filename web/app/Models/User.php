@@ -41,7 +41,6 @@ class User extends Model
         'deleted_at',
     ];
 
-    protected $appends = ['avatar'];
 
     /**
      * @return HasMany
