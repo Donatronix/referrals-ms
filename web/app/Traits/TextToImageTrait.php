@@ -5,8 +5,6 @@ namespace App\Traits;
 trait TextToImageTrait
 {
 
-    private $img;
-
     /**
      * Create image from text
      *
@@ -15,74 +13,38 @@ trait TextToImageTrait
      * @param int width of the image
      * @param int height of the image
      */
-    public function createImage($text, $fontSize = 20, $imgWidth = 400, $imgHeight = 80): self
+    public function createImage($text, $imgWidth = 300, $imgHeight = 150): string
     {
         //text font path
         $font = resource_path('fonts/arial.ttf');
 
+        $font_size = 24;
+        $font_angle = 0;
+
         //create the image
-        $this->img = imagecreatetruecolor($imgWidth, $imgHeight);
+        $img1 = imagecreate($imgWidth, $imgHeight);
 
         //create some colors
-        $white = imagecolorallocate($this->img, 255, 255, 255);
-        $grey = imagecolorallocate($this->img, 128, 128, 128);
-        $black = imagecolorallocate($this->img, 0, 0, 0);
-        imagefilledrectangle($this->img, 0, 0, $imgWidth - 1, $imgHeight - 1, $white);
+        $white = imagecolorallocate($img1, 255, 255, 255);
+        $grey = imagecolorallocate($img1, 128, 128, 128);
+        $black = imagecolorallocate($img1, 0, 0, 0);
+        imagefilledrectangle($img1, 0, 0, $imgWidth, $imgHeight, $white);
+
+
+        $text_size = imagettfbbox($font_size, $font_angle, $font, $text);
+        $text_width = max([$text_size[2], $text_size[4]]) - min([$text_size[0], $text_size[6]]);
+        $text_height = max([$text_size[5], $text_size[7]]) - min([$text_size[1], $text_size[3]]);
 
         //break lines
-        $splitText = explode("\\n", $text);
-        $lines = count($splitText);
+        $centerX = CEIL(($imgWidth - $text_width) / 2);
+        $centerX = max($centerX, 0);
+        $centerY = CEIL(($imgHeight - $text_height) / 2);
+        $centerY = max($centerY, 0);
+        imagettftext($img1, $font_size, $font_angle, $centerX, $centerY, $black, $font, $text);
 
-        foreach ($splitText as $txt) {
-            $textBox = imagettfbbox($fontSize, 45, $font, $txt);
-            $textWidth = abs(max($textBox[2], $textBox[4]));
-            $textHeight = abs(max($textBox[5], $textBox[7]));
-            $x = (imagesx($this->img) - $textWidth) / 2;
-            $y = ((imagesy($this->img) + $textHeight) / 2) - ($lines - 2) * $textHeight;
-            $lines = $lines - 1;
+        $img = imagepng($img1);
 
-            //add some shadow to the text
-            imagettftext($this->img, $fontSize, 45, $x, $y, $grey, $font, $txt);
-
-            //add the text
-            imagettftext($this->img, $fontSize, 45, $x, $y, $black, $font, $txt);
-        }
-        return $this;
+        return base64_encode($img);
     }
 
-    /**
-     * Display image
-     */
-    public function showImage(): string
-    {
-        $img = imagepng($this->img);
-
-        return 'data:image/png' . ';base64,' . base64_encode($img);
-    }
-
-    /**
-     * Save image as png format
-     *
-     * @param string file name to save
-     * @param string location to save image file
-     */
-    public function saveAsPng($fileName = 'text-image', $location = '')
-    {
-        $fileName = $fileName . ".png";
-        $fileName = !empty($location) ? $location . $fileName : $fileName;
-        return imagepng($this->img, $fileName);
-    }
-
-    /**
-     * Save image as jpg format
-     *
-     * @param string file name to save
-     * @param string location to save image file
-     */
-    public function saveAsJpg($fileName = 'text-image', $location = '')
-    {
-        $fileName = $fileName . ".jpg";
-        $fileName = !empty($location) ? $location . $fileName : $fileName;
-        return imagejpeg($this->img, $fileName);
-    }
 }
