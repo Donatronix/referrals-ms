@@ -21,7 +21,7 @@ class LeaderboardController extends Controller
      *  A list of leaders in the invitation referrals
      *
      * @OA\Get(
-     *     path="/leaderboard",
+     *     path="/referrals/leaderboard",
      *     description="A list of leaders in the invitation referrals",
      *     tags={"Leaderboard"},
      *
@@ -247,7 +247,7 @@ class LeaderboardController extends Controller
      *  A list of invited users by the current user in invitation referrals
      *
      * @OA\Get(
-     *     path="/invited-users/{id}",
+     *     path="/referrals/invited-users/{id}",
      *     description="A list of leaders in the invitation referrals",
      *     tags={"Invited Users"},
      *
