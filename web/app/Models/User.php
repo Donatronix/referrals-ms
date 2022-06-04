@@ -61,7 +61,7 @@ class User extends Model
 
     public function getAvatarAttribute(): string
     {
-        return $this->createImage(strtoupper(substr($this->name, 0, 1)))->showImage();
+        return $this->createImage(strtoupper(substr($this->name, 0, 1)));
     }
 
 
