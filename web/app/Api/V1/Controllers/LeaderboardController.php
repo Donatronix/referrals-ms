@@ -388,7 +388,6 @@ class LeaderboardController extends Controller
 
     }
 
-
     public function checkRemoteServices($input_data): bool
     {
         // This is demo data for the test. By connecting them, you don't need a remote microservice.
@@ -425,7 +424,6 @@ class LeaderboardController extends Controller
 
         return RemoteService::accrualRemuneration($input_data);
     }
-
 
     /**
      * @param string      $country
@@ -511,7 +509,6 @@ class LeaderboardController extends Controller
         return $retVal;
     }
 
-
     /**
      * @param $user_id
      *
@@ -567,6 +564,4 @@ class LeaderboardController extends Controller
         }
         return $reward;
     }
-
-
 }
