@@ -10,6 +10,8 @@ $router->group([
     /**
      * PUBLIC ACCESS
      */
+    $router->group([], function ($router) {
+    });
 
     /**
      * PRIVATE ACCESS
@@ -88,13 +90,10 @@ $router->group([
     });
 
     /**
-     * ADMIN PANEL ACCESS
+     * MICROSERVICE DATA EXCHANGE ACCESS
      */
     $router->group([
-        'prefix' => 'admin',
-        'middleware' => [
-            'checkMS',
-        ],
+        'middleware' => 'checkMS'
     ], function ($router) {
         /**
          * Referrals total earnings

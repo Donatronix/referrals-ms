@@ -324,5 +324,4 @@ class ReferralController extends Controller
             ], 404);
         }
     }
-
 }
