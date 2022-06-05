@@ -78,7 +78,6 @@ $app->configure('database');
 */
 
 $app->middleware([
-    \Fruitcake\Cors\HandleCors::class,
     \Sumra\SDK\Middleware\TrimStrings::class,
 ]);
 
@@ -103,12 +102,6 @@ $app->routeMiddleware([
 $app->register(App\Providers\AppServiceProvider::class);
 $app->register(App\Providers\AuthServiceProvider::class);
 $app->register(App\Providers\EventServiceProvider::class);
-
-/**
- * Enable CORS policy
- */
-$app->configure('cors');
-$app->register(Fruitcake\Cors\CorsServiceProvider::class);
 
 /**
  * Pubsub - RabbitMQ
