@@ -203,6 +203,7 @@ class LeaderboardController extends Controller
         try {
             // we get data for the informer
             $informer = Total::getInformer($user_id);
+            
 
             // collecting an array with data for the graph
             $graph_data = Transaction::getDataForDate($user_id, $request->get('graph_filtr'));

@@ -11,6 +11,7 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use PubSub;
 use Sumra\SDK\JsonApiResponse;
@@ -324,5 +325,89 @@ class ReferralController extends Controller
             ], 404);
         }
     }
+
+    /**
+     * Get the total earnings
+     *
+     * @OA\Get(
+     *     path="/wallets/total-earnings",
+     *     summary="Get total earnings",
+     *     description="Get total earnings",
+     *     tags={"Referrals"},
+     *
+     *     security={{
+     *         "default": {
+     *             "ManagerRead",
+     *             "Reward",
+     *             "ManagerWrite"
+     *         }
+     *     }},
+     *     x={
+     *         "auth-type": "Application & Application User",
+     *         "throttling-tier": "Unlimited",
+     *         "wso2-application-security": {
+     *             "security-types": {"oauth2"},
+     *             "optional": "false"
+     *         }
+     *     },
+     *
+     *     @OA\Parameter(
+     *         name="user_id",
+     *         in="query",
+     *         description="User Id",
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Total reward successfully retrieved"
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="not found"
+     *     )
+     * )
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function getWalletTotal(Request $request): JsonResponse
+    {
+        try {
+            $validator = Validator::make($request->all, [
+                'user_id' => 'required|string|exists:referral_codes,user_id',
+            ]);
+
+            $user_id = $validator->validated()['user_id'];
+            $total = Total::where('user_id', $request->input('user_id'))->get()->sum('reward');
+
+
+            // Return response
+            return response()->jsonApi([
+                'type' => 'success',
+                'title' => "Total Reward",
+                'message' => 'Total reward successfully retrieved',
+                'data' => $total,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->jsonApi([
+                'type' => 'danger',
+                'title' => 'Total reward',
+                'message' => "Error retrieving total reward: " . $e->getMessage(),
+                'data' => null,
+            ], 404);
+        }
+    }
+
 
 }
