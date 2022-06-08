@@ -388,6 +388,15 @@ class ReferralController extends Controller
                 'user_id' => 'required|string|exists:referral_codes,user_id',
             ]);
 
+            if ($validator->fails()) {
+                return response()->jsonApi([
+                    'type' => 'danger',
+                    'title' => 'Total reward',
+                    'message' => "Error retrieving total earnings: " . $validator->getMessageBag(),
+                    'data' => null,
+                ], 404);
+            }
+
             $user_id = $validator->validated()['user_id'];
             $total = Total::where('user_id', $request->input('user_id'))->get()->sum('reward');
 
