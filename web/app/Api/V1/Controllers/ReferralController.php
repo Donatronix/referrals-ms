@@ -391,7 +391,7 @@ class ReferralController extends Controller
             if ($validator->fails()) {
                 return response()->jsonApi([
                     'type' => 'danger',
-                    'title' => 'Total reward',
+                    'title' => 'Total earnings',
                     'message' => "Error retrieving total earnings: " . $validator->getMessageBag(),
                     'data' => null,
                 ], 404);
