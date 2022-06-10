@@ -37,31 +37,33 @@ class NewUserRegisteredListener
 
 
         $referral = ReferralCode::query()->where('referralCode', $referralCode)->first();
+        $user = User::where('id', $user->id)->first();
 
+        if ($user->isEmpty() && !$referral->isEmpty()) {
+            DB::transaction(function () use ($user, $referral) {
+                PubSub::transaction(function () use ($user, $referral) {
+                    // Create order
+                    User::query()->create([
+                        'id' => $user->id,
+                        'country' => $this->getCountry($user->phone_number),
+                        'referrer_id' => $referral->user_id,
+                        'username' => $user->username ?? null,
+                        'name' => $user->name ?? null,
+                    ]);
 
-        if (User::findOrFail($user->id)->isEmpty() && !empty($referral)) {
-            PubSub::transaction(function () use ($user, $referral) {
-                // Create order
-                User::query()->create([
-                    'id' => $user->id,
-                    'country' => $this->getCountry($user->phone_number),
-                    'referrer_id' => $referral->user_id,
-                    'username' => $user->username ?? null,
-                    'name' => $user->name ?? null,
-                ]);
+                    DB::table('application_user')->insert([
+                        'user_id' => $user->id,
+                        'application_id' => $referral->application_id,
+                    ]);
 
-                DB::table('application_user')->insert([
-                    'user_id' => $user->id,
-                    'application_id' => $referral->application_id,
-                ]);
-
-                $referrerTotal = Total::where('user_id', $referral->user_id)->first();
-                $referrerTotal->increment('amount');
-                $referrerTotal->increment('reward', User::REFERRER_POINTS);
-            })->publish('AddCoinsToBalance', [
-                'reward' => User::REFERRER_POINTS,
-                'user_id' => $referral->user_id,
-            ], 'add_coins_to_balance');
+                    $referrerTotal = Total::where('user_id', $referral->user_id)->first();
+                    $referrerTotal->increment('amount');
+                    $referrerTotal->increment('reward', User::REFERRER_POINTS);
+                })->publish('AddCoinsToBalanceInWallet', [
+                    'reward' => User::REFERRER_POINTS,
+                    'user_id' => $referral->user_id,
+                ], 'add_coins_to_balance');
+            });
         }
 
 
