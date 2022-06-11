@@ -35,7 +35,7 @@ class ReferralCodeService
             }
 
             // Create new referral code
-            $rc = ReferralCode::create([
+            $rc = ReferralCode::query()->create([
                 'user_id' => Auth::user()->getAuthIdentifier(),
                 'application_id' => $request->get('application_id'),
                 'link' => 'link' . rand(1, 1000),
