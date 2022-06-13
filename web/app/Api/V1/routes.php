@@ -14,7 +14,7 @@ $router->group([
     });
 
     /**
-     * PRIVATE ACCESS
+     * USER APPLICATION PRIVATE ACCESS
      */
     $router->group([
         'middleware' => 'checkUser'
@@ -70,8 +70,8 @@ $router->group([
         'namespace' => 'Admin',
         'middleware' => [
             'checkUser',
-            'checkAdmin',
-        ],
+            'checkAdmin'
+        ]
     ], function ($router) {
         /**
          * Referrals
