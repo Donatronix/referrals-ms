@@ -17,10 +17,10 @@ class ReferralCodeService
      * @param User|null $user
      * @param bool      $is_default
      *
-     * @return ReferralCode
+     * @return mixed
      * @throws Exception
      */
-    public static function createReferralCode(Request $request, User $user = null, bool $is_default = false): ReferralCode
+    public static function createReferralCode(Request $request, User $user = null, bool $is_default = false): mixed
     {
         try {
 
@@ -35,7 +35,8 @@ class ReferralCodeService
             }
 
             // Create new referral code
-            $rc = $user->referralCodes()->create([
+            $rc = ReferralCode::create([
+                'user_id' => Auth::user()->getAuthIdentifier(),
                 'application_id' => $request->get('application_id'),
                 'link' => 'link' . rand(1, 1000),
                 'is_default' => $request->boolean('is_default', $is_default),

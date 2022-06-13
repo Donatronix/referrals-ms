@@ -87,6 +87,11 @@ $router->group([
         $router->post('transactions', 'TransactionsController@store');
         $router->patch('transactions/{id}', 'TransactionsController@update');
         $router->delete('transactions/{id}', 'TransactionsController@destroy');
+
+        /**
+         * Referrals total earnings
+         */
+        $router->get('wallets/total-earnings', 'ReferralController@getWalletTotal');
     });
 
     /**
