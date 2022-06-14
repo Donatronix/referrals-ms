@@ -14,7 +14,7 @@ class ChangeLinkColumnOnReferralCodesTable extends Migration
     public function up()
     {
         Schema::table('referral_codes', function (Blueprint $table) {
-            $table->mediumText('link')->unique()->change();
+            $table->string('link')->change();
         });
     }
 
@@ -26,7 +26,7 @@ class ChangeLinkColumnOnReferralCodesTable extends Migration
     public function down()
     {
         Schema::table('referral_codes', function (Blueprint $table) {
-            $table->string('link', 35)->unique()->change();
+            $table->string('link', 35)->change();
         });
     }
 }
