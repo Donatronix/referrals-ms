@@ -20,7 +20,7 @@ class LeaderboardController extends Controller
      *  A list of leaders in the invitation referrals
      *
      * @OA\Get(
-     *     path="/referrals/leaderboard",
+     *     path="/leaderboard",
      *     description="A list of leaders in the invitation referrals",
      *     tags={"Leaderboard"},
      *
@@ -203,7 +203,7 @@ class LeaderboardController extends Controller
         try {
             // we get data for the informer
             $informer = Total::getInformer($user_id);
-            
+
 
             // collecting an array with data for the graph
             $graph_data = Transaction::getDataForDate($user_id, $request->get('graph_filtr'));
@@ -247,7 +247,7 @@ class LeaderboardController extends Controller
      *  A list of invited users by the current user in invitation referrals
      *
      * @OA\Get(
-     *     path="/referrals/invited-users/{id}",
+     *     path="/invited-users/{id}",
      *     description="A list of leaders in the invitation referrals",
      *     tags={"Invited Users"},
      *
