@@ -35,7 +35,6 @@ class NewUserRegisteredListener
         $user = collect($event['user']);
         $referralCode = $event['referralCode'];
 
-
         $referral = ReferralCode::query()->where('referralCode', $referralCode)->first();
         $user = User::where('id', $user->id)->first();
 
@@ -65,7 +64,5 @@ class NewUserRegisteredListener
                 ], 'add_coins_to_balance');
             });
         }
-
-
     }
 }
