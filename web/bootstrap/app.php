@@ -1,14 +1,5 @@
 <?php
 
-use Fruitcake\Cors\HandleCors;
-use Sumra\SDK\JsonApiServiceProvider;
-use Sumra\SDK\Middleware\CheckAdminMiddleware;
-use Sumra\SDK\Middleware\CheckMSMiddleware;
-use Sumra\SDK\Middleware\CheckUserMiddleware;
-use Sumra\SDK\Middleware\TrimStrings;
-use Sumra\SDK\PubSubServiceProvider;
-use SwaggerLume\ServiceProvider;
-
 require_once __DIR__ . '/../vendor/autoload.php';
 
 (new Laravel\Lumen\Bootstrap\LoadEnvironmentVariables(
@@ -87,15 +78,14 @@ $app->configure('database');
 */
 
 $app->middleware([
-    HandleCors::class,
-    TrimStrings::class,
+    \Sumra\SDK\Middleware\TrimStrings::class,
 ]);
 
 $app->routeMiddleware([
     //'auth' => App\Http\Middleware\Authenticate::class,
-    'checkUser' => CheckUserMiddleware::class,
-    'checkAdmin' => CheckAdminMiddleware::class,
-    'checkMS' => CheckMSMiddleware::class,
+    'checkUser' => \Sumra\SDK\Middleware\CheckUserMiddleware::class,
+    'checkAdmin' => \Sumra\SDK\Middleware\CheckAdminMiddleware::class,
+    'checkMS' => \Sumra\SDK\Middleware\CheckMSMiddleware::class,
 ]);
 
 /*
@@ -115,29 +105,23 @@ $app->register(App\Providers\EventServiceProvider::class);
 $app->register(Stevebauman\Location\LocationServiceProvider::class);
 
 /**
- * Enable CORS policy
- */
-$app->configure('cors');
-$app->register(Fruitcake\Cors\CorsServiceProvider::class);
-
-/**
  * Pubsub - RabbitMQ
  */
 $app->configure('queues');
 $app->register(VladimirYuldashev\LaravelQueueRabbitMQ\LaravelQueueRabbitMQServiceProvider::class);
 class_alias(\Illuminate\Support\Facades\App::class, 'App');
-$app->register(PubSubServiceProvider::class);
+$app->register(\Sumra\SDK\PubSubServiceProvider::class);
 
 /**
  * Json API
  */
-$app->register(JsonApiServiceProvider::class);
+$app->register(\Sumra\SDK\JsonApiServiceProvider::class);
 
 /**
  * Swagger
  */
 $app->configure('swagger-lume');
-$app->register(ServiceProvider::class);
+$app->register(\SwaggerLume\ServiceProvider::class);
 
 /**
  * Artisan Commands Lumen Generator

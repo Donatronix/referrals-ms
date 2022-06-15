@@ -5,18 +5,27 @@
  */
 $router->group([
     'prefix' => env('APP_API_VERSION', ''),
-    'namespace' => '\App\Api\V1\Controllers',
+    'namespace' => '\App\Api\V1\Controllers'
 ], function ($router) {
     /**
      * PUBLIC ACCESS
      */
+    $router->group([], function ($router) {
+    });
 
     /**
-     * PRIVATE ACCESS
+     * USER APPLICATION PRIVATE ACCESS
      */
     $router->group([
-        'middleware' => 'checkUser',
+        'middleware' => 'checkUser'
     ], function ($router) {
+        /**
+         * Leaderboard
+         */
+        $router->get('leaderboard', 'LeaderboardController@index');
+        //$router->post('check-totals', 'LeaderboardController@checkRemoteServices');
+        $router->get('invited-users/{id}', 'LeaderboardController@show');
+
         /**
          * Referrals
          */
@@ -68,8 +77,8 @@ $router->group([
         'namespace' => 'Admin',
         'middleware' => [
             'checkUser',
-            'checkAdmin',
-        ],
+            'checkAdmin'
+        ]
     ], function ($router) {
         /**
          * Referrals
@@ -93,13 +102,10 @@ $router->group([
     });
 
     /**
-     * ADMIN PANEL ACCESS
+     * MICROSERVICE DATA EXCHANGE ACCESS
      */
     $router->group([
-        'prefix' => 'admin',
-        'middleware' => [
-            'checkMS',
-        ],
+        'middleware' => 'checkMS'
     ], function ($router) {
         /**
          * Referrals total earnings

@@ -219,20 +219,17 @@ class LeaderboardController extends Controller
                 }
                 $object->setAttribute('is_current', $isCurrent);
                 $object->save();
-
             });
 
-            return response()->jsonApi(
-                [
-                    'type' => 'success',
-                    'title' => 'Retrieval success',
-                    'message' => 'Leaderboard successfully generated',
-                    'informer' => $informer,
-                    'graph' => $graph_data,
-                    'data' => $users->toArray(),
-                    'leaderboard' => $this->getLeaderboard($request),
-                ], 200);
-
+            return response()->jsonApi([
+                'type' => 'success',
+                'title' => 'Retrieval success',
+                'message' => 'Leaderboard successfully generated',
+                'informer' => $informer,
+                'graph' => $graph_data,
+                'data' => $users->toArray(),
+                'leaderboard' => $this->getLeaderboard($request),
+            ], 200);
         } catch (ModelNotFoundException $e) {
             return response()->jsonApi([
                 'type' => 'danger',
@@ -385,9 +382,12 @@ class LeaderboardController extends Controller
                 'data' => null,
             ], 404);
         }
-
     }
 
+    /**
+     * @param $input_data
+     * @return bool
+     */
     public function checkRemoteServices($input_data): bool
     {
         // This is demo data for the test. By connecting them, you don't need a remote microservice.
@@ -426,7 +426,7 @@ class LeaderboardController extends Controller
     }
 
     /**
-     * @param string      $country
+     * @param string $country
      * @param string|null $city
      *
      * @return array
@@ -496,7 +496,6 @@ class LeaderboardController extends Controller
                 'reward' => $this->getTotalReward($referrer, $filter),
                 'growth_this_month' => Total::getInvitedUsersByDate($referrer, 'current_month_count'),
             ];
-
         }
 
         $columns = array_column($leaderboard, 'reward');
@@ -508,7 +507,6 @@ class LeaderboardController extends Controller
             $retVal[] = array_merge($board, ['rank' => $rank]);
             $rank++;
         }
-
 
         return $retVal;
     }
@@ -524,6 +522,10 @@ class LeaderboardController extends Controller
         return [];
     }
 
+    /**
+     * @param $referrer
+     * @return mixed
+     */
     protected function getChannels($referrer)
     {
         $users = User::where('referrer_id', $referrer)->get();
