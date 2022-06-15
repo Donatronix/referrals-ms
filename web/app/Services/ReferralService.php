@@ -61,9 +61,12 @@ class ReferralService
             // If not, then set the inviter / sponsor
             if ($newUser->referrer_id === null) {
                 $country = null;
-                if ($position = Location::get()) {
+                $ip = request()->ip();
+                if ($position = Location::get($ip)) {
                     // Successfully retrieved position.
                     $country = $position->countryName;
+                } else {
+                    // Failed retrieving position.
                 }
 
                 $newUser->referrer_id = $parent_user_id;
