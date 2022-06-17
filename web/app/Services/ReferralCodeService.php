@@ -43,8 +43,8 @@ class ReferralCodeService
                 'note' => $request->get('note', null),
             ]);
 
-            $generate_link = (string)Firebase::linkGenerate($rc->code, $request->get('application_id'));
-            $rc->update(['link' => $generate_link]);
+           // $generate_link = (string)Firebase::linkGenerate($rc->code, $request->get('application_id'));
+           // $rc->update(['link' => $generate_link]);
 
             return $rc;
         } catch (Exception $e) {

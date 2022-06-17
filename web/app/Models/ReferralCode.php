@@ -65,19 +65,6 @@ class ReferralCode extends Model
     ];
 
     /**
-     * @param             $query
-     * @param string|null $user_id
-     *
-     * @return mixed
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     */
-    public static function scopeByOwner($query, string $user_id = null): mixed
-    {
-        return $query->where('user_id', $user_id ?? request()->get('user_id'));
-    }
-
-    /**
      * Get codes / links by referral code
      *
      * @param             $query
