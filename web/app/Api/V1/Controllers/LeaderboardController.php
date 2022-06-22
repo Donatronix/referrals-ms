@@ -237,6 +237,13 @@ class LeaderboardController extends Controller
                 'message' => "Error showing all users",
                 'data' => null,
             ], 404);
+        } catch (Throwable $e) {
+            return response()->jsonApi([
+                'type' => 'danger',
+                'title' => "Not operation",
+                'message' => $e->getMessage(),
+                'data' => null,
+            ], 404);
         }
     }
 
@@ -386,6 +393,7 @@ class LeaderboardController extends Controller
 
     /**
      * @param $input_data
+     *
      * @return bool
      */
     public function checkRemoteServices($input_data): bool
@@ -426,7 +434,7 @@ class LeaderboardController extends Controller
     }
 
     /**
-     * @param string $country
+     * @param string      $country
      * @param string|null $city
      *
      * @return array
@@ -524,6 +532,7 @@ class LeaderboardController extends Controller
 
     /**
      * @param $referrer
+     *
      * @return mixed
      */
     protected function getChannels($referrer)
