@@ -235,7 +235,7 @@ class ReferralController extends Controller
             $userInfo = ReferralCodeService::createReferralCode($request, $newUser, true);
 
             // Send notification to contacts book
-            PubSub::publish('invitedReferral', $userInfo->toArray(), config('settings.exchange_queue.contacts_book'));
+            PubSub::publish('invitedReferral', $userInfo->toArray(), config('settings.pubsub_receiver.contacts_books'));
 
             // Return response
             return response()->jsonApi([

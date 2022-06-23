@@ -60,9 +60,6 @@ $app->singleton(
 $app->configure('app');
 $app->configure('settings');
 
-// Neo4j
-$app->configure('database');
-
 // Matomo analytics
 //$app->configure('matomo-analytics');
 
