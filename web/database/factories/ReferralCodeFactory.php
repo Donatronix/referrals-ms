@@ -15,12 +15,12 @@ class ReferralCodeFactory extends Factory
      */
     public function definition(): array
     {
-        $user = User::all()->random();
-      //  $app = Application::byOwner($user->id)->get();
+        $user = User::whereNotNull('referrer_id')->inRandomOrder()->first();
+        //  $app = Application::byOwner($user->id)->get();
 
         return [
             'id' => $this->faker->uuid,
-            'user_id' => $user->id,
+            'user_id' => $user->referrer_id,
             'link' => 'http://' . $this->faker->lexify('????????'),
             //  'link' => Firebase::linkGenerate($user->referral_code, $app->application_id),
             'is_default' => $this->faker->boolean(),

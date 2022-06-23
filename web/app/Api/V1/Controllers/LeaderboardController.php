@@ -456,22 +456,26 @@ class LeaderboardController extends Controller
     protected function getLeaderboard(Request $request): array
     {
         $filter = strtolower($request->filter);
+        $leaderboard = [];
 
-        $referrers = User::distinct('referrer_id')->get(['referrer_id']);
+        $referrers = User::whereNotNull('referrer_id')->distinct('referrer_id')->pluck('referrer_id');
 
-        $query = $this->getFilterQuery(User::whereIn('referrer_id', $referrers->pluck('referrer_id')), $filter);
 
-        $leaderboard = $referrers->map(function ($referrer) use ($query, $filter) {
+        $query = $this->getFilterQuery(User::whereIn('referrer_id', $referrers), $filter);
+
+        foreach ($referrers as $referrer) {
             $user = $this->getUserProfile($referrer);
-            return [
-                'name' => $user['name'] ?? null,
+            if ($user == null) {
+                continue;
+            }
+            $leaderboard [] = ['name' => $user['name'] ?? null,
                 'channels' => $this->getChannels($referrer),
                 'country' => $user['country'] ?? null,
-                'invitees' => $query->where('referrer_id', $referrer)->count(),
+                'invitees' => $this->getFilterQuery(User::where('referrer_id', $referrer), $filter)->count(),
                 'reward' => $this->getTotalReward($referrer, $filter),
                 'growth_this_month' => Total::getInvitedUsersByDate($referrer, 'current_month_count'),
             ];
-        })->toArray();
+        }
 
 
         $columns = array_column($leaderboard, 'reward');
@@ -494,7 +498,7 @@ class LeaderboardController extends Controller
      */
     protected function getUserProfile($user_id): array|null
     {
-        return User::where('id', $user_id)->orWhere('referrer_id', $user_id)->first()?->toArray();
+        return User::where('referrer_id', $user_id)->first()->toArray();
     }
 
     /**
@@ -509,7 +513,7 @@ class LeaderboardController extends Controller
             return $user->id;
         })->toArray();
 
-        $retVal = ReferralCode::whereIn('user_id', $users)->get(['application_id']);
+        $retVal = ReferralCode::distinct('application_id')->whereIn('user_id', $users)->get(['application_id']);
         return $retVal->map(function ($item) {
             return $item->application_id;
         })->toArray();
