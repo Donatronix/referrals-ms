@@ -556,13 +556,11 @@ class ReferralCodeController extends Controller
      *
      * @return mixed
      */
-    public function getDataByUserId(Request $request): mixed
+    public function getDataByUser(Request $request): mixed
     {
-        $user_id = $request->get('user_id');
-
         try {
             // Get default referral code by user_id and application
-            $referral_data = ReferralCode::where('user_id', $user_id)
+            $referral_data = ReferralCode::byOwner()
                 ->byApplication()
                 ->where('is_default', 1)
                 ->first();

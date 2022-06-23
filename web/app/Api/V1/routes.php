@@ -60,16 +60,12 @@ $router->group([
             'prefix' => 'referral-codes',
         ], function ($router) {
             $router->get('/', 'ReferralCodeController@index');
-            $router->get('/user', 'ReferralCodeController@getDataByUserId');
+            $router->get('/user', 'ReferralCodeController@getDataByUser');
             $router->post('/', 'ReferralCodeController@store');
             $router->get('/{id}', 'ReferralCodeController@show');
             $router->put('/{id}', 'ReferralCodeController@update');
             $router->delete('/{id}', 'ReferralCodeController@destroy');
             $router->put('/{id}/default', 'ReferralCodeController@setDefault');
-
-
-            //Referral and code summary
-            $router->get('/summary', 'ReferralCodeSummaryController@index');
         });
 
         $router->group([
