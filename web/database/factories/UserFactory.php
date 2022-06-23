@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 class UserFactory extends Factory
 {
@@ -22,9 +23,13 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'referrer_id' => function(){
-               return $this->faker->boolean ? User::factory()->create()->id : null;
-            }
+            'id' => Str::orderedUuid(),
+            'referrer_id' => function () {
+                return $this->faker->boolean ? User::factory()->create()->id : null;
+            },
+            'country' => $this->faker->country(),
+            'name' => $this->faker->name(),
+            'username' => $this->faker->username(),
         ];
     }
 }
