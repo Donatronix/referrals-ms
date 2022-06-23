@@ -225,10 +225,12 @@ class LeaderboardController extends Controller
                 'type' => 'success',
                 'title' => 'Retrieval success',
                 'message' => 'Leaderboard successfully generated',
-                'informer' => $informer,
-                'graph' => $graph_data,
-                'data' => $users->toArray(),
-                'leaderboard' => $this->getLeaderboard($request),
+                'data' => [
+                    'informer' => $informer,
+                    'graph' => $graph_data,
+                    'users' => $users->toArray(),
+                    'leaderboard' => $this->getLeaderboard($request),
+                ],
             ], 200);
         } catch (ModelNotFoundException $e) {
             return response()->jsonApi([
@@ -483,8 +485,7 @@ class LeaderboardController extends Controller
         $referrers = User::get(['referrer_id'])
             ->map(function ($item) {
                 return $item->referrer_id;
-            })
-            ->toArray();
+            });
 
         $query = $this->getFilterQuery(User::whereIn('referrer_id', $referrers), $filter);
 
@@ -494,9 +495,9 @@ class LeaderboardController extends Controller
             default => 'current_year_count',
         };
 
-        foreach ($referrers as $referrer) {
+        $leaderboard = $referrers->map(function ($referrer) use ($query, $filter) {
             $user = $this->getUserProfile($referrer);
-            $leaderboard[] = [
+            return [
                 'name' => $user['name'] ?? null,
                 'channels' => $this->getChannels($referrer),
                 'country' => $user['country'] ?? null,
@@ -504,7 +505,8 @@ class LeaderboardController extends Controller
                 'reward' => $this->getTotalReward($referrer, $filter),
                 'growth_this_month' => Total::getInvitedUsersByDate($referrer, 'current_month_count'),
             ];
-        }
+        })->toArray();
+
 
         $columns = array_column($leaderboard, 'reward');
         array_multisort($columns, SORT_DESC, SORT_NUMERIC, $leaderboard);
@@ -522,12 +524,11 @@ class LeaderboardController extends Controller
     /**
      * @param $user_id
      *
-     * @return array
+     * @return array|null
      */
-    protected function getUserProfile($user_id): array
+    protected function getUserProfile($user_id): array|null
     {
-        //TODO get user profile from identity ms API
-        return [];
+        return User::where('id', $user_id)->orWhere('referrer_id', $user_id)->first()?->toArray();
     }
 
     /**
@@ -548,27 +549,6 @@ class LeaderboardController extends Controller
         })->toArray();
     }
 
-    /**
-     * @param $user_id
-     *
-     * @return int|float
-     */
-    protected function getUserPlatformReward($user_id): float|int
-    {
-        $platforms = [
-            'Ultainfinity Wealth LaunchPad',
-            'Ultainfinity Wallet',
-            'Ultainfinity Exchange',
-        ];
-        $value = 1;
-        $application_id = ReferralCode::where('user_id', $user_id)->first()->application_id;
-        //TODO API to retrieve the platform name using application id
-        //TODO transform platform name to uppercase words
-        //TODO check if platform matches those that have rewards and multiply by three
-        //TODO Convert to user currency or default currency
-        //TODO Return value
-        return $value;
-    }
 
     /**
      * @param $referrer_id
@@ -578,12 +558,6 @@ class LeaderboardController extends Controller
      */
     protected function getTotalReward($referrer_id, $filter): int|float
     {
-        $reward = 0;
-        $invitees = $this->getFilterQuery(User::where('referrer_id', $referrer_id), $filter)->get();
-
-        foreach ($invitees as $invited) {
-            $reward += $this->getUserPlatformReward($invited->id);
-        }
-        return $reward;
+        return $this->getFilterQuery(Total::where('user_id', $referrer_id), $filter)->sum('reward');
     }
 }
