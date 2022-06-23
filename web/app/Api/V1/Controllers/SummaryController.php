@@ -33,7 +33,7 @@ class SummaryController extends Controller
      *
      *     @OA\Response(
      *         response="200",
-     *         description="TOP 1000 of leaders in the invitation referrals",
+     *         description="Referrals and code summary",
      *
      *         @OA\JsonContent(
      *             @OA\Property(
