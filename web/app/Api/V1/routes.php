@@ -5,7 +5,7 @@
  */
 $router->group([
     'prefix' => env('APP_API_VERSION', ''),
-    'namespace' => '\App\Api\V1\Controllers'
+    'namespace' => '\App\Api\V1\Controllers',
 ], function ($router) {
     /**
      * PUBLIC ACCESS
@@ -17,7 +17,7 @@ $router->group([
      * USER APPLICATION PRIVATE ACCESS
      */
     $router->group([
-        'middleware' => 'checkUser'
+        'middleware' => 'checkUser',
     ], function ($router) {
         /**
          * Leaderboard
@@ -71,6 +71,14 @@ $router->group([
             //Referral and code summary
             $router->get('/summary', 'ReferralCodeSummaryController@index');
         });
+
+        $router->group([
+            'prefix' => '',
+        ], function ($router) {
+
+            //Referral and code summary
+            $router->get('/summary', 'SummaryController@index');
+        });
     });
 
     /**
@@ -81,8 +89,8 @@ $router->group([
         'namespace' => 'Admin',
         'middleware' => [
             'checkUser',
-            'checkAdmin'
-        ]
+            'checkAdmin',
+        ],
     ], function ($router) {
         /**
          * Referrals
@@ -109,7 +117,7 @@ $router->group([
      * MICROSERVICE DATA EXCHANGE ACCESS
      */
     $router->group([
-        'middleware' => 'checkMS'
+        'middleware' => 'checkMS',
     ], function ($router) {
         /**
          * Referrals total earnings

@@ -13,13 +13,13 @@ use Throwable;
  *
  * @package App\Api\V1\Controllers
  */
-class ReferralCodeSummaryController extends Controller
+class SummaryController extends Controller
 {
     /**
      * Get referral and codes summary
      *
      * @OA\Get(
-     *     path="/referral-codes/summary",
+     *     path="/summary",
      *     description="Get referral and codes summary",
      *     tags={"Referral Code"},
      *
