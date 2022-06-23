@@ -4,7 +4,6 @@ namespace App\Api\V1\Controllers;
 
 use App\Models\ReferralCode;
 use App\Models\Total;
-use App\Models\Transaction;
 use App\Models\User;
 use App\Services\RemoteService;
 use Carbon\Carbon;
@@ -201,35 +200,14 @@ class LeaderboardController extends Controller
         $user_id = Auth::user()->getAuthIdentifier();
 
         try {
-            // we get data for the informer
-            $informer = Total::getInformer($user_id);
-
-            // collecting an array with data for the graph
-            $graph_data = Transaction::getDataForDate($user_id, $request->get('graph_filtr'));
-
-            $users = Total::orderBy('amount', 'DESC')
-                ->orderBy('reward', 'DESC')
-                ->paginate($request->get('limit', config('settings.pagination_limit')));
-
-            $users->map(function ($object) use ($user_id) {
-                $isCurrent = false;
-                if ($object->user_id == $user_id) {
-                    $isCurrent = true;
-                }
-                $object->setAttribute('is_current', $isCurrent);
-                $object->save();
-            });
+            $leaderboard = $this->getLeaderboard($request);
 
             return response()->jsonApi([
                 'type' => 'success',
                 'title' => 'Retrieval success',
                 'message' => 'Leaderboard successfully generated',
-                'data' => [
-                    'informer' => $informer,
-                    'graph' => $graph_data,
-                    'users' => $users->toArray(),
-                    'leaderboard' => $this->getLeaderboard($request),
-                ],
+                'data' => $leaderboard,
+
             ], 200);
         } catch (ModelNotFoundException $e) {
             return response()->jsonApi([
@@ -477,22 +455,11 @@ class LeaderboardController extends Controller
      */
     protected function getLeaderboard(Request $request): array
     {
-        $leaderboard = [];
-
         $filter = strtolower($request->filter);
 
-        $referrers = User::get(['referrer_id'])
-            ->map(function ($item) {
-                return $item->referrer_id;
-            });
+        $referrers = User::distinct('referrer_id')->get(['referrer_id']);
 
-        $query = $this->getFilterQuery(User::whereIn('referrer_id', $referrers), $filter);
-
-        $invitedUsersFilter = match ($filter) {
-            'this week' => 'current_week_count',
-            'this month' => 'current_month_count',
-            default => 'current_year_count',
-        };
+        $query = $this->getFilterQuery(User::whereIn('referrer_id', $referrers->pluck('referrer_id')), $filter);
 
         $leaderboard = $referrers->map(function ($referrer) use ($query, $filter) {
             $user = $this->getUserProfile($referrer);
