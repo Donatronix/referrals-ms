@@ -413,7 +413,7 @@ class LeaderboardController extends Controller
     }
 
     /**
-     * @param string      $country
+     * @param string $country
      * @param string|null $city
      *
      * @return array
@@ -441,10 +441,9 @@ class LeaderboardController extends Controller
             'today' => $query->whereDate('created_at', Carbon::now()->toDateString()),
             'this week' => $query->whereBetween('created_at', [$en->startOfWeek(), $en->endOfWeek()]),
             'this month' => $query->whereBetween('created_at', [$en->startOfMonth(), $en->endOfMonth()]),
-            'this year' => $query->whereBetween('created_at', [$en->startOfYear(), $en->endOfYear()]),
             'country' => $query->whereIn('country', request()->country ?? null),
 //            'country_and_city' => $query->whereIn('user_id', $this->getUserIDByCountryCity(request()->country, request()->city)),
-            default => $query,
+            default => $query->whereBetween('created_at', [$en->startOfYear(), $en->endOfYear()]),
         };
     }
 
@@ -460,9 +459,6 @@ class LeaderboardController extends Controller
 
         $referrers = User::whereNotNull('referrer_id')->distinct('referrer_id')->pluck('referrer_id');
 
-
-        $query = $this->getFilterQuery(User::whereIn('referrer_id', $referrers), $filter);
-
         foreach ($referrers as $referrer) {
             $user = $this->getUserProfile($referrer);
             if ($user == null) {
@@ -471,9 +467,10 @@ class LeaderboardController extends Controller
             $leaderboard [] = ['name' => $user['name'] ?? null,
                 'channels' => $this->getChannels($referrer),
                 'country' => $user['country'] ?? null,
-                'invitees' => $this->getFilterQuery(User::where('referrer_id', $referrer), $filter)->count(),
-                'reward' => $this->getTotalReward($referrer, $filter),
-                'growth_this_month' => Total::getInvitedUsersByDate($referrer, 'current_month_count'),
+                'city' => $user['city'] ?? null,
+                'referrals' => $this->getFilterQuery(User::where('referrer_id', $referrer), $filter)->count(),
+                'endOfYearCashPrize' => $this->getTotalReward($referrer, $filter),
+                'twentyFourHourPercentage' => Total::getInvitedUsersByDate($referrer, 'current_month_count'),
             ];
         }
 
