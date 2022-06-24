@@ -425,7 +425,7 @@ class LeaderboardController extends Controller
             return [];
         }
         //TODO get user id by country from identity ms
-        return [];
+        return User::whereCountry($country)->get();
     }
 
     /**
