@@ -20,8 +20,8 @@ class SummaryController extends Controller
      *
      * @OA\Get(
      *     path="/summary",
-     *     description="Get referral and codes summary",
-     *     tags={"Referral Code"},
+     *     description="Get referral programm summary",
+     *     tags={"Summary"},
      *
      *     security={{
      *         "default": {
@@ -30,18 +30,10 @@ class SummaryController extends Controller
      *             "ManagerWrite"
      *         }
      *     }},
-     *     x={
-     *         "auth-type": "Application & Application User",
-     *         "throttling-tier": "Unlimited",
-     *         "wso2-application-security": {
-     *             "security-types": {"oauth2"},
-     *             "optional": "false"
-     *         }
-     *     },,
      *
      *     @OA\Response(
      *         response="200",
-     *         description="Referrals and code summary",
+     *         description="TOP 1000 of leaders in the invitation referrals",
      *
      *         @OA\JsonContent(
      *             @OA\Property(
@@ -83,13 +75,13 @@ class SummaryController extends Controller
      *         description="Invalid request"
      *     ),
      *     @OA\Response(
-     *          response="404",
-     *          description="User not found",
+     *         response="404",
+     *         description="User not found",
      *     ),
      *     @OA\Response(
      *         response="500",
      *         description="Unknown error"
-     *     ),
+     *     )
      * )
      *
      * @param \Illuminate\Http\Request $request
@@ -142,5 +134,4 @@ class SummaryController extends Controller
         })->sortByDesc('total')->first();
         return $topReferralBonus['total'];
     }
-
 }
