@@ -17,6 +17,7 @@ $router->group([
      * USER APPLICATION PRIVATE ACCESS
      */
     $router->group([
+        'namespace' => 'Application',
         'middleware' => 'checkUser',
     ], function ($router) {
         /**
@@ -113,6 +114,7 @@ $router->group([
      * MICROSERVICE DATA EXCHANGE ACCESS
      */
     $router->group([
+        'namespace' => 'Application',
         'middleware' => 'checkMS',
     ], function ($router) {
         /**

@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Api\V1\Controllers;
+namespace App\Api\V1\Controllers\Application;
 
+use App\Api\V1\Controllers\Controller;
 use App\Models\ReferralCode;
 use App\Models\Total;
 use App\Models\User;
@@ -11,7 +12,7 @@ use Throwable;
 /**
  * Referral code Controller
  *
- * @package App\Api\V1\Controllers
+ * @package App\Api\V1\Controllers\Application
  */
 class SummaryController extends Controller
 {
