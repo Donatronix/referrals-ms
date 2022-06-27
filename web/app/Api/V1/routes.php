@@ -18,6 +18,7 @@ $router->group([
      */
     $router->group([
         'middleware' => 'checkUser',
+        'namespace' => 'Application',
     ], function ($router) {
         /**
          * Leaderboard
@@ -114,6 +115,7 @@ $router->group([
      */
     $router->group([
         'middleware' => 'checkMS',
+        'namespace' => 'Webhooks',
     ], function ($router) {
         /**
          * Referrals total earnings

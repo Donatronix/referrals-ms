@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Api\V1\Controllers;
+namespace App\Api\V1\Controllers\Application;
 
+use App\Api\V1\Controllers\Controller;
 use App\Models\ReferralCode;
 use App\Models\Total;
 use App\Models\User;
@@ -84,7 +85,7 @@ class SummaryController extends Controller
      *     )
      * )
      *
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      *
      * @return mixed
      */

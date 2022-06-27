@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Api\V1\Controllers;
+namespace App\Api\V1\Controllers\Application;
 
+use App\Api\V1\Controllers\Controller;
 use App\Models\ReferralCode;
 use App\Services\ReferralCodeService;
 use Exception;
@@ -354,7 +355,7 @@ class ReferralCodeController extends Controller
      *     ),
      * )
      *
-     * @param Request                  $request
+     * @param Request $request
      * @param                          $id
      *
      * @return mixed

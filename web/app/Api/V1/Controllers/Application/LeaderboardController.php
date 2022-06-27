@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Api\V1\Controllers;
+namespace App\Api\V1\Controllers\Application;
 
+use App\Api\V1\Controllers\Controller;
 use App\Models\ReferralCode;
 use App\Models\Total;
-use App\Models\Transaction;
 use App\Models\User;
 use App\Services\RemoteService;
 use Carbon\Carbon;
@@ -14,12 +14,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Throwable;
 
-class LeaderboardController_2 extends Controller
+class LeaderboardController extends Controller
 {
     /**
      *  A list of leaders in the invitation referrals
      *
-     * @ OA \Get(
+     * @OA\Get(
      *     path="/leaderboard",
      *     description="A list of leaders in the invitation referrals",
      *     tags={"Leaderboard"},
@@ -41,131 +41,131 @@ class LeaderboardController_2 extends Controller
      *         }
      *     },
      *
-     *     @ OA \Parameter(
+     *     @OA\Parameter(
      *         name="limit",
      *         in="query",
      *         description="Limit leaderboard of page",
-     *         @ OA \Schema(
+     *         @OA\Schema(
      *             type="number"
      *         ),
      *     ),
-     *     @ OA \Parameter(
+     *     @OA\Parameter(
      *         name="page",
      *         in="query",
      *         description="Count leaderboard of page",
-     *         @ OA \Schema(
+     *         @OA\Schema(
      *             type="number"
      *         ),
      *     ),
-     *     @ OA \Parameter(
+     *     @OA\Parameter(
      *         name="graph_filtr",
      *         in="query",
      *         description="Sort option for the graph. Possible values: week, month, year",
-     *         @ OA \Schema(
+     *         @OA\Schema(
      *             type="string",
      *         ),
      *     ),
      *
-     *     @ OA \Response(
+     *     @OA\Response(
      *         response="200",
      *         description="TOP 1000 of leaders in the invitation referrals",
      *
-     *         @ OA \JsonContent(
-     *             @ OA \Property(
+     *         @OA\JsonContent(
+     *             @OA\Property(
      *                 property="links",
      *                 type="object",
-     *                 @ OA \Property(
+     *                 @OA\Property(
      *                     property="id",
      *                     type="string",
      *                     description="user uuid",
      *                     example="fd069ebe-cdea-3fec-b1e2-ca5a73c661fc",
      *                 ),
-     *                 @ OA \Property(
+     *                 @OA\Property(
      *                     property="user_id",
      *                     type="string",
      *                     description="user id",
      *                     example="edd72fdb-c83c-3e27-9047-d840e8745c61",
      *                 ),
-     *                 @ OA \Property(
+     *                 @OA\Property(
      *                     property="username",
      *                     type="string",
      *                     description="username",
      *                     example="Lonzo",
      *                 ),
-     *                 @ OA \Property(
+     *                 @OA\Property(
      *                      property="amount",
      *                      type="integer",
      *                      description="Number of invited users",
      *                      example=100,
      *                 ),
-     *                 @ OA \Property(
+     *                 @OA\Property(
      *                      property="reward",
      *                      type="double",
      *                      description="Amount of remuneration",
      *                      example=50.50,
      *                 ),
-     *                 @ OA \Property(
+     *                 @OA\Property(
      *                      property="is_current",
      *                      type="boolean",
      *                      description="Determine the user who made the request",
      *                 ),
      *             ),
-     *             @ OA \Property(
+     *             @OA\Property(
      *                 property="informer",
      *                 type="object",
-     *                 @ OA \Property(
+     *                 @OA\Property(
      *                      property="rank",
      *                      type="integer",
      *                      description="User rating place",
      *                      example=1000000000,
      *                 ),
-     *                 @ OA \Property(
+     *                 @OA\Property(
      *                      property="reward",
      *                      type="integer",
      *                      description="How much user earned",
      *                      example=7,
      *                 ),
-     *                 @ OA \Property(
+     *                 @OA\Property(
      *                      property="growth_this_month",
      *                      type="integer",
      *                      description="",
      *                      example=100000,
      *                 ),
      *             ),
-     *             @ OA \Property(
+     *             @OA\Property(
      *                 property="leaderboard",
      *                 type="object",
-     *                 @ OA \Property(
+     *                 @OA\Property(
      *                      property="rank",
      *                      type="integer",
      *                      description="User ranking place",
      *                      example=1,
      *                 ),
-     *                  @ OA \Property(
+     *                  @OA\Property(
      *                      property="name",
      *                      type="string",
      *                      description="User name",
      *                      example="Vsaya",
      *                 ),
-     *                  @ OA \Property(
+     *                  @OA\Property(
      *                      property="channels",
      *                      type="string",
      *                      description="Platform used for referral",
      *                      example="WhatsApp",
      *                 ),
-     *                 @ OA \Property(
+     *                 @OA\Property(
      *                      property="invitees",
      *                      type="integer",
      *                      description="Number of invited users",
      *                      example=10,
      *                 ),
-     *                 @ OA \Property(
+     *                 @OA\Property(
      *                      property="Country",
      *                      type="string",
      *                      description="User country",
      *                      example="Ukraine",
      *                 ),
-     *                 @ OA \Property(
+     *                 @OA\Property(
      *                      property="growth_this_month",
      *                      type="integer",
      *                      description="",
@@ -174,19 +174,19 @@ class LeaderboardController_2 extends Controller
      *             ),
      *         ),
      *     ),
-     *     @ OA \Response(
+     *     @OA\Response(
      *          response="401",
      *          description="Unauthorized"
      *     ),
-     *     @ OA \Response(
+     *     @OA\Response(
      *         response=400,
      *         description="Invalid request"
      *     ),
-     *     @ OA \Response(
+     *     @OA\Response(
      *          response="404",
      *          description="User not found",
      *     ),
-     *     @ OA \Response(
+     *     @OA\Response(
      *         response="500",
      *         description="Unknown error"
      *     ),
@@ -201,35 +201,14 @@ class LeaderboardController_2 extends Controller
         $user_id = Auth::user()->getAuthIdentifier();
 
         try {
-            // we get data for the informer
-            $informer = Total::getInformer($user_id);
-
-            // collecting an array with data for the graph
-            $graph_data = Transaction::getDataForDate($user_id, $request->get('graph_filtr'));
-
-            $users = Total::orderBy('amount', 'DESC')
-                ->orderBy('reward', 'DESC')
-                ->paginate($request->get('limit', config('settings.pagination_limit')));
-
-            $users->map(function ($object) use ($user_id) {
-                $isCurrent = false;
-                if ($object->user_id == $user_id) {
-                    $isCurrent = true;
-                }
-                $object->setAttribute('is_current', $isCurrent);
-                $object->save();
-            });
+            $leaderboard = $this->getLeaderboard($request);
 
             return response()->jsonApi([
                 'type' => 'success',
                 'title' => 'Retrieval success',
                 'message' => 'Leaderboard successfully generated',
-                'data' => [
-                    'informer' => $informer,
-                    'graph' => $graph_data,
-                    'users' => $users->toArray(),
-                    'leaderboard' => $this->getLeaderboard($request),
-                ],
+                'data' => $leaderboard,
+
             ], 200);
         } catch (ModelNotFoundException $e) {
             return response()->jsonApi([
@@ -251,7 +230,7 @@ class LeaderboardController_2 extends Controller
     /**
      *  A list of invited users by the current user in invitation referrals
      *
-     * @ OA \Get(
+     * @OA\Get(
      *     path="/invited-users/{id}",
      *     description="A list of leaders in the invitation referrals",
      *     tags={"Invited Users"},
@@ -273,56 +252,56 @@ class LeaderboardController_2 extends Controller
      *         }
      *     },
      *
-     *     @ OA \Parameter(
+     *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         description="User id",
-     *         @ OA \Schema(
+     *         @OA\Schema(
      *             type="string"
      *         ),
      *     ),
-     *     @ OA \Parameter(
+     *     @OA\Parameter(
      *         name="graph_filtr",
      *         in="query",
      *         description="Sort option for the graph. Possible values: week, month, year",
-     *         @ OA \Schema(
+     *         @OA\Schema(
      *             type="string",
      *         ),
      *     ),
      *
-     *     @ OA \Response(
+     *     @OA\Response(
      *         response="200",
      *         description="invited referrals",
      *
-     *         @ OA \JsonContent(
-     *             @ OA \Property(
+     *         @OA\JsonContent(
+     *             @OA\Property(
      *                 property="data",
      *                 type="object",
-     *                 @ OA \Property(
+     *                 @OA\Property(
      *                      property="fullname",
      *                      type="string",
      *                      description="User fullname",
      *                      example="Vsaya",
      *                 ),
-     *                  @ OA \Property(
+     *                  @OA\Property(
      *                      property="username",
      *                      type="string",
      *                      description="Username",
      *                      example="Lonzo",
      *                 ),
-     *                 @ OA \Property(
+     *                 @OA\Property(
      *                      property="Platform",
      *                      type="string",
      *                      description="Platform through which user was referred",
      *                      example="WhatsApp",
      *                 ),
-     *                 @ OA \Property(
+     *                 @OA\Property(
      *                      property="RegistrationDate",
      *                      type="string",
      *                      description="Date user was registered",
      *                      example="2022-05-17",
      *                 ),
-     *                 @ OA \Property(
+     *                 @OA\Property(
      *                      property="CodeUsed",
      *                      type="string",
      *                      description="Referral code used by invitee",
@@ -331,19 +310,19 @@ class LeaderboardController_2 extends Controller
      *             ),
      *         ),
      *     ),
-     *     @ OA \Response(
+     *     @OA\Response(
      *          response="401",
      *          description="Unauthorized"
      *     ),
-     *     @ OA \Response(
+     *     @OA\Response(
      *         response=400,
      *         description="Invalid request"
      *     ),
-     *     @ OA \Response(
+     *     @OA\Response(
      *          response="404",
      *          description="User not found",
      *     ),
-     *     @ OA \Response(
+     *     @OA\Response(
      *         response="500",
      *         description="Unknown error"
      *     ),
@@ -435,7 +414,7 @@ class LeaderboardController_2 extends Controller
     }
 
     /**
-     * @param string      $country
+     * @param string $country
      * @param string|null $city
      *
      * @return array
@@ -447,7 +426,7 @@ class LeaderboardController_2 extends Controller
             return [];
         }
         //TODO get user id by country from identity ms
-        return [];
+        return User::whereCountry($country)->get();
     }
 
     /**
@@ -463,10 +442,9 @@ class LeaderboardController_2 extends Controller
             'today' => $query->whereDate('created_at', Carbon::now()->toDateString()),
             'this week' => $query->whereBetween('created_at', [$en->startOfWeek(), $en->endOfWeek()]),
             'this month' => $query->whereBetween('created_at', [$en->startOfMonth(), $en->endOfMonth()]),
-            'this year' => $query->whereBetween('created_at', [$en->startOfYear(), $en->endOfYear()]),
             'country' => $query->whereIn('country', request()->country ?? null),
 //            'country_and_city' => $query->whereIn('user_id', $this->getUserIDByCountryCity(request()->country, request()->city)),
-            default => $query,
+            default => $query->whereBetween('created_at', [$en->startOfYear(), $en->endOfYear()]),
         };
     }
 
@@ -477,34 +455,26 @@ class LeaderboardController_2 extends Controller
      */
     protected function getLeaderboard(Request $request): array
     {
+        $filter = strtolower($request->filter);
         $leaderboard = [];
 
-        $filter = strtolower($request->filter);
+        $referrers = User::whereNotNull('referrer_id')->distinct('referrer_id')->pluck('referrer_id');
 
-        $referrers = User::get(['referrer_id'])
-            ->map(function ($item) {
-                return $item->referrer_id;
-            });
-
-        $query = $this->getFilterQuery(User::whereIn('referrer_id', $referrers), $filter);
-
-        $invitedUsersFilter = match ($filter) {
-            'this week' => 'current_week_count',
-            'this month' => 'current_month_count',
-            default => 'current_year_count',
-        };
-
-        $leaderboard = $referrers->map(function ($referrer) use ($query, $filter) {
+        foreach ($referrers as $referrer) {
             $user = $this->getUserProfile($referrer);
-            return [
+            if ($user == null) {
+                continue;
+            }
+            $leaderboard [] = [
                 'name' => $user['name'] ?? null,
                 'channels' => $this->getChannels($referrer),
                 'country' => $user['country'] ?? null,
-                'invitees' => $query->where('referrer_id', $referrer)->count(),
-                'reward' => $this->getTotalReward($referrer, $filter),
-                'growth_this_month' => Total::getInvitedUsersByDate($referrer, 'current_month_count'),
+                'city' => $user['city'] ?? null,
+                'referrals' => $this->getFilterQuery(User::where('referrer_id', $referrer), $filter)->count(),
+                'endOfYearCashPrize' => $this->getTotalReward($referrer, $filter),
+                'twentyFourHourPercentage' => Total::where('user_id', $referrer)->first()->twenty_four_hour_percentage,
             ];
-        })->toArray();
+        }
 
 
         $columns = array_column($leaderboard, 'reward');
@@ -527,7 +497,7 @@ class LeaderboardController_2 extends Controller
      */
     protected function getUserProfile($user_id): array|null
     {
-        return User::where('id', $user_id)->orWhere('referrer_id', $user_id)->first()?->toArray();
+        return User::where('referrer_id', $user_id)->first()->toArray();
     }
 
     /**
@@ -542,7 +512,7 @@ class LeaderboardController_2 extends Controller
             return $user->id;
         })->toArray();
 
-        $retVal = ReferralCode::whereIn('user_id', $users)->get(['application_id']);
+        $retVal = ReferralCode::distinct('application_id')->whereIn('user_id', $users)->get(['application_id']);
         return $retVal->map(function ($item) {
             return $item->application_id;
         })->toArray();
