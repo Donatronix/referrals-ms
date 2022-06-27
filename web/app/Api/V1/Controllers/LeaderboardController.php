@@ -464,13 +464,14 @@ class LeaderboardController extends Controller
             if ($user == null) {
                 continue;
             }
-            $leaderboard [] = ['name' => $user['name'] ?? null,
+            $leaderboard [] = [
+                'name' => $user['name'] ?? null,
                 'channels' => $this->getChannels($referrer),
                 'country' => $user['country'] ?? null,
                 'city' => $user['city'] ?? null,
                 'referrals' => $this->getFilterQuery(User::where('referrer_id', $referrer), $filter)->count(),
                 'endOfYearCashPrize' => $this->getTotalReward($referrer, $filter),
-                'twentyFourHourPercentage' => Total::getInvitedUsersByDate($referrer, 'current_month_count'),
+                'twentyFourHourPercentage' => Total::where('user_id', $referrer)->first()->twenty_four_hour_percentage,
             ];
         }
 

@@ -56,8 +56,13 @@ class NewUserRegisteredListener
                     ]);
 
                     $referrerTotal = Total::where('user_id', $referral->user_id)->first();
+                    $reward = $referrerTotal->reward;
                     $referrerTotal->increment('amount');
                     $referrerTotal->increment('reward', User::REFERRER_POINTS);
+                    $referrerTotal->update([
+                        'twenty_four_hour_percentage' => ($referrerTotal->reward - $reward) * 100 / $referrerTotal->reward,
+                    ]);
+
                 })->publish('AddCoinsToBalanceInWallet', [
                     'reward' => User::REFERRER_POINTS,
                     'user_id' => $referral->user_id,
