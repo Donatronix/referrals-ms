@@ -15,7 +15,6 @@ use Illuminate\Http\Request;
  */
 class ReferralController extends Controller
 {
-
     /**
      * Get the total earnings
      *
