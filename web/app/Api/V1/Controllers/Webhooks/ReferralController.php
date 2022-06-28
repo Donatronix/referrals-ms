@@ -20,7 +20,7 @@ class ReferralController extends Controller
      * Get the total earnings
      *
      * @OA\Get(
-     *     path="/admin/total-earnings",
+     *     path="/webhooks/total-earnings",
      *     summary="Get total earnings",
      *     description="Get total earnings",
      *     tags={"Referrals"},
