@@ -218,7 +218,8 @@ class LeaderboardController extends Controller
 
             $leaderboard = DB::table('users')
                 ->whereNotNull('referrer_id')->distinct('referrer_id')
-                ->select('name',
+                ->select(
+                    'name',
                     'country',
                     DB::raw('COUNT(referrer_id) as referrals'),
                     'totals.endOfYearCashPrize as endOfYearCashPrize',
