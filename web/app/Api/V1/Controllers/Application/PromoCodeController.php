@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Api\V1\Controllers;
+namespace App\Api\V1\Controllers\Application;
 
+use App\Api\V1\Controllers\Controller;
 use App\Models\PromoCode;
 use App\Traits\PromoCodeGeneratorTrait;
 use Illuminate\Http\Request;
