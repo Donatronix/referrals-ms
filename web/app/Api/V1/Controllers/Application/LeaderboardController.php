@@ -12,6 +12,7 @@ use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Throwable;
 
 class LeaderboardController extends Controller
@@ -201,7 +202,38 @@ class LeaderboardController extends Controller
         $user_id = Auth::user()->getAuthIdentifier();
 
         try {
-            $leaderboard = $this->getLeaderboard($request);
+            $filter = strtolower($request->filter);
+
+//            $leaderboard = $this->getLeaderboard($request);
+
+
+            $channels = $this->getFilterQuery(DB::table('referral_codes')
+                ->distinct('application_id')
+                ->select('application_id', 'user_id'), $filter);
+
+            $totalReward = $this->getFilterQuery(DB::table('totals')
+                ->select('user_id', 'twenty_four_hour_percentage', DB::raw('SUM(reward) as endOfYearCashPrize')), $filter)
+                ->groupBy('user_id', 'twenty_four_hour_percentage');
+
+
+            $leaderboard = DB::table('users')
+                ->whereNotNull('referrer_id')->distinct('referrer_id')
+                ->select('name',
+                    'country',
+                    DB::raw('COUNT(referrer_id) as referrals'),
+                    'totals.endOfYearCashPrize as endOfYearCashPrize',
+                    'totals.twenty_four_hour_percentage as twentyFourHourPercentage',
+                    'channels.application_id as channels'
+                )
+                ->joinSub($channels, 'channels', function ($join) {
+                    $join->on('users.referrer_id', '=', 'channels.user_id');
+                })
+                ->joinSub($totalReward, 'totals', function ($join) {
+                    $join->on('users.referrer_id', '=', 'totals.user_id');
+                })
+                ->groupBy('users.name', 'users.country', 'totals.endOfYearCashPrize', 'totals.twenty_four_hour_percentage', 'channels.application_id')
+                ->orderBy('endOfYearCashPrize', 'desc')
+                ->paginate(config('settings.pagination_limit'));
 
             return response()->jsonApi([
                 'type' => 'success',
@@ -414,7 +446,7 @@ class LeaderboardController extends Controller
     }
 
     /**
-     * @param string      $country
+     * @param string $country
      * @param string|null $city
      *
      * @return array
@@ -426,7 +458,7 @@ class LeaderboardController extends Controller
             return [];
         }
         //TODO get user id by country from identity ms
-        return [];
+        return User::whereCountry($country)->get();
     }
 
     /**
@@ -442,10 +474,9 @@ class LeaderboardController extends Controller
             'today' => $query->whereDate('created_at', Carbon::now()->toDateString()),
             'this week' => $query->whereBetween('created_at', [$en->startOfWeek(), $en->endOfWeek()]),
             'this month' => $query->whereBetween('created_at', [$en->startOfMonth(), $en->endOfMonth()]),
-            'this year' => $query->whereBetween('created_at', [$en->startOfYear(), $en->endOfYear()]),
             'country' => $query->whereIn('country', request()->country ?? null),
 //            'country_and_city' => $query->whereIn('user_id', $this->getUserIDByCountryCity(request()->country, request()->city)),
-            default => $query,
+            default => $query->whereBetween('created_at', [$en->startOfYear(), $en->endOfYear()]),
         };
     }
 
@@ -461,20 +492,19 @@ class LeaderboardController extends Controller
 
         $referrers = User::whereNotNull('referrer_id')->distinct('referrer_id')->pluck('referrer_id');
 
-
-        $query = $this->getFilterQuery(User::whereIn('referrer_id', $referrers), $filter);
-
         foreach ($referrers as $referrer) {
             $user = $this->getUserProfile($referrer);
             if ($user == null) {
                 continue;
             }
-            $leaderboard [] = ['name' => $user['name'] ?? null,
+            $leaderboard [] = [
+                'name' => $user['name'] ?? null,
                 'channels' => $this->getChannels($referrer),
                 'country' => $user['country'] ?? null,
-                'invitees' => $this->getFilterQuery(User::where('referrer_id', $referrer), $filter)->count(),
-                'reward' => $this->getTotalReward($referrer, $filter),
-                'growth_this_month' => Total::getInvitedUsersByDate($referrer, 'current_month_count'),
+                'city' => $user['city'] ?? null,
+                'referrals' => $this->getFilterQuery(User::where('referrer_id', $referrer), $filter)->count(),
+                'endOfYearCashPrize' => $this->getTotalReward($referrer, $filter),
+                'twentyFourHourPercentage' => Total::where('user_id', $referrer)->first()->twenty_four_hour_percentage,
             ];
         }
 

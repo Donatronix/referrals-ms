@@ -35,6 +35,7 @@ class Total extends Model
         'amount',
         'reward',
         'is_current',
+        'twenty_four_hour_percentage',
     ];
 
     /**

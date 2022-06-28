@@ -436,7 +436,7 @@ class LeaderboardController_2 extends Controller
     }
 
     /**
-     * @param string      $country
+     * @param string $country
      * @param string|null $city
      *
      * @return array
