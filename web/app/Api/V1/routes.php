@@ -10,14 +10,16 @@ $router->group([
     /**
      * PUBLIC ACCESS
      */
-//    $router->group([], function ($router) {
-//    });
+    $router->group([
+        'namespace' => 'Application',
+    ], function ($router) {
+        $router->get('/subscribers/leaderboard', 'LeaderboardController@index');
+    });
 
     /**
      * USER APPLICATION PRIVATE ACCESS
      */
     $router->group([
-        'namespace' => 'Application',
         'middleware' => 'checkUser',
         'namespace' => 'Application',
     ], function ($router) {
@@ -90,6 +92,16 @@ $router->group([
             'checkAdmin',
         ],
     ], function ($router) {
+
+        //Referral and code summary
+        $router->get('/summary-listing', 'SummaryController@listing');
+
+        /**
+         * Leaderboard
+         */
+        $router->get('/leaderboard-listing', 'LeaderboardController@index');
+        $router->get('/leaderboard-listing/invited-users/{id}', 'LeaderboardController@show');
+
         /**
          * Referrals
          */
@@ -115,7 +127,6 @@ $router->group([
      * MICROSERVICE DATA EXCHANGE ACCESS
      */
     $router->group([
-        'namespace' => 'Application',
         'middleware' => 'checkMS',
         'namespace' => 'Webhooks',
     ], function ($router) {

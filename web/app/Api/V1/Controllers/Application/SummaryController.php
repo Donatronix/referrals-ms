@@ -99,6 +99,7 @@ class SummaryController extends Controller
             $totalCodesGenerated = ReferralCode::where('user_id', $referrerId)->count();
             $topReferralBonus = $this->getTopReferralBonus();
             $amountEarned = Total::where('user_id', $referrerId)->sum('reward');
+            $rank = (int)User::find($referrerId)?->rank;
 
             return response()->jsonApi([
                 'type' => 'success',
@@ -109,6 +110,7 @@ class SummaryController extends Controller
                     'totalCodesGenerated' => $totalCodesGenerated,
                     'topReferralBonus' => $topReferralBonus,
                     'amountEarned' => $amountEarned,
+                    'rank' => $rank,
                 ],
             ], 200);
         } catch (Throwable $e) {
@@ -135,4 +137,5 @@ class SummaryController extends Controller
         })->sortByDesc('total')->first();
         return $topReferralBonus['total'];
     }
+
 }
