@@ -115,7 +115,6 @@ $router->group([
      * MICROSERVICE DATA EXCHANGE ACCESS
      */
     $router->group([
-        'namespace' => 'Application',
         'middleware' => 'checkMS',
         'namespace' => 'Webhooks',
     ], function ($router) {

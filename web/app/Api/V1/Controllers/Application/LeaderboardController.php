@@ -234,7 +234,7 @@ class LeaderboardController extends Controller
                 })
                 ->groupBy('users.name', 'users.country', 'totals.endOfYearCashPrize', 'totals.twenty_four_hour_percentage', 'channels.application_id')
                 ->orderBy('endOfYearCashPrize', 'desc')
-                ->paginate(config('settings.pagination_limit'));
+                ->paginate(request()->get('limit', config('settings.pagination_limit')));
 
             return response()->jsonApi([
                 'type' => 'success',
