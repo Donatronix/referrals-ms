@@ -13,7 +13,7 @@ $router->group([
     $router->group([
         'namespace' => 'Application',
     ], function ($router) {
-        $router->get('/leaderboard', 'LeaderboardController@index');
+        $router->get('/subscribers/leaderboard', 'LeaderboardController@index');
     });
 
     /**
