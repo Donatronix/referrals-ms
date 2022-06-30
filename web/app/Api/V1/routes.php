@@ -10,14 +10,16 @@ $router->group([
     /**
      * PUBLIC ACCESS
      */
-//    $router->group([], function ($router) {
-//    });
+    $router->group([
+        'namespace' => 'Application',
+    ], function ($router) {
+        $router->get('/leaderboard', 'LeaderboardController@index');
+    });
 
     /**
      * USER APPLICATION PRIVATE ACCESS
      */
     $router->group([
-        'namespace' => 'Application',
         'middleware' => 'checkUser',
         'namespace' => 'Application',
     ], function ($router) {
