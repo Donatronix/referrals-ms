@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 use Sumra\SDK\Traits\UuidTrait;
 
 class User extends Model
@@ -63,5 +64,14 @@ class User extends Model
         return $this->createImage(strtoupper(substr($this->name, 0, 1)));
     }
 
-
+    public function getRankAttribute()
+    {
+        return $this->hasOne(Total::class)->select(DB::raw('
+          SELECT s.*, @rank := @rank + 1 rank FROM (
+            SELECT user_id, sum(reward) TotalPoints FROM t
+            GROUP BY user_id
+          ) s, (SELECT @rank := 0) init
+          ORDER BY TotalPoints DESC
+        '));
+    }
 }
