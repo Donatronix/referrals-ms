@@ -66,12 +66,11 @@ class User extends Model
 
     public function getRankAttribute()
     {
-        return $this->hasOne(Total::class)->select(DB::raw('
+        return $this->total()->select(DB::raw('
           SELECT s.*, @rank := @rank + 1 rank FROM (
             SELECT user_id, sum(reward) TotalPoints FROM t
             GROUP BY user_id
           ) s, (SELECT @rank := 0) init
-          ORDER BY TotalPoints DESC
-        '));
+          ORDER BY TotalPoints DESC'));
     }
 }

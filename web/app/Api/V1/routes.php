@@ -90,6 +90,16 @@ $router->group([
             'checkAdmin',
         ],
     ], function ($router) {
+
+        //Referral and code summary
+        $router->get('/summary-listing', 'SummaryController@listing');
+
+        /**
+         * Leaderboard
+         */
+        $router->get('/leaderboard-listing', 'LeaderboardController@index');
+        $router->get('/leaderboard-listing/invited-users/{id}', 'LeaderboardController@show');
+
         /**
          * Referrals
          */

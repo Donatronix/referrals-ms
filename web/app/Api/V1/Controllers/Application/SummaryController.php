@@ -137,4 +137,5 @@ class SummaryController extends Controller
         })->sortByDesc('total')->first();
         return $topReferralBonus['total'];
     }
+
 }
