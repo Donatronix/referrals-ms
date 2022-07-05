@@ -127,12 +127,13 @@ $router->group([
      * MICROSERVICE DATA EXCHANGE ACCESS
      */
     $router->group([
-        'middleware' => 'checkMS',
+//        'middleware' => 'checkMS',
         'namespace' => 'Webhooks',
     ], function ($router) {
         /**
          * Referrals total earnings
          */
         $router->get('total-earnings', 'ReferralController@getReferralTotals');
+        $router->get('leaderboard/overview-earnings/{referrerId}', 'ReferralController@getPlatformEarnings');
     });
 });
