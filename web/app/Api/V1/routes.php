@@ -17,6 +17,15 @@ $router->group([
      * USER APPLICATION PRIVATE ACCESS
      */
     $router->group([
+        'namespace' => 'Application',
+    ], function ($router) {
+        $router->get('/subscribers/leaderboard', 'LeaderboardController@index');
+    });
+
+    /**
+     * USER APPLICATION PRIVATE ACCESS
+     */
+    $router->group([
         'middleware' => 'checkUser',
         'namespace' => 'Application',
     ], function ($router) {
@@ -89,6 +98,16 @@ $router->group([
             'checkAdmin',
         ],
     ], function ($router) {
+
+        //Referral and code summary
+        $router->get('/summary-listing', 'SummaryController@listing');
+
+        /**
+         * Leaderboard
+         */
+        $router->get('/leaderboard-listing', 'LeaderboardController@index');
+        $router->get('/leaderboard-listing/invited-users/{id}', 'LeaderboardController@show');
+
         /**
          * Referrals
          */
@@ -115,11 +134,13 @@ $router->group([
      */
     $router->group([
         'middleware' => 'checkMS',
+//        'middleware' => 'checkMS',
         'namespace' => 'Webhooks',
     ], function ($router) {
         /**
          * Referrals total earnings
          */
         $router->get('total-earnings', 'ReferralController@getReferralTotals');
+        $router->get('leaderboard/overview-earnings/{referrerId}', 'ReferralController@getPlatformEarnings');
     });
 });

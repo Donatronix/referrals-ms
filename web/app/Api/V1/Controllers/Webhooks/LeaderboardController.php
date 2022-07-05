@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Api\V1\Controllers\Application;
+namespace App\Api\V1\Controllers\Webhooks;
 
 use App\Api\V1\Controllers\Controller;
 use App\Models\ReferralCode;
@@ -10,7 +10,7 @@ use App\Services\RemoteService;
 use App\Traits\LeaderboardTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Throwable;
 
 class LeaderboardController extends Controller
@@ -225,12 +225,12 @@ class LeaderboardController extends Controller
     }
 
     /**
-     *  A list of invited users by the current user in invitation referrals
+     *  Get platform earnings for user
      *
      * @OA\Get(
      *     path="/invited-users/{id}",
      *     description="A list of leaders in the invitation referrals",
-     *     tags={"Invited Users"},
+     *     tags={"Platform earnings"},
      *
      *     security={{
      *         "default" :{
@@ -257,14 +257,6 @@ class LeaderboardController extends Controller
      *             type="string"
      *         ),
      *     ),
-     *     @OA\Parameter(
-     *         name="graph_filtr",
-     *         in="query",
-     *         description="Sort option for the graph. Possible values: week, month, year",
-     *         @OA\Schema(
-     *             type="string",
-     *         ),
-     *     ),
      *
      *     @OA\Response(
      *         response="200",
@@ -275,34 +267,22 @@ class LeaderboardController extends Controller
      *                 property="data",
      *                 type="object",
      *                 @OA\Property(
-     *                      property="fullname",
+     *                      property="overview_earnings",
      *                      type="string",
-     *                      description="User fullname",
-     *                      example="Vsaya",
+     *                      description="total earnings per platform and number of users",
+     *                      example=450000,
      *                 ),
      *                  @OA\Property(
-     *                      property="username",
-     *                      type="string",
-     *                      description="Username",
-     *                      example="Lonzo",
+     *                      property="subTotalPlatformInvitedUsers",
+     *                      type="integer",
+     *                      description="Subtotal of number of platform users",
+     *                      example="300",
      *                 ),
      *                 @OA\Property(
-     *                      property="Platform",
+     *                      property="subTotalEarnings",
      *                      type="string",
-     *                      description="Platform through which user was referred",
+     *                      description="Total earnings on all platforms",
      *                      example="WhatsApp",
-     *                 ),
-     *                 @OA\Property(
-     *                      property="RegistrationDate",
-     *                      type="string",
-     *                      description="Date user was registered",
-     *                      example="2022-05-17",
-     *                 ),
-     *                 @OA\Property(
-     *                      property="CodeUsed",
-     *                      type="string",
-     *                      description="Referral code used by invitee",
-     *                      example="qawdnasfkm",
      *                 ),
      *             ),
      *         ),
@@ -325,39 +305,56 @@ class LeaderboardController extends Controller
      *     ),
      * )
      *
-     * @param Request $request
      * @param $id
      * @return mixed
      */
-    public function show(Request $request, $id): mixed
+    public function getPlatformEarnings($id): mixed
     {
         try {
-            $referrerId = $request->user()->id ?? Auth::user()->getAuthIdentifier();
-            $filter = strtolower($request->key('filter'));
-            $query = User::where('referrer_id', $referrerId);
-            $users = $this->getFilterQuery($query, $filter)->get();
 
-            $retVal = [];
-            foreach ($users as $user) {
-                $referralCode = ReferralCode::where('user_id', $user->id)->first();
-                $retVal[] = [
-                    'Full name' => $user->name,
-                    'Username' => $user->username,
-                    'Platform' => $referralCode->application_id,
-                    'Registration date' => $user->created_at,
-                    'Code used' => $referralCode->code,
-                ];
-            }
+            //get invited users
+            $invitedUsers = DB::table('application_user')
+                ->select('application_id', DB::raw('COUNT(user_id) as totalPlatformInvitedUsers'))
+                ->groupBy('application_id');
 
-            return response()->jsonApi(
-                array_merge([
-                    'type' => 'success',
-                    'title' => 'Retrieval success',
-                    'message' => 'The referral code (link) has been successfully updated',
-                ], [
-                    'data' => $retVal,
-                ]),
-                200);
+            $totalInvitees = DB::table('users')
+                ->select(DB::raw('COUNT(id) as totalUsers'))
+                ->groupBy('application_id')
+                ->get();
+
+            //get platforms
+            $query = DB::table('referral_codes')->where('user_id', $id)
+                ->select(
+                    'application_id',
+                    'invitedUsers.totalPlatformInvitedUsers as totalPlatformInvitedUsers',
+                    'totalInvitees.totalInvitees as totalInvitedUsers',
+                )
+                ->joinSub($totalInvitees, 'totalInvitees', function ($join) {
+                    $join->on('referral_codes.user_id', '=', 'totalInvitees.referrer_id');
+                })
+                ->joinSub($invitedUsers, 'invitedUsers', function ($join) {
+                    $join->on('referral_codes.user_id', '=', 'invitedUsers.user_id');
+                })
+                ->groupBy(
+                    'referral_codes.application_id',
+                    'invitedUsers.totalPlatformInvitedUsers',
+                    'totalInvitees.totalInvitees'
+                );
+            $overviewEarnings = $query->get();
+            $subTotalPlatformInvitedUsers = $query->sum('totalPlatformInvitedUsers');
+            $subTotalEarnings = $query->sum('totalPlatformInvitedUsers');
+
+
+            return response()->jsonApi([
+                'type' => 'success',
+                'title' => 'Retrieval success',
+                'message' => 'The platform earnings were successfully retrieved',
+                'data' => [
+                    'overview_earnings' => $overviewEarnings,
+                    'subTotalPlatformInvitedUsers' => $subTotalPlatformInvitedUsers,
+                    'subTotalEarnings' => $subTotalEarnings,
+                ],
+            ], 200);
         } catch (Throwable $e) {
             return response()->jsonApi([
                 'type' => 'danger',

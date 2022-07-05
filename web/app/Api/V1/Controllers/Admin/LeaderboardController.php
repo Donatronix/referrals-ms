@@ -1,16 +1,13 @@
 <?php
 
-namespace App\Api\V1\Controllers\Application;
+namespace App\Api\V1\Controllers\Admin;
 
 use App\Api\V1\Controllers\Controller;
 use App\Models\ReferralCode;
-use App\Models\Total;
 use App\Models\User;
-use App\Services\RemoteService;
 use App\Traits\LeaderboardTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Throwable;
 
 class LeaderboardController extends Controller
@@ -21,9 +18,9 @@ class LeaderboardController extends Controller
      *  A list of leaders in the invitation referrals
      *
      * @OA\Get(
-     *     path="/leaderboard",
+     *     path="/leaderboard-listing",
      *     description="A list of leaders in the invitation referrals",
-     *     tags={"Application Leaderboard"},
+     *     tags={"Leaderboard"},
      *
      *     security={{
      *         "default" :{
@@ -228,7 +225,7 @@ class LeaderboardController extends Controller
      *  A list of invited users by the current user in invitation referrals
      *
      * @OA\Get(
-     *     path="/invited-users/{id}",
+     *     path="/leaderboard-listing/invited-users/{id}",
      *     description="A list of leaders in the invitation referrals",
      *     tags={"Invited Users"},
      *
@@ -332,7 +329,7 @@ class LeaderboardController extends Controller
     public function show(Request $request, $id): mixed
     {
         try {
-            $referrerId = $request->user()->id ?? Auth::user()->getAuthIdentifier();
+            $referrerId = $id;
             $filter = strtolower($request->key('filter'));
             $query = User::where('referrer_id', $referrerId);
             $users = $this->getFilterQuery($query, $filter)->get();
@@ -369,48 +366,6 @@ class LeaderboardController extends Controller
     }
 
     /**
-     * @param $input_data
-     *
-     * @return bool
-     */
-    public function checkRemoteServices($input_data): bool
-    {
-        // This is demo data for the test. By connecting them, you don't need a remote microservice.
-        // $input_data = return [
-        //            "id" => "2561dbee-2207-30ff-9241-b1b5ee79a03d",
-        //            "program_type_id" => 1,
-        //            "enabled" => 0,
-        //            "level_id" => "a39b4c05-ed3f-39e5-91da-53cdbcb98a75",
-        //            "created_at" => "2021-09-02T10:02:35.000000Z",
-        //            "updated_at" => "2021-09-02T10:02:35.000000Z",
-        //            "program_type" => [
-        //                "id" => 1,
-        //                "name" => "pioneer",
-        //                "key" => "pioneer",
-        //                "created_at" => "2021-09-02T10:02:35.000000Z",
-        //                "updated_at" => "2021-09-02T10:02:35.000000Z",
-        //            ],
-        //            "level" => [
-        //                "id" => "a39b4c05-ed3f-39e5-91da-53cdbcb98a75",
-        //                "name" => "bronze",
-        //                "price" => 99.0,
-        //                "currency" => "BDT",
-        //                "period" => "month",
-        //                "program_type_id" => 1,
-        //            ],
-        //            "key" => "pioneer.get_give",
-        //            "title" => "For each Referral you get $8. Your referred contacts give $5. Earn Unlimited",
-        //            "value" => [
-        //                0 => 8,
-        //                1 => 5,
-        //            ],
-        //            "format" => "$",
-        //        ];
-
-        return RemoteService::accrualRemuneration($input_data);
-    }
-
-    /**
      * @param string $country
      * @param string|null $city
      *
@@ -424,46 +379,5 @@ class LeaderboardController extends Controller
         }
         //TODO get user id by country from identity ms
         return User::whereCountry($country)->get();
-    }
-
-
-    /**
-     * @param $user_id
-     *
-     * @return array|null
-     */
-    protected function getUserProfile($user_id): array|null
-    {
-        return User::where('referrer_id', $user_id)->first()->toArray();
-    }
-
-    /**
-     * @param $referrer
-     *
-     * @return mixed
-     */
-    protected function getChannels($referrer)
-    {
-        $users = User::where('referrer_id', $referrer)->get();
-        $users = $users->map(function ($user) {
-            return $user->id;
-        })->toArray();
-
-        $retVal = ReferralCode::distinct('application_id')->whereIn('user_id', $users)->get(['application_id']);
-        return $retVal->map(function ($item) {
-            return $item->application_id;
-        })->toArray();
-    }
-
-
-    /**
-     * @param $referrer_id
-     * @param $filter
-     *
-     * @return int|float
-     */
-    protected function getTotalReward($referrer_id, $filter): int|float
-    {
-        return $this->getFilterQuery(Total::where('user_id', $referrer_id), $filter)->sum('reward');
     }
 }
