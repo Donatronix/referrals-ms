@@ -13,9 +13,9 @@ class ReferralCodeService
     /**
      * Create a referral code
      *
-     * @param Request   $request
+     * @param Request $request
      * @param User|null $user
-     * @param bool      $is_default
+     * @param bool $is_default
      *
      * @return mixed
      * @throws Exception
@@ -26,7 +26,7 @@ class ReferralCodeService
 
             // Check user object
             if (!$user) {
-                $user = Auth::user() ?? User::find(Auth::user()->getAuthIdentifier());
+                $user = Auth::user() ?? User::find(Auth::user()->getAuthIdentifier() ?? $request->get('user_id'));
             }
 
             // Check if code is set as default, then reset all previous code
@@ -43,8 +43,8 @@ class ReferralCodeService
                 'note' => $request->get('note', null),
             ]);
 
-           // $generate_link = (string)Firebase::linkGenerate($rc->code, $request->get('application_id'));
-           // $rc->update(['link' => $generate_link]);
+            // $generate_link = (string)Firebase::linkGenerate($rc->code, $request->get('application_id'));
+            // $rc->update(['link' => $generate_link]);
 
             return $rc;
         } catch (Exception $e) {
