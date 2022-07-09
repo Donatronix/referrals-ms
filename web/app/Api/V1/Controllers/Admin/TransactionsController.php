@@ -93,7 +93,7 @@ class TransactionsController extends Controller
      *          description="Unauthorized"
      *     ),
      *     @OA\Response(
-     *         response=400,
+     *         response="400",
      *         description="Invalid request"
      *     ),
      *
@@ -244,7 +244,7 @@ class TransactionsController extends Controller
      *          description="Unauthorized"
      *     ),
      *     @OA\Response(
-     *         response=400,
+     *         response="400",
      *         description="Invalid request"
      *     ),
      *
@@ -381,11 +381,11 @@ class TransactionsController extends Controller
      *          ),
      *     ),
      *     @OA\Response(
-     *          response=200,
+     *          response="200",
      *          description="Success"
      *     ),
      *     @OA\Response(
-     *          response=400,
+     *          response="400",
      *          description="Bad Request"
      *     )
      * )
@@ -475,7 +475,7 @@ class TransactionsController extends Controller
      *          )
      *     ),
      *     @OA\Response(
-     *         response=200,
+     *         response="200",
      *         description="Success",
      *
      *         @OA\JsonContent(
@@ -539,7 +539,7 @@ class TransactionsController extends Controller
      *         ),
      *     ),
      *     @OA\Response(
-     *         response=404,
+     *         response="404",
      *         description="Not found"
      *     )
      * )
@@ -635,7 +635,7 @@ class TransactionsController extends Controller
      *          description="Unauthorized"
      *     ),
      *     @OA\Response(
-     *         response=400,
+     *         response="400",
      *         description="Invalid request"
      *     ),
      *

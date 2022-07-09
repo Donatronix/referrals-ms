@@ -26,8 +26,8 @@ $router->group([
      * USER APPLICATION PRIVATE ACCESS
      */
     $router->group([
-        'middleware' => 'checkUser',
         'namespace' => 'Application',
+        'middleware' => 'checkUser',
     ], function ($router) {
         /**
          * Leaderboard
@@ -133,9 +133,10 @@ $router->group([
      * MICROSERVICE DATA EXCHANGE ACCESS
      */
     $router->group([
-        'middleware' => 'checkMS',
+        'prefix' => 'webhooks',
 //        'middleware' => 'checkMS',
         'namespace' => 'Webhooks',
+        'middleware' => 'checkMS',
     ], function ($router) {
         /**
          * Referrals total earnings

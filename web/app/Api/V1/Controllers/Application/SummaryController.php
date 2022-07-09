@@ -72,7 +72,7 @@ class SummaryController extends Controller
      *         description="Unauthorized"
      *     ),
      *     @OA\Response(
-     *         response=400,
+     *         response="400",
      *         description="Invalid request"
      *     ),
      *     @OA\Response(

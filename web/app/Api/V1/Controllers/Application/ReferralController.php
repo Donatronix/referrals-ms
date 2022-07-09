@@ -83,12 +83,12 @@ class ReferralController extends Controller
      *         description="Unauthorized"
      *     ),
      *     @OA\Response(
-     *         response=400,
+     *         response="400",
      *         description="Invalid request"
      *     ),
      *     @OA\Response(
-     *         response=404,
-     *         description="not found"
+     *         response="404",
+     *         description="Not Found"
      *     )
      * )
      *
@@ -179,12 +179,12 @@ class ReferralController extends Controller
      *         description="Unauthorized"
      *     ),
      *     @OA\Response(
-     *         response=400,
+     *         response="400",
      *         description="Invalid request"
      *     ),
      *     @OA\Response(
-     *         response=404,
-     *         description="not found",
+     *         response="404",
+     *         description="Not Found",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(
@@ -296,12 +296,12 @@ class ReferralController extends Controller
      *         description="Unauthorized"
      *     ),
      *     @OA\Response(
-     *         response=400,
+     *         response="400",
      *         description="Invalid request"
      *     ),
      *     @OA\Response(
-     *         response=404,
-     *         description="not found"
+     *         response="404",
+     *         description="Not Found"
      *     )
      * )
      *

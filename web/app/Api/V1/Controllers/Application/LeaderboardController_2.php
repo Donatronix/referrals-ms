@@ -180,7 +180,7 @@ class LeaderboardController_2 extends Controller
      *          description="Unauthorized"
      *     ),
      *     @ OA \Response(
-     *         response=400,
+     *         response="400",
      *         description="Invalid request"
      *     ),
      *     @ OA \Response(
@@ -337,7 +337,7 @@ class LeaderboardController_2 extends Controller
      *          description="Unauthorized"
      *     ),
      *     @ OA \Response(
-     *         response=400,
+     *         response="400",
      *         description="Invalid request"
      *     ),
      *     @ OA \Response(
