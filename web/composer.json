@@ -6,13 +6,13 @@
     "private": true,
     "require": {
         "php": "^8.0",
+        "ext-gd": "*",
         "ext-json": "*",
         "ext-openssl": "*",
         "kreait/laravel-firebase": "~2",
         "laravel/lumen-framework": "~8",
         "stevebauman/location": "^6.3",
-        "sumra/sdk": "*",
-        "ext-gd": "*"
+        "sumra/sdk": "*"
     },
     "require-dev": {
         "fakerphp/faker": "~1",

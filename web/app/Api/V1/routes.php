@@ -5,13 +5,19 @@
  */
 $router->group([
     'prefix' => env('APP_API_VERSION', ''),
-    'namespace' => '\App\Api\V1\Controllers',
+    'namespace' => '\App\Api\V1\Controllers'
 ], function ($router) {
     /**
      * PUBLIC ACCESS
+     *
+     * level with free access to the endpoint
      */
-//    $router->group([], function ($router) {
-//    });
+    $router->group([
+        'namespace' => 'Public'
+    ], function ($router) {
+        //
+    });
+
 
     /**
      * USER APPLICATION PRIVATE ACCESS
@@ -24,6 +30,8 @@ $router->group([
 
     /**
      * USER APPLICATION PRIVATE ACCESS
+     *
+     * Application level for users
      */
     $router->group([
         'namespace' => 'Application',
@@ -81,7 +89,6 @@ $router->group([
         $router->group([
             'prefix' => '',
         ], function ($router) {
-
             //Referral and code summary
             $router->get('/summary', 'SummaryController@index');
         });
@@ -89,16 +96,17 @@ $router->group([
 
     /**
      * ADMIN PANEL ACCESS
+     *
+     * Admin / super admin access level (E.g CEO company)
      */
     $router->group([
         'prefix' => 'admin',
         'namespace' => 'Admin',
         'middleware' => [
             'checkUser',
-            'checkAdmin',
-        ],
+            'checkAdmin'
+        ]
     ], function ($router) {
-
         //Referral and code summary
         $router->get('/summary-listing', 'SummaryController@listing');
 
@@ -130,7 +138,9 @@ $router->group([
     });
 
     /**
-     * MICROSERVICE DATA EXCHANGE ACCESS
+     * WEBHOOKS
+     *
+     * Access level of external / internal software services
      */
     $router->group([
         'prefix' => 'webhooks',
