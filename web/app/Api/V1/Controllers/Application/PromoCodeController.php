@@ -28,15 +28,6 @@ class PromoCodeController extends Controller
      *           }
      *     }},
      *
-     *     x={
-     *          "auth-type": "Application & Application User",
-     *          "throttling-tier": "Unlimited",
-     *          "wso2-application-security": {
-     *              "security-types": {"oauth2"},
-     *              "optional": "false"
-     *          }
-     *     },
-     *
      *     @OA\Parameter(
      *          name="user_id",
      *          in="query",
@@ -126,15 +117,6 @@ class PromoCodeController extends Controller
      *           }
      *     }},
      *
-     *     x={
-     *          "auth-type": "Application & Application User",
-     *          "throttling-tier": "Unlimited",
-     *          "wso2-application-security": {
-     *              "security-types": {"oauth2"},
-     *              "optional": "false"
-     *          }
-     *     },
-     *
      *     @OA\Parameter(
      *          name="code",
      *          in="query",
@@ -143,7 +125,7 @@ class PromoCodeController extends Controller
      *          example="00000000",
      *          @OA\Schema (
      *              type="string"
-     *          ),
+     *          )
      *     ),
      *
      *     @OA\RequestBody(

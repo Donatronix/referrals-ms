@@ -33,22 +33,13 @@ class LeaderboardController_2 extends Controller
      *         }
      *     }},
      *
-     *     x={
-     *         "auth-type": "Application & Application User",
-     *         "throttling-tier": "Unlimited",
-     *         "wso2-application-security": {
-     *             "security-types": {"oauth2"},
-     *             "optional": "false"
-     *         }
-     *     },
-     *
      *     @ OA \Parameter(
      *         name="limit",
      *         in="query",
      *         description="Limit leaderboard of page",
      *         @ OA \Schema(
      *             type="number"
-     *         ),
+     *         )
      *     ),
      *     @ OA \Parameter(
      *         name="page",
@@ -264,15 +255,6 @@ class LeaderboardController_2 extends Controller
      *             "ManagerWrite"
      *         }
      *     }},
-     *
-     *     x={
-     *         "auth-type": "Application & Application User",
-     *         "throttling-tier": "Unlimited",
-     *         "wso2-application-security": {
-     *             "security-types": {"oauth2"},
-     *             "optional": "false"
-     *         }
-     *     },
      *
      *     @ OA \Parameter(
      *         name="id",
