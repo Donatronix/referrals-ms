@@ -18,7 +18,6 @@ class Firebase
     public static function linkGenerate($referralCode, $application_id)
     {
         $referrerData = [
-            //'code' => $referralCode,
             'utm_source' => $referralCode,
             'utm_medium' => ReferralCode::MEDIUM,
             'utm_campaign' => ReferralCode::CAMPAIGN,
@@ -68,7 +67,7 @@ class Firebase
                             $application_id,
                             urlencode(http_build_query($referrerData))
                         ),
-                        //'androidMinPackageVersionCode' => ReferralCode::ANDROID_MIN_PACKAGE_VERSION
+                        //'androidMinPackageVersionCode' => '20040902'
                     ],
                     /*
                     'iosInfo' => [

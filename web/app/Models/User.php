@@ -2,18 +2,23 @@
 
 namespace App\Models;
 
-use App\Traits\UuidTrait;
-use Carbon\Carbon;
+use App\Traits\TextToImageTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
+use Sumra\SDK\Traits\UuidTrait;
 
 class User extends Model
 {
     use HasFactory;
     use UuidTrait;
     use SoftDeletes;
+    use TextToImageTrait;
+
+    const REFERRER_POINTS = 3;
 
     /**
      * The attributes that are mass assignable.
@@ -23,38 +28,49 @@ class User extends Model
     protected $fillable = [
         'id',
         'referrer_id',
+        'application_id',
     ];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * The attributes excluded from the model's JSON form.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+        'deleted_at',
+    ];
+
+
+    /**
+     * @return HasMany
      */
     public function referralCodes(): HasMany
     {
         return $this->hasMany(ReferralCode::class);
     }
 
-    public static function getInvitedUsersByDate($user_id, $format = 'data')
+    /**
+     * @return HasOne
+     */
+    public function total(): HasOne
     {
-        switch ($format) {
-            case 'current_month_count':
-                return User::where('referrer_id', $user_id)
-                    ->whereMonth('created_at', Carbon::now()->month)
-                    ->count();
+        return $this->hasOne(Total::class);
+    }
 
-            case 'last_month_count':
-                return User::where('referrer_id', $user_id)
-                    ->whereMonth('created_at', Carbon::now()->subMonth())
-                    ->count();
+    public function getAvatarAttribute(): string
+    {
+        return $this->createImage(strtoupper(substr($this->name, 0, 1)));
+    }
 
-            case 'current_month_data':
-                return User::where('referrer_id', $user_id)
-                    ->whereMonth('created_at', Carbon::now()->month)
-                    ->get();
-
-            case 'last_month_data':
-                return User::where('referrer_id', $user_id)
-                    ->whereMonth('created_at', Carbon::now()->subMonth())
-                    ->get();
-        }
+    public function getRankAttribute()
+    {
+        return $this->total()->select(DB::raw('
+          SELECT s.*, @rank := @rank + 1 rank FROM (
+            SELECT user_id, sum(reward) TotalPoints FROM t
+            GROUP BY user_id
+          ) s, (SELECT @rank := 0) init
+          ORDER BY TotalPoints DESC'));
     }
 }

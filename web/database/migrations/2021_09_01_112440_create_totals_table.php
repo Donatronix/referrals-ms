@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class CreateTotalsTable extends Migration
@@ -16,11 +17,7 @@ class CreateTotalsTable extends Migration
         $table_name = 'totals';
 
         Schema::create($table_name, function (Blueprint $table) {
-            $table->uuid('id')
-                ->primary();
-
-            $table->string('username')
-                ->default('');
+            $table->uuid('id')->primary();
 
             $table->integer('amount')
                 ->unsigned()

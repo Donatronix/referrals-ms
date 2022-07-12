@@ -2,9 +2,10 @@
 
 namespace App\Api\V1\Controllers\Admin;
 
+use App\Api\V1\Controllers\Controller;
 use App\Helpers\AdminListing;
-use App\Http\Controllers\Controller;
 use App\Models\User;
+use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -31,14 +32,6 @@ class UsersController extends Controller
      *             "ManagerWrite"
      *         }
      *     }},
-     *     x={
-     *         "auth-type": "Application & Application User",
-     *         "throttling-tier": "Unlimited",
-     *         "wso2-application-security": {
-     *             "security-types": {"oauth2"},
-     *             "optional": "false"
-     *         }
-     *     },
      *
      *     @OA\Parameter(
      *         name="sort[by]",
@@ -95,15 +88,15 @@ class UsersController extends Controller
      *         )
      *     ),
      *     @OA\Response(
-     *         response=200,
+     *         response="200",
      *         description="Success",
      *     )
      * )
      *
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      *
      * @return string
-     * @throws \Exception
+     * @throws Exception
      */
     public function index(Request $request): string
     {
@@ -113,7 +106,7 @@ class UsersController extends Controller
             'sort.order' => 'in:asc,desc|nullable',
             'search' => 'string|nullable',
             'page' => 'integer|nullable',
-            'limit' => 'integer|nullable'
+            'limit' => 'integer|nullable',
         ]);
 
         if ($validator->fails()) {
@@ -121,7 +114,7 @@ class UsersController extends Controller
                 'type' => 'danger',
                 'title' => 'Error',
                 'message' => 'Validation error',
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -135,13 +128,13 @@ class UsersController extends Controller
                 'username',
                 'referral_code',
                 'referrer_id',
-                'status'
+                'status',
             ],
 
             // set columns to searchIn
             [
                 'referral_code',
-                'username'
+                'username',
             ]
         );
 
@@ -170,14 +163,6 @@ class UsersController extends Controller
      *             "ManagerWrite"
      *         }
      *     }},
-     *     x={
-     *         "auth-type": "Application & Application User",
-     *         "throttling-tier": "Unlimited",
-     *         "wso2-application-security": {
-     *             "security-types": {"oauth2"},
-     *             "optional": "false"
-     *         }
-     *     },
      *
      *     @OA\Parameter(
      *         name="id",
@@ -222,7 +207,7 @@ class UsersController extends Controller
      *
      * @return mixed
      */
-    public function show($id)
+    public function show($id): mixed
     {
         // Get user model
         try {
@@ -234,7 +219,7 @@ class UsersController extends Controller
             return response()->jsonApi([
                 'type' => 'danger',
                 'title' => 'User not found',
-                'message' => "User #{$id} not found"
+                'message' => "User #{$id} not found",
             ], 404);
         }
     }

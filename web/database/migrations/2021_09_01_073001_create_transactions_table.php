@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class CreateTransactionsTable extends Migration
@@ -16,11 +17,9 @@ class CreateTransactionsTable extends Migration
         $table_name = 'transactions';
 
         Schema::create($table_name, function (Blueprint $table) {
-            $table->uuid('id')
-                ->primary();
+            $table->uuid('id')->primary();
 
-            $table->uuid('user_id')
-                ->index();
+            $table->uuid('user_id')->index();
 
             $table->string('user_plan')
                 ->comment('User\'s current tariff plan at the time of accrual');

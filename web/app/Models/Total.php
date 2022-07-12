@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
-use App\Traits\UuidTrait;
+use Carbon\Carbon;
+use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Sumra\SDK\Traits\UuidTrait;
 
 class Total extends Model
 {
@@ -18,7 +21,6 @@ class Total extends Model
      * @var array|string[]
      */
     public static array $rules = [
-        'username' => 'required|string|max:255',
         'amount' => 'integer',
         'reward' => 'regex:/^\d*(\.\d{2})?$/',
     ];
@@ -30,9 +32,10 @@ class Total extends Model
      */
     protected $fillable = [
         'user_id',
-        'username',
         'amount',
         'reward',
+        'is_current',
+        'twenty_four_hour_percentage',
     ];
 
     /**
@@ -47,21 +50,13 @@ class Total extends Model
     ];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    /**
      *  We receive data for the informer and collect it
      *
      * @param $user_id
      *
      * @return array $informer
      */
-    public static function getInformer($user_id)
+    public static function getInformer($user_id): array
     {
         $informer = [];
         $users = self::orderBy('amount', 'DESC')
@@ -73,7 +68,7 @@ class Total extends Model
                 $informer = [
                     'rank' => $rank,
                     'reward' => $user->reward,
-                    'grow_this_month' => User::getInvitedUsersByDate($user_id, 'current_month_count')
+                    'grow_this_month' => Total::getInvitedUsersByDate($user_id, 'current_month_count'),
                 ];
                 break;
             }
@@ -81,6 +76,46 @@ class Total extends Model
         }
 
         return $informer;
+    }
+
+    /**
+     * @param        $user_id
+     * @param string $format
+     *
+     * @return int|Collection|null
+     */
+    public static function getInvitedUsersByDate($user_id, string $format = 'data'): Collection|int|null
+    {
+        $en = CarbonImmutable::now()->locale('en_US');
+        return match ($format) {
+            'current_week_count' => User::where('referrer_id', $user_id)
+                ->whereBetween('created_at', [$en->startOfWeek(), $en->endOfWeek()])
+                ->count(),
+            'current_month_count' => User::where('referrer_id', $user_id)
+                ->whereMonth('created_at', Carbon::now()->month)
+                ->count(),
+            'current_year_count' => User::where('referrer_id', $user_id)
+                ->whereYear('created_at', Carbon::now()->year)
+                ->count(),
+            'last_month_count' => User::where('referrer_id', $user_id)
+                ->whereMonth('created_at', Carbon::now()->subMonth())
+                ->count(),
+            'current_month_data' => User::where('referrer_id', $user_id)
+                ->whereMonth('created_at', Carbon::now()->month)
+                ->get(),
+            'last_month_data' => User::where('referrer_id', $user_id)
+                ->whereMonth('created_at', Carbon::now()->subMonth())
+                ->get(),
+            default => null,
+        };
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
 }

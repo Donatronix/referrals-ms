@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Listeners\InvitedReferralResponseListener;
+use App\Listeners\NewUserRegisteredListener;
 use Laravel\Lumen\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -16,14 +17,27 @@ class EventServiceProvider extends ServiceProvider
         'ReferralBonus' => [
             'App\Listeners\ReferralBonusListener',
         ],
-        'ReferralUserInfo' => [
-            'App\Listeners\UsersMeetListener',
+        'JoinUserToReferralProgramRequest' => [
+            'App\Listeners\JoinUserRequestListener',
         ],
         'SendReward' => [
             'App\Listeners\AccrualRemunerationListener',
         ],
         'InvitedReferralResponse' => [
-            InvitedReferralResponseListener::class
-        ]
+            InvitedReferralResponseListener::class,
+        ],
+        'NewUserRegistered' => [
+            NewUserRegisteredListener::class,
+        ],
     ];
+
+    /**
+     * Determine if events and listeners should be automatically discovered.
+     *
+     * @return bool
+     */
+    public function shouldDiscoverEvents(): bool
+    {
+        return false;
+    }
 }

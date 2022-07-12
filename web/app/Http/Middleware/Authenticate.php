@@ -39,7 +39,9 @@ class Authenticate
     public function handle(Request $request, Closure $next, $guard = null)
     {
         if ($this->auth->guard($guard)->guest()) {
-            return response()->jsonApi(['error' => 'Unauthorized'], 401);
+            return response()->jsonApi([
+                'error' => 'Unauthorized'
+            ], 401);
         }
 
         return $next($request);

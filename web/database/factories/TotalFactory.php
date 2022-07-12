@@ -22,14 +22,14 @@ class TotalFactory extends Factory
      */
     public function definition(): array
     {
+        $referrer = User::whereNotNull('referrer_id')->inRandomOrder()->first()->referrer_id;
         return [
             'id' => $this->faker->uuid,
-            'user_id' => function () {
-                return User::all()->random()->id;
-            },
-            'username' => $this->faker->unique()->name(),
+            'user_id' => $referrer,
             'amount' => rand(1, 500),
-            'reward' => rand(1, 500),
+            'reward' => function () use ($referrer) {
+                return 3 * User::where('referrer_id', $referrer)->count();
+            },
         ];
     }
 }

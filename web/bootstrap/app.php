@@ -24,7 +24,6 @@ $app = new Laravel\Lumen\Application(
 );
 
 $app->withFacades();
-
 $app->withEloquent();
 
 /*
@@ -58,15 +57,11 @@ $app->singleton(
 | the default version. You may register other files below as needed.
 |
 */
-
 $app->configure('app');
 $app->configure('settings');
 
-// Neo4j
-$app->configure('database');
-
 // Matomo analytics
-$app->configure('matomo-analytics');
+//$app->configure('matomo-analytics');
 
 /*
 |--------------------------------------------------------------------------
@@ -80,14 +75,14 @@ $app->configure('matomo-analytics');
 */
 
 $app->middleware([
-  //  \Fruitcake\Cors\HandleCors::class,
-    \App\Http\Middleware\TrimStrings::class,
+    \Sumra\SDK\Middleware\TrimStrings::class,
 ]);
 
 $app->routeMiddleware([
     //'auth' => App\Http\Middleware\Authenticate::class,
-    'checkUser' => App\Http\Middleware\CheckUserMiddleware::class,
-    'checkAdmin' => App\Http\Middleware\CheckAdminMiddleware::class,
+    'checkUser' => \Sumra\SDK\Middleware\CheckUserMiddleware::class,
+    'checkAdmin' => \Sumra\SDK\Middleware\CheckAdminMiddleware::class,
+    'checkMS' => \Sumra\SDK\Middleware\CheckMSMiddleware::class,
 ]);
 
 /*
@@ -95,7 +90,7 @@ $app->routeMiddleware([
 | Register Service Providers
 |--------------------------------------------------------------------------
 |
-| Here we will register all the application's service providers which
+| Here we will register all of the application's service providers which
 | are used to bind services into the container. Service providers are
 | totally optional, so you are not required to uncomment this line.
 |
@@ -104,12 +99,7 @@ $app->routeMiddleware([
 $app->register(App\Providers\AppServiceProvider::class);
 $app->register(App\Providers\AuthServiceProvider::class);
 $app->register(App\Providers\EventServiceProvider::class);
-
-/**
- * Enable CORS policy
- */
-//$app->configure('cors');
-//$app->register(Fruitcake\Cors\CorsServiceProvider::class);
+$app->register(Stevebauman\Location\LocationServiceProvider::class);
 
 /**
  * Pubsub - RabbitMQ
@@ -117,18 +107,23 @@ $app->register(App\Providers\EventServiceProvider::class);
 $app->configure('queues');
 $app->register(VladimirYuldashev\LaravelQueueRabbitMQ\LaravelQueueRabbitMQServiceProvider::class);
 class_alias(\Illuminate\Support\Facades\App::class, 'App');
-$app->register(\Sumra\PubSub\PubSubServiceProvider::class);
+$app->register(\Sumra\SDK\PubSubServiceProvider::class);
 
 /**
  * Json API
  */
-$app->register(\Sumra\JsonApi\JsonApiServiceProvider::class);
+$app->register(\Sumra\SDK\JsonApiServiceProvider::class);
 
 /**
  * Swagger
  */
 $app->configure('swagger-lume');
 $app->register(\SwaggerLume\ServiceProvider::class);
+
+/**
+ * Artisan Commands Lumen Generator
+ */
+$app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
 
 /** Firebase */
 $app->register(Kreait\Laravel\Firebase\ServiceProvider::class);
@@ -139,7 +134,7 @@ $app->register(Kreait\Laravel\Firebase\ServiceProvider::class);
 |--------------------------------------------------------------------------
 |
 | Next we will include the routes file so that they can all be added to
-| the application. This will provide all the URLs the application
+| the application. This will provide all of the URLs the application
 | can respond to, as well as the controllers that may handle them.
 |
 */

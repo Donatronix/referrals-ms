@@ -1,7 +1,7 @@
-/.idea
-/baum
-/json-api
-/logs/*
-/pubsub
+.idea
+.vscode
+/sumra-sdk
 docker-compose.yaml
 xdebug.ini
+server.php
+.env

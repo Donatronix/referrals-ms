@@ -8,18 +8,25 @@
 |--------------------------------------------------------------------------
 */
 
-Route::get('/', function () use ($router) {
+$router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-Route::group(
-    [
-        'prefix' => env('APP_API_PREFIX', '')
-    ],
-    function ($router) {
-        include base_path('app/Api/V1/routes.php');
-    }
-);
+$router->group([
+    'prefix' => env('APP_API_PREFIX', '')
+], function ($router) {
+    include base_path('app/Api/V1/routes.php');
+});
 
-if (file_exists(__DIR__ . '/tests.php'))
-    require_once(__DIR__ . '/tests.php');
+/*-------------------------
+   T E S T S  Routes
+-------------------------- */
+$router->group([
+    'prefix' => env('APP_API_PREFIX', '') . '/tests'
+], function ($router) {
+    $router->get('db-test', function () {
+        if (DB::connection()->getDatabaseName()) {
+            echo "Connected successfully to database: " . DB::connection()->getDatabaseName();
+        }
+    });
+});

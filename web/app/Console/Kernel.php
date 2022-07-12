@@ -2,9 +2,7 @@
 
 namespace App\Console;
 
-use App\Console\Commands\KeyGenerateCommand;
-use App\Console\Commands\RouteListCommand;
-use App\Services\MatomoAnalytics;
+//use App\Services\MatomoAnalytics;
 use Illuminate\Console\Scheduling\Schedule;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
 
@@ -16,8 +14,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        KeyGenerateCommand::class,
-        RouteListCommand::class
+        //
     ];
 
     /**
@@ -34,15 +31,12 @@ class Kernel extends ConsoleKernel
 
 //        $schedule->call(new MatomoAnalytics, ['method' => 'UserId.getUsers'])->everyMinute();
 //        $schedule->call(new MatomoAnalytics, ['method' => 'Live.getMostRecentVisitorId'])->everyMinute();
-        $schedule->call(new MatomoAnalytics, ['method' => 'Actions.getPageUrls'])->everyMinute();
+       // $schedule->call(new MatomoAnalytics, ['method' => 'Actions.getPageUrls'])->everyMinute();
     }
 
     /**
      * Get the timezone that should be used by default for scheduled events.
      *
-     * @return string
-     */
-    /**
      * @return string
      */
     protected function scheduleTimezone(): string
