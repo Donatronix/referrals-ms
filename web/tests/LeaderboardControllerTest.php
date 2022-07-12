@@ -1,16 +1,24 @@
 <?php
 
-use Tests\TestCase;
+namespace Tests;
+
+use App\Api\V1\Controllers\Admin\SummaryController;
 
 class LeaderboardControllerTest extends TestCase
 {
+
     /**
      * A basic test example.
      *
      * @return void
      */
-    public function testAdminLeaderboardControllerIndex()
+    public function testSummaryListing()
     {
-        $this->assertTrue(true);
+        $ummary = new SummaryController();
+
+        $listing = $ummary->listing();
+        dd($listing);
+
+
     }
 }
