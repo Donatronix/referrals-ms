@@ -108,49 +108,24 @@ class SummaryController extends Controller
     public function listing(Request $request): mixed
     {
         try {
-            $totalCodesGenerated = DB::table('referral_codes')
-                ->select('user_id', DB::raw('COUNT(*) as totalCodesGenerated'))
-                ->groupBy('user_id');
-            $topReferralBonus = DB::table('totals')
-                ->select('user_id', DB::raw('SUM(reward) as topReferralBonus'))
-                ->groupBy('user_id')
-                ->orderBy('topReferralBonus', 'desc')
-                ->limit(1);
-            $amountEarned = DB::table('totals')
-                ->select('user_id', DB::raw('SUM(reward) as amountEarned'))
-                ->groupBy('user_id');
-            $rank = DB::table('totals')
-                ->select('user_id', DB::raw('DENSE_RANK() OVER (ORDER BY SUM(reward) DESC) rank'));
-
-
             $summary = DB::table('users')
-                ->whereNotNull('referrer_id')->distinct('referrer_id')
                 ->select(
-                    'name',
-                    'country',
-                    DB::raw('COUNT(referrer_id) as totalReferrals'),
-                    'codesGenerated.totalCodesGenerated as totalCodesGenerated',
-                    'topBonus.topReferralBonus as topReferralBonus',
-                    'amountEarned.amountEarned as amountEarned',
-                    'rank.rank as rank',
+                    'users.name',
+                    'users.country',
+                    DB::raw('COUNT(users.id) as totalReferrals'),
+                    DB::raw('COUNT(referral_codes.id) as totalCodesGenerated'),
+                    DB::raw('SUM(totals.reward) as topReferralBonus'),
+                    DB::raw('SUM(totals.reward) as amountEarned'),
+                    DB::raw('@rownum := @rownum + 1 AS rank')
                 )
-                ->joinSub($totalCodesGenerated, 'codesGenerated', function ($join) {
-                    $join->on('users.referrer_id', '=', 'codesGenerated.user_id');
-                })
-                ->joinSub($topReferralBonus, 'topBonus', function ($join) {
-                })
-                ->joinSub($amountEarned, 'amountEarned', function ($join) {
-                    $join->on('users.referrer_id', '=', 'amountEarned.user_id');
-                })
-                ->joinSub($rank, 'rank', function ($join) {
-                    $join->on('users.referrer_id', '=', 'rank.user_id');
-                })
-                ->groupBy(
-                    'users.name', 'users.country', 'codesGenerated.totalCodesGenerated',
-                    'topBonus.topReferralBonus',
-                    'amountEarned.amountEarned',
-                    'rank.rank'
-                )
+                ->join('referral_codes', 'users.referrer_id', '=', 'referral_codes.user_id')
+                ->join('totals', 'users.referrer_id', '=', 'referral_codes.user_id')
+                ->whereNotNull('referrer_id')->distinct('referrer_id')
+                ->orderBy('rank', 'asc')
+                ->groupBy('users.id')
+                ->orderBy('totalCodesGenerated', 'desc')
+                ->orderBy('totalReferrals', 'desc')
+                ->orderBy('topReferralBonus', 'desc')
                 ->orderBy('amountEarned', 'desc')
                 ->paginate(request()->get('limit', config('settings.pagination_limit')));
 
