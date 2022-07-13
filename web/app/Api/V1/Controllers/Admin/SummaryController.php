@@ -3,8 +3,10 @@
 namespace App\Api\V1\Controllers\Admin;
 
 use App\Api\V1\Controllers\Controller;
+use App\Models\ReferralCode;
+use App\Models\Total;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Throwable;
 
 /**
@@ -108,26 +110,54 @@ class SummaryController extends Controller
     public function listing(Request $request): mixed
     {
         try {
-            $summary = DB::table('users')
-                ->select(
-                    'users.name',
-                    'users.country',
-                    DB::raw('COUNT(users.id) as totalReferrals'),
-                    DB::raw('COUNT(referral_codes.id) as totalCodesGenerated'),
-                    DB::raw('SUM(totals.reward) as topReferralBonus'),
-                    DB::raw('SUM(totals.reward) as amountEarned'),
-                    DB::raw('@rownum := @rownum + 1 AS rank')
-                )
-                ->join('referral_codes', 'users.referrer_id', '=', 'referral_codes.user_id')
-                ->join('totals', 'users.referrer_id', '=', 'referral_codes.user_id')
-                ->whereNotNull('referrer_id')->distinct('referrer_id')
-                ->orderBy('rank', 'asc')
-                ->groupBy('users.id')
-                ->orderBy('totalCodesGenerated', 'desc')
-                ->orderBy('totalReferrals', 'desc')
-                ->orderBy('topReferralBonus', 'desc')
-                ->orderBy('amountEarned', 'desc')
-                ->paginate(request()->get('limit', config('settings.pagination_limit')));
+
+            $referrers = User::whereNotNull('referrer_id')->distinct('referrer_id')->select('referrer_id')->get();
+
+            $retVal = $referrers->map(function ($referrer) {
+                return [
+                    'totalReferrals' => User::query()->where('referrer_id', $referrer->referrer_id)->count(),
+                    'totalCodesGenerated' => ReferralCode::query()->where('user_id', $referrer->referrer_id)->count(),
+                    'amountEarned' => Total::query()->where('user_id', $referrer->referrer_id)->sum('reward'),
+                    'topReferralBonus' => Total::query()->where('user_id', $referrer->referrer_id)->sum('reward'),
+                    'rank' => 0,
+                ];
+            });
+
+            $summary = collect($retVal)->sortByDesc('amountEarned')
+                ->values()->map(function ($item, $key) {
+                    return [
+                        'totalReferrals' => $item['totalReferrals'],
+                        'totalCodesGenerated' => $item['totalCodesGenerated'],
+                        'amountEarned' => $item['amountEarned'],
+                        'topReferralBonus' => $item['topReferralBonus'],
+                        'rank' => $key + 1,
+                    ];
+                });
+
+
+//            $summary = collect($summary)->paginate(request()->get('limit', config('settings.pagination_limit')));
+
+
+//            $summary = DB::table('users')
+//                ->select(
+//                    'users.name',
+//                    'users.country',
+//                    DB::raw('COUNT(users.id) as totalReferrals'),
+//                    DB::raw('COUNT(referral_codes.id) as totalCodesGenerated'),
+//                    DB::raw('SUM(totals.reward) as topReferralBonus'),
+//                    DB::raw('SUM(totals.reward) as amountEarned'),
+//                    DB::raw('@rownum := @rownum + 1 AS rank')
+//                )
+//                ->join('referral_codes', 'users.referrer_id', '=', 'referral_codes.user_id')
+//                ->join('totals', 'users.referrer_id', '=', 'referral_codes.user_id')
+//                ->whereNotNull('referrer_id')->distinct('referrer_id')
+//                ->orderBy('rank', 'asc')
+//                ->groupBy('users.id')
+//                ->orderBy('totalCodesGenerated', 'desc')
+//                ->orderBy('totalReferrals', 'desc')
+//                ->orderBy('topReferralBonus', 'desc')
+//                ->orderBy('amountEarned', 'desc')
+//                ->paginate(request()->get('limit', config('settings.pagination_limit')));
 
 
             return response()->jsonApi([

@@ -23,6 +23,8 @@ class SummaryControllerTest extends TestCase
             ->response
             ->getContent();
 
+//        dd($summary->response->getContent());
+
 
     }
 }

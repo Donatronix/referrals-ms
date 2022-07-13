@@ -11,6 +11,7 @@
         "ext-openssl": "*",
         "kreait/laravel-firebase": "~2",
         "laravel/lumen-framework": "~8",
+        "spatie/laravel-collection-macros": "^7.11",
         "stevebauman/location": "^6.3",
         "sumra/sdk": "*"
     },
