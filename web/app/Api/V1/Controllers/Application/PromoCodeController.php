@@ -172,7 +172,7 @@ class PromoCodeController extends Controller
             return response()->jsonApi([
                 'type' => 'success',
                 'title' => "Get promo code info",
-                'message' => 'Get promo code info',
+                'message' => 'Promo code validated',
                 'data' => $code,
             ], 200);
         } catch (Throwable $e) {
