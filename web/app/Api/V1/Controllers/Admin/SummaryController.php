@@ -114,11 +114,14 @@ class SummaryController extends Controller
             $referrers = User::whereNotNull('referrer_id')->distinct('referrer_id')->select('referrer_id')->get();
 
             $retVal = $referrers->map(function ($referrer) {
+                $user = User::query()->where('id', $referrer->referrer_id)->first();
                 return [
+                    'name' => $user->name,
+                    'country' => $user->country,
                     'totalReferrals' => User::query()->where('referrer_id', $referrer->referrer_id)->count(),
                     'totalCodesGenerated' => ReferralCode::query()->where('user_id', $referrer->referrer_id)->count(),
                     'amountEarned' => Total::query()->where('user_id', $referrer->referrer_id)->sum('reward'),
-                    'topReferralBonus' => Total::query()->where('user_id', $referrer->referrer_id)->sum('reward'),
+                    'topReferralBonus' => Total::query()->max('reward'),
                     'rank' => 0,
                 ];
             });
@@ -126,6 +129,8 @@ class SummaryController extends Controller
             $summary = collect($retVal)->sortByDesc('amountEarned')
                 ->values()->map(function ($item, $key) {
                     return [
+                        'name' => $item['name'],
+                        'country' => $item['country'],
                         'totalReferrals' => $item['totalReferrals'],
                         'totalCodesGenerated' => $item['totalCodesGenerated'],
                         'amountEarned' => $item['amountEarned'],
@@ -135,29 +140,7 @@ class SummaryController extends Controller
                 });
 
 
-//            $summary = collect($summary)->paginate(request()->get('limit', config('settings.pagination_limit')));
-
-
-//            $summary = DB::table('users')
-//                ->select(
-//                    'users.name',
-//                    'users.country',
-//                    DB::raw('COUNT(users.id) as totalReferrals'),
-//                    DB::raw('COUNT(referral_codes.id) as totalCodesGenerated'),
-//                    DB::raw('SUM(totals.reward) as topReferralBonus'),
-//                    DB::raw('SUM(totals.reward) as amountEarned'),
-//                    DB::raw('@rownum := @rownum + 1 AS rank')
-//                )
-//                ->join('referral_codes', 'users.referrer_id', '=', 'referral_codes.user_id')
-//                ->join('totals', 'users.referrer_id', '=', 'referral_codes.user_id')
-//                ->whereNotNull('referrer_id')->distinct('referrer_id')
-//                ->orderBy('rank', 'asc')
-//                ->groupBy('users.id')
-//                ->orderBy('totalCodesGenerated', 'desc')
-//                ->orderBy('totalReferrals', 'desc')
-//                ->orderBy('topReferralBonus', 'desc')
-//                ->orderBy('amountEarned', 'desc')
-//                ->paginate(request()->get('limit', config('settings.pagination_limit')));
+            $summary = collect($summary)->paginate(request()->get('limit', config('settings.pagination_limit')));
 
 
             return response()->jsonApi([

@@ -95,23 +95,45 @@ class SummaryController extends Controller
 
             $referrerId = Auth()->user()->getAuthIdentifier();
 
-            $totalReferrals = User::where('referrer_id', $referrerId)->count();
-            $totalCodesGenerated = ReferralCode::where('user_id', $referrerId)->count();
-            $topReferralBonus = $this->getTopReferralBonus();
-            $amountEarned = Total::where('user_id', $referrerId)->sum('reward');
-            $rank = (int)User::find($referrerId)?->rank;
+            $referrers = User::whereNotNull('referrer_id')->distinct('referrer_id')->select('referrer_id')->get();
+
+            $retVal = $referrers->map(function ($referrer) {
+                $user = User::query()->where('id', $referrer->referrer_id)->first();
+                return [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'country' => $user->country,
+                    'totalReferrals' => User::query()->where('referrer_id', $referrer->referrer_id)->count(),
+                    'totalCodesGenerated' => ReferralCode::query()->where('user_id', $referrer->referrer_id)->count(),
+                    'amountEarned' => Total::query()->where('user_id', $referrer->referrer_id)->sum('reward'),
+                    'topReferralBonus' => Total::query()->max('reward'),
+                    'rank' => 0,
+                ];
+            });
+
+            $summary = collect($retVal)->sortByDesc('amountEarned')
+                ->values()
+                ->map(function ($item, $key) {
+                    return [
+                        'id' => $item['id'],
+                        'name' => $item['name'],
+                        'country' => $item['country'],
+                        'totalReferrals' => $item['totalReferrals'],
+                        'totalCodesGenerated' => $item['totalCodesGenerated'],
+                        'amountEarned' => $item['amountEarned'],
+                        'topReferralBonus' => $item['topReferralBonus'],
+                        'rank' => $key + 1,
+                    ];
+                })->filter(function ($item) use ($referrerId) {
+                    return $item['id'] == $referrerId;
+                });
+
 
             return response()->jsonApi([
                 'type' => 'success',
                 'title' => "List referral and codes summary",
                 'message' => 'Referral and codes summary successfully received',
-                'data' => [
-                    'totalReferrals' => $totalReferrals,
-                    'totalCodesGenerated' => $totalCodesGenerated,
-                    'topReferralBonus' => $topReferralBonus,
-                    'amountEarned' => $amountEarned,
-                    'rank' => $rank,
-                ],
+                'data' => $summary,
             ], 200);
         } catch (Throwable $e) {
             return response()->jsonApi([
