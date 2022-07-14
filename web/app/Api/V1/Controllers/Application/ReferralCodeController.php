@@ -8,6 +8,7 @@ use App\Services\ReferralCodeService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 /**
@@ -159,15 +160,20 @@ class ReferralCodeController extends Controller
      * @param Request $request
      *
      * @return mixed
-     * @throws ValidationException
+     * @throws ValidationException|Exception
      */
-    public function store(Request $request)
+    public function store(Request $request): mixed
     {
         // Validate input data
-        $this->validate(
-            $request,
+        $validator = Validator::make($request->all(), [
             array_merge(['application_id' => 'required|string|max:36'], ReferralCode::$rules)
-        );
+        ]);
+
+        if ($validator->fails()) {
+            throw new Exception($validator->errors()->first());
+        }
+
+        $validated = $validator->validate();
 
         // Check amount generated codes for current user
         $codesTotal = ReferralCode::byOwner()->byApplication()->get()->count();

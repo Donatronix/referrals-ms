@@ -41,6 +41,6 @@ class ApplicationPromoCodeTest extends TestCase
             ->seeStatusCode(200)
             ->seeJson(['type' => 'success']);
 
-        dd($response->response->getContent());
+//        dd($response->response->getContent());
     }
 }
