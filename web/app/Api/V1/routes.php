@@ -128,7 +128,7 @@ $router->group([
         $router->get('transactions', 'TransactionsController@index');
         $router->get('transactions/{id}', 'TransactionsController@show');
         $router->post('transactions', 'TransactionsController@store');
-        $router->patch('transactions/{id}', 'TransactionsController@update');
+        $router->put('transactions/{id}', 'TransactionsController@update');
         $router->delete('transactions/{id}', 'TransactionsController@destroy');
 
         /**

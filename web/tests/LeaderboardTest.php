@@ -1,17 +1,24 @@
 <?php
 
-use Laravel\Lumen\Testing\DatabaseMigrations;
-use Laravel\Lumen\Testing\DatabaseTransactions;
+namespace Tests;
+
+use Laravel\Lumen\Testing\WithoutMiddleware;
 
 class LeaderboardTest extends TestCase
 {
+    use WithoutMiddleware;
+
     /**
      * A basic test example.
      *
      * @return void
      */
-    public function testExample()
+    public function testLeaderboard(): void
     {
-        $this->assertTrue(true);
+        $this->get('v1/subscribers/leaderboard', [
+            'user-id' => '20000000-2000-2000-2000-000000000002',
+        ])
+            ->seeStatusCode(200)
+            ->seeJson(['success' => true]);
     }
 }

@@ -8,8 +8,7 @@ use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Throwable;
 
@@ -380,30 +379,40 @@ class TransactionsController extends Controller
     public function store(Request $request): Transaction|JsonResponse
     {
         try {
-            DB::transaction(function () use ($request) { // TODO fix date format (for birthday)
-                $rules = [
-                    'user_id' => 'required',
-                    'user_plan' => 'required|string',
-                    'reward' => 'required|numeric',
-                    'currency' => 'required|string',
-                    'operation_name' => 'required|string',
-                ];
+            $rules = [
+                'user_id' => 'required',
+                'user_plan' => 'required|string',
+                'reward' => 'required|numeric',
+                'currency' => 'required|string',
+                'operation_name' => 'required|string',
+            ];
 
-                $validated = $this->validate($request, $rules);
+            $validated = $this->validate($request, $rules);
 
-                $transaction = Transaction::query()->create($validated);
+            $transaction = Transaction::query()->create($validated);
 
-            });
+            return response()->jsonApi([
+                'type' => 'success',
+                'title' => "Transaction",
+                "message" => "Transaction added successfully!",
+                'data' => $transaction,
+
+            ], 200);
         } catch (Throwable $th) {
-            return response()->jsonApi(['message' => $th->getMessage()], 400);
+            return response()->jsonApi([
+                'type' => 'danger',
+                'title' => "Transaction not added",
+                'message' => $th->getMessage(),
+                'data' => null,
+            ], 400);
         }
-        return response()->jsonApi(["message" => "Transaction added successfully!"], 200);
+
     }
 
     /**
      * Update the specified resource in storage
      *
-     * @OA\Patch(
+     * @OA\Put(
      *     path="/admin/transactions/{id}",
      *     summary="update user",
      *     description="update user",
@@ -527,42 +536,48 @@ class TransactionsController extends Controller
      * )
      *
      * @param Request $request
-     * @param mixed   $id
+     * @param $id
      *
-     * @return Response
+     * @return mixed
      * @throws ValidationException
      */
-    public function update(Request $request, mixed $id): Response
+    public function update(Request $request, $id): mixed
     {
         try {
-            $transaction = null;
-            DB::transaction(function () use ($request, $id, &$transaction) {
 
-                $validated = $this->validate($request, [
-                    'user_id' => 'required',
-                    'user_plan' => 'required|string',
-                    'reward' => 'required|numeric',
-                    'currency' => 'required|string',
-                    'operation_name' => 'required|string',
-                ]);
+            $validator = Validator::make($request->all(), [
+                'user_id' => 'required',
+                'user_plan' => 'required|string',
+                'reward' => 'required|numeric',
+                'currency' => 'required|string',
+                'operation_name' => 'required|string',
+            ]);
 
-                $transaction = Transaction::query()->findOrFail($id);
+            if ($validator->fails()) {
+                throw new Exception($validator->errors()->first());
+            }
 
+            $validated = $validator->validated();
 
-                if (empty($validated)) {
-                    throw new Exception("No data to update");
-                }
+            $transaction = Transaction::findOrFail($id);
 
-                $transaction->update($validated);
+            $transaction->update($validated);
 
-            });
+            return response()->jsonApi([
+                'type' => 'success',
+                'title' => "Transaction",
+                "message" => "Updated successfully",
+                "data" => $transaction->toArray(),
+            ], 200);
+
         } catch (Throwable $th) {
-            return response()->jsonApi(["message" => $th->getMessage()], 200);
+            return response()->jsonApi([
+                'type' => 'danger',
+                'title' => "Transaction failed",
+                'message' => $th->getMessage(),
+                'data' => null,
+            ], 400);
         }
-        return response()->jsonApi([
-            "message" => "Updated successfully",
-            "data" => $transaction,
-        ], 200);
     }
 
     /**
@@ -641,10 +656,9 @@ class TransactionsController extends Controller
     public function destroy(mixed $id): mixed
     {
         try {
-            DB::transaction(function () use ($id) {
-                $transaction = Transaction::query()->findOrFail($id);
-                $transaction->delete();
-            });
+            $transaction = Transaction::findOrFail($id);
+            $transaction->delete();
+
         } catch (ModelNotFoundException $e) {
             return response()->jsonApi([
                 'type' => 'danger',
