@@ -11,6 +11,7 @@
         "ext-openssl": "*",
         "kreait/laravel-firebase": "~2",
         "laravel/lumen-framework": "~8",
+        "spatie/laravel-collection-macros": "^7.11",
         "stevebauman/location": "^6.3",
         "sumra/sdk": "*"
     },
@@ -43,6 +44,9 @@
     "scripts": {
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ],
+        "test": [
+            "vendor/bin/phpunit"
         ]
     },
     "config": {

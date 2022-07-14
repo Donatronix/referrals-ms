@@ -3,8 +3,10 @@
 namespace App\Api\V1\Controllers\Admin;
 
 use App\Api\V1\Controllers\Controller;
+use App\Models\ReferralCode;
+use App\Models\Total;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Throwable;
 
 /**
@@ -108,51 +110,37 @@ class SummaryController extends Controller
     public function listing(Request $request): mixed
     {
         try {
-            $totalCodesGenerated = DB::table('referral_codes')
-                ->select('user_id', DB::raw('COUNT(*) as totalCodesGenerated'))
-                ->groupBy('user_id');
-            $topReferralBonus = DB::table('totals')
-                ->select('user_id', DB::raw('SUM(reward) as topReferralBonus'))
-                ->groupBy('user_id')
-                ->orderBy('topReferralBonus', 'desc')
-                ->limit(1);
-            $amountEarned = DB::table('totals')
-                ->select('user_id', DB::raw('SUM(reward) as amountEarned'))
-                ->groupBy('user_id');
-            $rank = DB::table('totals')
-                ->select('user_id', DB::raw('DENSE_RANK() OVER (ORDER BY SUM(reward) DESC) rank'));
+
+            $referrers = User::whereNotNull('referrer_id')->distinct('referrer_id')->select('referrer_id')->get();
+
+            $retVal = $referrers->map(function ($referrer) {
+                $user = User::query()->where('id', $referrer->referrer_id)->first();
+                return [
+                    'name' => $user->name,
+                    'country' => $user->country,
+                    'totalReferrals' => User::query()->where('referrer_id', $referrer->referrer_id)->count(),
+                    'totalCodesGenerated' => ReferralCode::query()->where('user_id', $referrer->referrer_id)->count(),
+                    'amountEarned' => Total::query()->where('user_id', $referrer->referrer_id)->sum('reward'),
+                    'topReferralBonus' => Total::query()->max('reward'),
+                    'rank' => 0,
+                ];
+            });
+
+            $summary = collect($retVal)->sortByDesc('amountEarned')
+                ->values()->map(function ($item, $key) {
+                    return [
+                        'name' => $item['name'],
+                        'country' => $item['country'],
+                        'totalReferrals' => $item['totalReferrals'],
+                        'totalCodesGenerated' => $item['totalCodesGenerated'],
+                        'amountEarned' => $item['amountEarned'],
+                        'topReferralBonus' => $item['topReferralBonus'],
+                        'rank' => $key + 1,
+                    ];
+                });
 
 
-            $summary = DB::table('users')
-                ->whereNotNull('referrer_id')->distinct('referrer_id')
-                ->select(
-                    'name',
-                    'country',
-                    DB::raw('COUNT(referrer_id) as totalReferrals'),
-                    'codesGenerated.totalCodesGenerated as totalCodesGenerated',
-                    'topBonus.topReferralBonus as topReferralBonus',
-                    'amountEarned.amountEarned as amountEarned',
-                    'rank.rank as rank',
-                )
-                ->joinSub($totalCodesGenerated, 'codesGenerated', function ($join) {
-                    $join->on('users.referrer_id', '=', 'codesGenerated.user_id');
-                })
-                ->joinSub($topReferralBonus, 'topBonus', function ($join) {
-                })
-                ->joinSub($amountEarned, 'amountEarned', function ($join) {
-                    $join->on('users.referrer_id', '=', 'amountEarned.user_id');
-                })
-                ->joinSub($rank, 'rank', function ($join) {
-                    $join->on('users.referrer_id', '=', 'rank.user_id');
-                })
-                ->groupBy(
-                    'users.name', 'users.country', 'codesGenerated.totalCodesGenerated',
-                    'topBonus.topReferralBonus',
-                    'amountEarned.amountEarned',
-                    'rank.rank'
-                )
-                ->orderBy('amountEarned', 'desc')
-                ->paginate(request()->get('limit', config('settings.pagination_limit')));
+            $summary = collect($summary)->paginate(request()->get('limit', config('settings.pagination_limit')));
 
 
             return response()->jsonApi([

@@ -1,5 +1,13 @@
 <?php
 
+use Sumra\SDK\JsonApiServiceProvider;
+use Sumra\SDK\Middleware\CheckAdminMiddleware;
+use Sumra\SDK\Middleware\CheckMSMiddleware;
+use Sumra\SDK\Middleware\CheckUserMiddleware;
+use Sumra\SDK\Middleware\TrimStrings;
+use Sumra\SDK\PubSubServiceProvider;
+use SwaggerLume\ServiceProvider;
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 (new Laravel\Lumen\Bootstrap\LoadEnvironmentVariables(
@@ -75,14 +83,14 @@ $app->configure('settings');
 */
 
 $app->middleware([
-    \Sumra\SDK\Middleware\TrimStrings::class,
+    TrimStrings::class,
 ]);
 
 $app->routeMiddleware([
     //'auth' => App\Http\Middleware\Authenticate::class,
-    'checkUser' => \Sumra\SDK\Middleware\CheckUserMiddleware::class,
-    'checkAdmin' => \Sumra\SDK\Middleware\CheckAdminMiddleware::class,
-    'checkMS' => \Sumra\SDK\Middleware\CheckMSMiddleware::class,
+    'checkUser' => CheckUserMiddleware::class,
+    'checkAdmin' => CheckAdminMiddleware::class,
+    'checkMS' => CheckMSMiddleware::class,
 ]);
 
 /*
@@ -100,6 +108,7 @@ $app->register(App\Providers\AppServiceProvider::class);
 $app->register(App\Providers\AuthServiceProvider::class);
 $app->register(App\Providers\EventServiceProvider::class);
 $app->register(Stevebauman\Location\LocationServiceProvider::class);
+$app->register(Spatie\CollectionMacros\CollectionMacroServiceProvider::class);
 
 /**
  * Pubsub - RabbitMQ
@@ -107,18 +116,18 @@ $app->register(Stevebauman\Location\LocationServiceProvider::class);
 $app->configure('queues');
 $app->register(VladimirYuldashev\LaravelQueueRabbitMQ\LaravelQueueRabbitMQServiceProvider::class);
 class_alias(\Illuminate\Support\Facades\App::class, 'App');
-$app->register(\Sumra\SDK\PubSubServiceProvider::class);
+$app->register(PubSubServiceProvider::class);
 
 /**
  * Json API
  */
-$app->register(\Sumra\SDK\JsonApiServiceProvider::class);
+$app->register(JsonApiServiceProvider::class);
 
 /**
  * Swagger
  */
 $app->configure('swagger-lume');
-$app->register(\SwaggerLume\ServiceProvider::class);
+$app->register(ServiceProvider::class);
 
 /**
  * Artisan Commands Lumen Generator
