@@ -22,7 +22,7 @@ class ReferralController extends Controller
      *     path="/webhooks/total-earnings",
      *     summary="Get total earnings",
      *     description="Get total earnings",
-     *     tags={"Referrals"},
+     *     tags={"Webhooks"},
      *
      *     security={{
      *         "default": {

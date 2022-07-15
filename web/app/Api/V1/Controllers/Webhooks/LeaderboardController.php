@@ -20,7 +20,7 @@ class LeaderboardController extends Controller
      * @OA\Get(
      *     path="/webhooks/leaderboard/overview-earnings/{id}",
      *     description="A list of leaders in the invitation referrals",
-     *     tags={"Platform earnings"},
+     *     tags={"Webhooks"},
      *
      *     security={{
      *         "default" :{
