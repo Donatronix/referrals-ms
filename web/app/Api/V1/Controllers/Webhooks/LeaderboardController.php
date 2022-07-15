@@ -160,7 +160,6 @@ class LeaderboardController extends Controller
         return User::whereCountry($country)->get();
     }
 
-
     /**
      * @param $user_id
      *
@@ -188,7 +187,6 @@ class LeaderboardController extends Controller
             return $item->application_id;
         })->toArray();
     }
-
 
     /**
      * @param $referrer_id

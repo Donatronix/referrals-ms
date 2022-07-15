@@ -24,7 +24,7 @@ class ReferralCodeFactory extends Factory
             'link' => 'http://' . $this->faker->lexify('????????'),
             //  'link' => Firebase::linkGenerate($user->referral_code, $app->application_id),
             'is_default' => $this->faker->boolean(),
-            'note' => $this->faker->text(255),
+            'note' => $this->faker->text(150),
             'application_id' => str_replace('-', '.', $this->faker->slug(3, false)),
         ];
     }

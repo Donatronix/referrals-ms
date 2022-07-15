@@ -32,7 +32,7 @@ class CreateReferralCodesTable extends Migration
                 ->default(false)
                 ->comment('Default link');
 
-            $table->string('note')
+            $table->string('note', 250)
                 ->nullable()
                 ->comment('The user can mark what he created the link for');
 

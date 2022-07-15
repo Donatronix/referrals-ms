@@ -55,7 +55,7 @@ class TemplateController extends Controller
      *         description="List of all templates"
      *     ),
      *     @OA\Response(
-     *         response=401,
+     *         response="401",
      *         description="Unauthorized"
      *     ),
      * )
@@ -131,7 +131,7 @@ class TemplateController extends Controller
      *         description="Save successfull"
      *     ),
      *     @OA\Response(
-     *         response=401,
+     *         response="401",
      *         description="Unauthorized"
      *     ),
      * )

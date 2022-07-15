@@ -69,7 +69,7 @@ class ReferralController extends Controller
      *         description="Success getting list of referrals"
      *     ),
      *     @OA\Response(
-     *         response=401,
+     *         response="401",
      *         description="Unauthorized"
      *     ),
      *     @OA\Response(
@@ -157,7 +157,7 @@ class ReferralController extends Controller
      *         description="Success get or generate referrer invite code"
      *     ),
      *     @OA\Response(
-     *         response=401,
+     *         response="401",
      *         description="Unauthorized"
      *     ),
      *     @OA\Response(
