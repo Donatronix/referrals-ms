@@ -4,7 +4,6 @@ namespace App\Api\V1\Controllers\Application;
 
 use App\Api\V1\Controllers\Controller;
 use App\Models\ReferralCode;
-use App\Models\Total;
 use App\Models\User;
 use App\Services\ReferralCodeService;
 use App\Services\ReferralService;
@@ -15,7 +14,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use PubSub;
-use Sumra\SDK\JsonApiResponse;
 
 /**
  * Class ReferralController
@@ -182,38 +180,50 @@ class ReferralController extends Controller
      *
      * @param Request $request
      *
-     * @return JsonApiResponse
+     * @return mixed
      * @throws ValidationException
      */
-    public function create(Request $request): JsonApiResponse
+    public function store(Request $request): mixed
     {
-        // Validate input data
-        $this->validate($request, [
-            'application_id' => [
-                'required',
-                'string',
-                'min:10',
-                'regex:/[a-z0-9.]/',
-            ],
-            'referral_code' => 'string|nullable|max:8|min:8',
-        ]);
-
-        // Find Referrer ID by its referral code and application ID
-        $parent_user_id = null;
-        if ($request->has('referral_code')) {
-            $parent_user_id = ReferralCode::query()->select('user_id')
-                ->byReferralCode()
-                ->byApplication()
-                ->pluck('user_id')
-                ->first();
-        }
 
         // We are trying to register a new user to the referral program
         try {
+
+            $validator = Validator::make($request->all(), [
+                'application_id' => 'required|string|max:50',
+                'referral_code' => 'required|string|min:8|max:8',
+            ]);
+
+            if ($validator->fails()) {
+                throw new Exception($validator->errors());
+            }
+
+
+            // Validate input data
+//            $this->validate($request, [
+//                'application_id' => [
+//                    'required',
+//                    'string',
+//                    'min:10',
+//                    'regex:/[a-z0-9.]/',
+//                ],
+//                'referral_code' => 'string|nullable|max:8|min:8',
+//            ]);
+
+            // Find Referrer ID by its referral code and application ID
+            $parent_user_id = null;
+            if ($request->has('referral_code')) {
+                $parent_user_id = ReferralCode::query()->select('user_id')
+                    ->byReferralCode()
+                    ->byApplication()
+                    ->pluck('user_id')
+                    ->first();
+            }
+
             // Register new inviting user in the referral program
             $newUser = ReferralService::getUser(Auth::user()->getAuthIdentifier());
 
-            // Adding an inviter to a new user
+//            // Adding an inviter to a new user
             ReferralService::setInviter($newUser, $parent_user_id);
 
             // Try to create new referral code with link
@@ -237,90 +247,5 @@ class ReferralController extends Controller
             ], 404);
         }
     }
-
-    /**
-     * Get the total earnings
-     *
-     * @OA\Get(
-     *     path="/wallets/total-earnings",
-     *     summary="Get total earnings",
-     *     description="Get total earnings",
-     *     tags={"Referrals"},
-     *
-     *     security={{
-     *         "default": {
-     *             "ManagerRead",
-     *             "Reward",
-     *             "ManagerWrite"
-     *         }
-     *     }},
-     *
-     *     @OA\Parameter(
-     *         name="user_id",
-     *         in="query",
-     *         description="User Id",
-     *         @OA\Schema(
-     *             type="string"
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response="200",
-     *         description="Total reward successfully retrieved"
-     *     ),
-     *     @OA\Response(
-     *         response="401",
-     *         description="Unauthorized"
-     *     ),
-     *     @OA\Response(
-     *         response="400",
-     *         description="Invalid request"
-     *     ),
-     *     @OA\Response(
-     *         response="404",
-     *         description="Not Found"
-     *     )
-     * )
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse
-     */
-    public function getWalletTotal(Request $request): JsonResponse
-    {
-        try {
-            $validator = Validator::make($request->all, [
-                'user_id' => 'required|string|exists:referral_codes,user_id',
-            ]);
-
-            if ($validator->fails()) {
-                return response()->jsonApi([
-                    'type' => 'danger',
-                    'title' => 'Total earnings',
-                    'message' => "Error retrieving total earnings: " . $validator->getMessageBag(),
-                    'data' => null,
-                ], 404);
-            }
-
-            $user_id = $validator->validated()['user_id'];
-            $total = Total::where('user_id', $request->input('user_id'))->get()->sum('reward');
-
-
-            // Return response
-            return response()->jsonApi([
-                'type' => 'success',
-                'title' => "Total Reward",
-                'message' => 'Total reward successfully retrieved',
-                'data' => $total,
-            ], 200);
-        } catch (Exception $e) {
-            return response()->jsonApi([
-                'type' => 'danger',
-                'title' => 'Total reward',
-                'message' => "Error retrieving total reward: " . $e->getMessage(),
-                'data' => null,
-            ], 404);
-        }
-    }
-
 
 }
