@@ -51,7 +51,7 @@ $router->group([
             'prefix' => 'referrals',
         ], function ($router) {
             $router->get('/', 'ReferralController@index');
-            $router->post('/', 'ReferralController@create');
+            $router->post('/', 'ReferralController@store');
 
             /**
              * Leaderboard
@@ -152,6 +152,6 @@ $router->group([
          * Referrals total earnings
          */
         $router->get('total-earnings', 'ReferralController@getReferralTotals');
-        $router->get('leaderboard/overview-earnings/{referrerId}', 'ReferralController@getPlatformEarnings');
+        $router->get('leaderboard/overview-earnings/{id}', 'LeaderboardController@getPlatformEarnings');
     });
 });
