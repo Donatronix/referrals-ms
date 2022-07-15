@@ -21,7 +21,7 @@ class LeaderboardController extends Controller
      *  A list of leaders in the invitation referrals
      *
      * @OA\Get(
-     *     path="/leaderboard",
+     *     path="/webhooks/leaderboard",
      *     description="A list of leaders in the invitation referrals",
      *     tags={"Application Leaderboard"},
      *
@@ -405,7 +405,6 @@ class LeaderboardController extends Controller
         return User::whereCountry($country)->get();
     }
 
-
     /**
      * @param $user_id
      *
@@ -433,7 +432,6 @@ class LeaderboardController extends Controller
             return $item->application_id;
         })->toArray();
     }
-
 
     /**
      * @param $referrer_id

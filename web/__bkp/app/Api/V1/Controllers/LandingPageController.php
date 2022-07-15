@@ -37,7 +37,7 @@ class LandingPageController extends Controller
      *         description="List of all landing pages"
      *     ),
      *     @OA\Response(
-     *         response=401,
+     *         response="401",
      *         description="Unauthorized"
      *     ),
      * )
@@ -111,7 +111,7 @@ class LandingPageController extends Controller
      *         description="Save successfull"
      *     ),
      *     @OA\Response(
-     *         response=401,
+     *         response="401",
      *         description="Unauthorized"
      *     ),
      * )
