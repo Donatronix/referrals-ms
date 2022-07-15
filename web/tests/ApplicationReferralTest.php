@@ -87,10 +87,10 @@ class ApplicationReferralTest extends TestCase
         $response = $this->get('v1/webhooks/leaderboard/overview-earnings/20000000-2000-2000-2000-000000000002',
             [
                 'user-id' => '20000000-2000-2000-2000-000000000002',
-            ]);
-//            ->seeStatusCode(200)
-//            ->seeJson(['type' => 'success']);
+            ])
+            ->seeStatusCode(200)
+            ->seeJson(['type' => 'success']);
 
-        dd($response->response->getContent());
+//        dd($response->response->getContent());
     }
 }

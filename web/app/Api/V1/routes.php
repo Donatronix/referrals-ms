@@ -144,7 +144,6 @@ $router->group([
      */
     $router->group([
         'prefix' => 'webhooks',
-//        'middleware' => 'checkMS',
         'namespace' => 'Webhooks',
         'middleware' => 'checkMS',
     ], function ($router) {

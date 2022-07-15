@@ -92,37 +92,36 @@ class LeaderboardController extends Controller
     public function getPlatformEarnings($id): mixed
     {
         try {
+            $query = User::query()->where('referrer_id', $id);
+            $userTotalInvitees = $query->count();
+            $invitees = $query->select('id')
+                ->get(['id'])
+                ->pluck('id')
+                ->toArray();
 
-            //get invited users
-            $invitedUsers = DB::table('application_user')
-                ->select('application_id', 'user_id', DB::raw('COUNT(user_id) as totalPlatformInvitedUsers'))
-                ->groupBy('application_id');
+            $userPlatforms = DB::table('application_user')
+                ->whereIn('user_id', $invitees)->select('application_id')
+                ->get(['application_id'])->unique('application_id');
 
-            $totalInvitees = DB::table('users')
-                ->select('referrer_id', DB::raw('COUNT(id) as totalInvitees'))
-                ->groupBy('referrer_id');
+            $overviewEarnings = [];
 
-            //get platforms
-            $query = DB::table('referral_codes')->where('user_id', $id)
-                ->select(
-                    'referral_codes.application_id as application_id',
-                    'invitedUsers.totalPlatformInvitedUsers as totalPlatformInvitedUsers',
-                    'totalInvitees.totalInvitees as totalInvitedUsers',
-                )
-                ->joinSub($totalInvitees, 'totalInvitees', function ($join) {
-                    $join->on('referral_codes.user_id', '=', 'totalInvitees.referrer_id');
-                })
-                ->joinSub($invitedUsers, 'invitedUsers', function ($join) {
-                    $join->on('referral_codes.user_id', '=', 'invitedUsers.user_id');
-                })
-                ->groupBy(
-                    'referral_codes.application_id',
-                    'invitedUsers.totalPlatformInvitedUsers',
-                    'totalInvitees.totalInvitees'
-                );
-            $overviewEarnings = $query->get();
-            $subTotalPlatformInvitedUsers = $query->sum('totalPlatformInvitedUsers');
-            $subTotalEarnings = $query->sum('totalPlatformInvitedUsers');
+            //get subtotal of number of platform users
+            $totalPlatformInvitedUsers = 0;
+
+            foreach ($userPlatforms as $platform) {
+                $platform = $platform->platform;
+                $userCount = DB::table('application_user')
+                    ->where('application_id', $platform)
+                    ->whereIn('user_id', $invitees)
+                    ->count();
+
+                $totalPlatformInvitedUsers += $userCount;
+
+                $overviewEarnings[] = [
+                    'platform' => $platform,
+                    'users_count' => $userCount,
+                ];
+            }
 
 
             return response()->jsonApi([
@@ -131,8 +130,8 @@ class LeaderboardController extends Controller
                 'message' => 'The platform earnings were successfully retrieved',
                 'data' => [
                     'overview_earnings' => $overviewEarnings,
-                    'subTotalPlatformInvitedUsers' => $subTotalPlatformInvitedUsers,
-                    'subTotalEarnings' => $subTotalEarnings,
+                    'subTotalPlatformInvitedUsers' => $totalPlatformInvitedUsers,
+                    'subTotalEarnings' => $totalPlatformInvitedUsers,
                 ],
             ], 200);
         } catch (Throwable $e) {
