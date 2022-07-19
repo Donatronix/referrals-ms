@@ -649,7 +649,7 @@ class TransactionsController extends Controller
             return response()->jsonApi([
                 'title' => "Delete failed",
                 'message' => $th->getMessage(),
-            ], 404);
+            ], $th->getCode());
         }
     }
 }
