@@ -185,30 +185,27 @@ class ReferralController extends Controller
      */
     public function store(Request $request): mixed
     {
-
         // We are trying to register a new user to the referral program
         try {
-
+            // Validate input data
             $validator = Validator::make($request->all(), [
-                'application_id' => 'required|string|max:50',
-                'referral_code' => 'required|string|min:8|max:8',
+                'application_id' => [
+                    'required',
+                    'string',
+                    'min:10',
+                    'max:50',
+                    'regex:/[a-z0-9.]/',
+                ],
+                'referral_code' => 'string|nullable|max:8|min:8',
             ]);
 
             if ($validator->fails()) {
-                throw new Exception($validator->errors());
+                return response()->jsonApi([
+                    'title' => 'Joining user to the referral program',
+                    'message' => 'Input data validation error',
+                    'data' => $validator->errors()
+                ], 422);
             }
-
-
-            // Validate input data
-//            $this->validate($request, [
-//                'application_id' => [
-//                    'required',
-//                    'string',
-//                    'min:10',
-//                    'regex:/[a-z0-9.]/',
-//                ],
-//                'referral_code' => 'string|nullable|max:8|min:8',
-//            ]);
 
             // Find Referrer ID by its referral code and application ID
             $parent_user_id = null;
