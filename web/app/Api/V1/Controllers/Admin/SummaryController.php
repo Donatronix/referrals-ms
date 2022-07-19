@@ -115,6 +115,7 @@ class SummaryController extends Controller
 
             $retVal = $referrers->map(function ($referrer) {
                 $user = User::query()->where('id', $referrer->referrer_id)->first();
+
                 return [
                     'name' => $user->name,
                     'country' => $user->country,

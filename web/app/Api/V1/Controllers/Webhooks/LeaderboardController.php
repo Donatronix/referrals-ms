@@ -152,6 +152,7 @@ class LeaderboardController extends Controller
             //TODO get user id by country and city from identity ms
             return [];
         }
+
         //TODO get user id by country from identity ms
         return User::whereCountry($country)->get();
     }
@@ -179,6 +180,7 @@ class LeaderboardController extends Controller
         })->toArray();
 
         $retVal = ReferralCode::distinct('application_id')->whereIn('user_id', $users)->get(['application_id']);
+
         return $retVal->map(function ($item) {
             return $item->application_id;
         })->toArray();

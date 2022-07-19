@@ -63,9 +63,9 @@ class SummaryController extends Controller
      *                      type="integer",
      *                      description="Amount earned by user",
      *                      example=450000,
-     *                 ),
-     *             ),
-     *         ),
+     *                 )
+     *             )
+     *         )
      *     ),
      *     @OA\Response(
      *         response="401",
@@ -92,7 +92,6 @@ class SummaryController extends Controller
     public function index(Request $request): mixed
     {
         try {
-
             $referrerId = Auth()->user()->getAuthIdentifier();
 
             $referrers = User::whereNotNull('referrer_id')->distinct('referrer_id')->select('referrer_id')->get();
@@ -147,6 +146,7 @@ class SummaryController extends Controller
     protected function getTopReferralBonus(): mixed
     {
         $users = Total::distinct('user_id')->get('user_id');
+
         $topReferralBonus = $users->map(function ($user) {
             $userId = $user->user_id;
             $total = Total::where('user_id', $userId)->sum('reward');
@@ -154,7 +154,7 @@ class SummaryController extends Controller
                 'total' => $total,
             ];
         })->sortByDesc('total')->first();
+
         return $topReferralBonus['total'];
     }
-
 }

@@ -159,7 +159,6 @@ class PromoCodeController extends Controller
     public function validatePromoCode(Request $request): mixed
     {
         try {
-
             $this->validate($request, [
                 'code' => 'required|string|exists:promo_codes,code',
             ]);

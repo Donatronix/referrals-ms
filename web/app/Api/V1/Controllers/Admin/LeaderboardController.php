@@ -276,9 +276,9 @@ class LeaderboardController extends Controller
      *                      type="string",
      *                      description="Referral code used by invitee",
      *                      example="qawdnasfkm",
-     *                 ),
-     *             ),
-     *         ),
+     *                 )
+     *             )
+     *         )
      *     ),
      *     @OA\Response(
      *          response="401",
@@ -347,6 +347,7 @@ class LeaderboardController extends Controller
             //TODO get user id by country and city from identity ms
             return [];
         }
+
         //TODO get user id by country from identity ms
         return User::whereCountry($country)->get();
     }
