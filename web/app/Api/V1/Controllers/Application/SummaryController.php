@@ -117,10 +117,10 @@ class SummaryController extends Controller
                         'id' => $item['id'],
                         'name' => $item['name'],
                         'country' => $item['country'],
-                        'totalReferrals' => $item['totalReferrals'],
-                        'totalCodesGenerated' => $item['totalCodesGenerated'],
-                        'amountEarned' => $item['amountEarned'],
-                        'topReferralBonus' => $item['topReferralBonus'],
+                        'totalReferrals' => $item['totalReferrals'] ?? 0,
+                        'totalCodesGenerated' => $item['totalCodesGenerated'] ?? 0,
+                        'amountEarned' => $item['amountEarned'] ?? 0,
+                        'topReferralBonus' => $item['topReferralBonus'] ?? 0,
                         'rank' => $key + 1,
                     ];
                 })->filter(function ($item) use ($referrerId) {
