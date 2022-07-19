@@ -203,14 +203,14 @@ class LeaderboardController extends Controller
                 'type' => 'danger',
                 'title' => "Not operation",
                 'message' => "Error showing all users",
-                'data' => null,
+
             ], 404);
         } catch (Throwable $e) {
             return response()->json([
                 'type' => 'danger',
                 'title' => "Not operation",
                 'message' => $e->getMessage(),
-                'data' => null,
+
             ], 404);
         }
     }
@@ -345,7 +345,7 @@ class LeaderboardController extends Controller
                 'type' => 'danger',
                 'title' => "Not operation",
                 'message' => $e->getMessage(),
-                'data' => null,
+
             ], 404);
         }
     }

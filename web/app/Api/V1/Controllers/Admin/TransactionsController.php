@@ -148,14 +148,14 @@ class TransactionsController extends Controller
                 'type' => 'danger',
                 'title' => "Not operation",
                 'message' => "Error showing all transactions",
-                'data' => null,
+
             ], 404);
         } catch (Throwable $e) {
             return response()->json([
                 'type' => 'danger',
                 'title' => "Update failed",
                 'message' => $e->getMessage(),
-                'data' => null,
+
             ], 404);
         }
     }
@@ -293,14 +293,14 @@ class TransactionsController extends Controller
                 'type' => 'danger',
                 'title' => "Transaction not found",
                 'message' => "Error displaying transaction",
-                'data' => null,
+
             ], 404);
         } catch (Throwable $e) {
             return response()->json([
                 'type' => 'danger',
                 'title' => "Display failed",
                 'message' => $e->getMessage(),
-                'data' => null,
+
             ], 404);
         }
     }
@@ -403,7 +403,7 @@ class TransactionsController extends Controller
                 'type' => 'danger',
                 'title' => "Transaction not added",
                 'message' => $th->getMessage(),
-                'data' => null,
+
             ], 400);
         }
 
@@ -575,7 +575,7 @@ class TransactionsController extends Controller
                 'type' => 'danger',
                 'title' => "Transaction failed",
                 'message' => $th->getMessage(),
-                'data' => null,
+
             ], 400);
         }
     }
@@ -664,14 +664,14 @@ class TransactionsController extends Controller
                 'type' => 'danger',
                 'title' => "Delete failed",
                 'message' => "Transaction does not exist",
-                'data' => null,
+
             ], 404);
         } catch (Throwable $th) {
             return response()->json([
                 'type' => 'danger',
                 'title' => "Delete failed",
                 'message' => $th->getMessage(),
-                'data' => null,
+
             ], 404);
         }
         return response()->json([

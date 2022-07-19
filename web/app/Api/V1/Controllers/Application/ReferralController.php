@@ -107,7 +107,7 @@ class ReferralController extends Controller
                 'type' => 'danger',
                 'title' => "Get referrals list",
                 'message' => $e->getMessage(),
-                'data' => null,
+
             ], 400);
         }
     }

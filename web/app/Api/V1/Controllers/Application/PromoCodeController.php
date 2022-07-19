@@ -96,7 +96,7 @@ class PromoCodeController extends Controller
                 'type' => 'danger',
                 'title' => "Get promo code",
                 'message' => "There was an error while creating a promo code: " . $th->getMessage(),
-                'data' => null,
+
             ], 404);
         }
     }
@@ -180,7 +180,7 @@ class PromoCodeController extends Controller
                 'type' => 'danger',
                 'title' => "Get promo code info",
                 'message' => $e->getMessage(),
-                'data' => null,
+
             ], 404);
         }
     }

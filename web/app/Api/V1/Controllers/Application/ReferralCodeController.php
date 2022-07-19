@@ -80,7 +80,7 @@ class ReferralCodeController extends Controller
                 'type' => 'danger',
                 'title' => "Not received list",
                 'message' => "Data #{$currentUserId} not found",
-                'data' => null,
+
             ], 404);
         }
     }
@@ -201,7 +201,7 @@ class ReferralCodeController extends Controller
                 'type' => 'danger',
                 'title' => 'Referral code generate',
                 'message' => "There was an error while creating a referral code: " . $e->getMessage(),
-                'data' => null,
+
             ], 404);
         }
     }
@@ -263,7 +263,7 @@ class ReferralCodeController extends Controller
                 'type' => 'danger',
                 'title' => "Get referral code info",
                 'message' => "Referral code #{$id} not found",
-                'data' => null,
+
             ], 404);
         }
     }
@@ -533,7 +533,7 @@ class ReferralCodeController extends Controller
                 'type' => 'danger',
                 'title' => 'Not received list',
                 'message' => "Data of referral code not found",
-                'data' => null,
+
             ], 404);
         }
     }

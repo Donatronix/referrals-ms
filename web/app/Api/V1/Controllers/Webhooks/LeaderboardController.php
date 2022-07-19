@@ -139,7 +139,7 @@ class LeaderboardController extends Controller
                 'type' => 'danger',
                 'title' => "Not operation",
                 'message' => $e->getMessage(),
-                'data' => null,
+
             ], 404);
         }
     }

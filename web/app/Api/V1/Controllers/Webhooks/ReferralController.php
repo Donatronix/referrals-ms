@@ -75,7 +75,7 @@ class ReferralController extends Controller
                 'type' => 'danger',
                 'title' => 'Total reward',
                 'message' => "Error retrieving total reward: " . $e->getMessage(),
-                'data' => null,
+
             ], 404);
         }
     }
