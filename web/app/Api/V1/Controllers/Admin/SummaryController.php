@@ -139,9 +139,7 @@ class SummaryController extends Controller
                     ];
                 });
 
-
             $summary = collect($summary)->paginate(request()->get('limit', config('settings.pagination_limit')));
-
 
             return response()->json([
                 'type' => 'success',
