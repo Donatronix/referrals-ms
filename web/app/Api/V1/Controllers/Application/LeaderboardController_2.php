@@ -212,7 +212,7 @@ class LeaderboardController_2 extends Controller
                 $object->save();
             });
 
-            return response()->jsonApi([
+            return response()->json([
                 'type' => 'success',
                 'title' => 'Retrieval success',
                 'message' => 'Leaderboard successfully generated',
@@ -224,14 +224,14 @@ class LeaderboardController_2 extends Controller
                 ],
             ], 200);
         } catch (ModelNotFoundException $e) {
-            return response()->jsonApi([
+            return response()->json([
                 'type' => 'danger',
                 'title' => "Not operation",
                 'message' => "Error showing all users",
                 'data' => null,
             ], 404);
         } catch (Throwable $e) {
-            return response()->jsonApi([
+            return response()->json([
                 'type' => 'danger',
                 'title' => "Not operation",
                 'message' => $e->getMessage(),
@@ -356,7 +356,7 @@ class LeaderboardController_2 extends Controller
                 ];
             }
 
-            return response()->jsonApi(
+            return response()->json(
                 array_merge([
                     'type' => 'success',
                     'title' => 'Retrieval success',
@@ -366,7 +366,7 @@ class LeaderboardController_2 extends Controller
                 ]),
                 200);
         } catch (Throwable $e) {
-            return response()->jsonApi([
+            return response()->json([
                 'type' => 'danger',
                 'title' => "Not operation",
                 'message' => $e->getMessage(),

@@ -103,7 +103,7 @@ class ReferralController extends Controller
                 'data' => $users->toArray(),
             ], 200);
         } catch (Exception $e) {
-            return response()->jsonApi([
+            return response()->json([
                 'type' => 'danger',
                 'title' => "Get referrals list",
                 'message' => $e->getMessage(),
@@ -233,14 +233,14 @@ class ReferralController extends Controller
             PubSub::publish('invitedReferral', $userInfo->toArray(), config('settings.pubsub_receiver.contacts_books'));
 
             // Return response
-            return response()->jsonApi([
+            return response()->json([
                 'type' => 'success',
                 'title' => "Joining user to the referral program",
                 'message' => 'User added successfully and referral code created',
                 'data' => $userInfo->toArray(),
             ], 200);
         } catch (Exception $e) {
-            return response()->jsonApi([
+            return response()->json([
                 'type' => 'danger',
                 'title' => 'Joining user to the referral program',
                 'message' => "Cannot joining user to the referral program: " . $e->getMessage(),

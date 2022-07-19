@@ -110,7 +110,7 @@ class UsersController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->jsonApi([
+            return response()->json([
                 'type' => 'danger',
                 'title' => 'Error',
                 'message' => 'Validation error',
@@ -144,7 +144,7 @@ class UsersController extends Controller
         }
 
         // Return json items list by ajax
-        return response()->jsonApi(json_decode($data->toJson()), 200);
+        return response()->json(json_decode($data->toJson()), 200);
     }
 
     /**
@@ -214,9 +214,9 @@ class UsersController extends Controller
             // Get and return user data
             $user = User::findOrFail($id)->toArray();
 
-            return response()->jsonApi($user, 200);
+            return response()->json($user, 200);
         } catch (ModelNotFoundException $e) {
-            return response()->jsonApi([
+            return response()->json([
                 'type' => 'danger',
                 'title' => 'User not found',
                 'message' => "User #{$id} not found",

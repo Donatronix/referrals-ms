@@ -124,7 +124,7 @@ class LeaderboardController extends Controller
             }
 
 
-            return response()->jsonApi([
+            return response()->json([
                 'type' => 'success',
                 'title' => 'Retrieval success',
                 'message' => 'The platform earnings were successfully retrieved',
@@ -135,7 +135,7 @@ class LeaderboardController extends Controller
                 ],
             ], 200);
         } catch (Throwable $e) {
-            return response()->jsonApi([
+            return response()->json([
                 'type' => 'danger',
                 'title' => "Not operation",
                 'message' => $e->getMessage(),

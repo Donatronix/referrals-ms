@@ -187,22 +187,21 @@ class LeaderboardController extends Controller
     public function index(Request $request): mixed
     {
         try {
-            return response()->jsonApi([
+            return response()->json([
                 'type' => 'success',
                 'title' => 'Retrieval success',
                 'message' => 'Leaderboard successfully generated',
                 'data' => $this->leaderboard($request),
-
             ], 200);
         } catch (ModelNotFoundException $e) {
-            return response()->jsonApi([
+            return response()->json([
                 'type' => 'danger',
                 'title' => "Not operation",
                 'message' => "Error showing all users",
                 'data' => null,
             ], 404);
         } catch (Throwable $e) {
-            return response()->jsonApi([
+            return response()->json([
                 'type' => 'danger',
                 'title' => "Not operation",
                 'message' => $e->getMessage(),

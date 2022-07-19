@@ -85,14 +85,14 @@ class PromoCodeController extends Controller
                 'code' => $code,
             ]);
 
-            return response()->jsonApi([
+            return response()->json([
                 'type' => 'success',
                 'title' => "Get promo code",
                 'message' => 'Get promo code',
                 'data' => $code,
             ], 200);
         } catch (Throwable $th) {
-            return response()->jsonApi([
+            return response()->json([
                 'type' => 'danger',
                 'title' => "Get promo code",
                 'message' => "There was an error while creating a promo code: " . $th->getMessage(),
@@ -169,14 +169,14 @@ class PromoCodeController extends Controller
 
             $code = PromoCode::query()->where('code', $request->code)->first();
 
-            return response()->jsonApi([
+            return response()->json([
                 'type' => 'success',
                 'title' => "Get promo code info",
                 'message' => 'Promo code validated',
                 'data' => $code,
             ], 200);
         } catch (Throwable $e) {
-            return response()->jsonApi([
+            return response()->json([
                 'type' => 'danger',
                 'title' => "Get promo code info",
                 'message' => $e->getMessage(),
