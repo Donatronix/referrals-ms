@@ -96,18 +96,15 @@ class ReferralController extends Controller
                 ->paginate($request->get('limit', config('settings.pagination_limit')));
 
             // Return response
-            return response()->json([
-                'type' => 'success',
-                'title' => "Get referrals list",
+            return response()->jsonApi([
+                'title' => 'Get referrals list',
                 'message' => 'Referrals list received',
                 'data' => $users->toArray(),
-            ], 200);
+            ]);
         } catch (Exception $e) {
-            return response()->json([
-                'type' => 'danger',
-                'title' => "Get referrals list",
+            return response()->jsonApi([
+                'title' => 'Get referrals list',
                 'message' => $e->getMessage(),
-
             ], 400);
         }
     }
@@ -220,7 +217,7 @@ class ReferralController extends Controller
             // Register new inviting user in the referral program
             $newUser = ReferralService::getUser(Auth::user()->getAuthIdentifier());
 
-//            // Adding an inviter to a new user
+            // Adding an inviter to a new user
             ReferralService::setInviter($newUser, $parent_user_id);
 
             // Try to create new referral code with link
@@ -230,19 +227,16 @@ class ReferralController extends Controller
             PubSub::publish('invitedReferral', $userInfo->toArray(), config('settings.pubsub_receiver.contacts_books'));
 
             // Return response
-            return response()->json([
-                'type' => 'success',
-                'title' => "Joining user to the referral program",
+            return response()->jsonApi([
+                'title' => 'Joining user to the referral program',
                 'message' => 'User added successfully and referral code created',
                 'data' => $userInfo->toArray(),
-            ], 200);
+            ]);
         } catch (Exception $e) {
-            return response()->json([
-                'type' => 'danger',
+            return response()->jsonApi([
                 'title' => 'Joining user to the referral program',
                 'message' => "Cannot joining user to the referral program: " . $e->getMessage(),
             ], 404);
         }
     }
-
 }

@@ -158,9 +158,9 @@ class LeaderboardController extends Controller
      *                      type="integer",
      *                      description="",
      *                      example=100000,
-     *                 ),
-     *             ),
-     *         ),
+     *                 )
+     *             )
+     *         )
      *     ),
      *     @OA\Response(
      *          response="401",
@@ -177,7 +177,7 @@ class LeaderboardController extends Controller
      *     @OA\Response(
      *         response="500",
      *         description="Unknown error"
-     *     ),
+     *     )
      * )
      *
      * @param Request $request
@@ -187,29 +187,23 @@ class LeaderboardController extends Controller
     public function index(Request $request): mixed
     {
         try {
-            return response()->json([
-                'type' => 'success',
+            return response()->jsonApi([
                 'title' => 'Retrieval success',
                 'message' => 'Leaderboard successfully generated',
                 'data' => $this->leaderboard($request),
-            ], 200);
+            ]);
         } catch (ModelNotFoundException $e) {
-            return response()->json([
-                'type' => 'danger',
+            return response()->jsonApi([
                 'title' => "Not operation",
                 'message' => "Error showing all users",
-
             ], 404);
         } catch (Throwable $e) {
-            return response()->json([
-                'type' => 'danger',
+            return response()->jsonApi([
                 'title' => "Not operation",
                 'message' => $e->getMessage(),
-
             ], 404);
         }
     }
-
 
     /**
      * @param string $country

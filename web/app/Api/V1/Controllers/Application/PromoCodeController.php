@@ -85,18 +85,15 @@ class PromoCodeController extends Controller
                 'code' => $code,
             ]);
 
-            return response()->json([
-                'type' => 'success',
+            return response()->jsonApi([
                 'title' => "Get promo code",
                 'message' => 'Get promo code',
                 'data' => $code,
-            ], 200);
+            ]);
         } catch (Throwable $th) {
-            return response()->json([
-                'type' => 'danger',
+            return response()->jsonApi([
                 'title' => "Get promo code",
                 'message' => "There was an error while creating a promo code: " . $th->getMessage(),
-
             ], 404);
         }
     }
@@ -169,18 +166,15 @@ class PromoCodeController extends Controller
 
             $code = PromoCode::query()->where('code', $request->code)->first();
 
-            return response()->json([
-                'type' => 'success',
+            return response()->jsonApi([
                 'title' => "Get promo code info",
                 'message' => 'Promo code validated',
                 'data' => $code,
-            ], 200);
+            ]);
         } catch (Throwable $e) {
-            return response()->json([
-                'type' => 'danger',
+            return response()->jsonApi([
                 'title' => "Get promo code info",
                 'message' => $e->getMessage(),
-
             ], 404);
         }
     }

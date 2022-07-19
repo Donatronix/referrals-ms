@@ -135,27 +135,20 @@ class TransactionsController extends Controller
         try {
             $transactions = Transaction::query()->orderBy('created_at')->paginate($request->get('limit', config('settings.pagination_limit')));
 
-            return response()->json(
-                [
-                    'type' => 'success',
-                    'title' => 'Operation was success',
-                    'message' => 'The data was displayed successfully',
-                    'data' => $transactions->toArray(),
-                ], 200);
-
+            return response()->jsonApi([
+                'title' => 'Operation was success',
+                'message' => 'The data was displayed successfully',
+                'data' => $transactions->toArray(),
+            ]);
         } catch (ModelNotFoundException $e) {
-            return response()->json([
-                'type' => 'danger',
+            return response()->jsonApi([
                 'title' => "Not operation",
                 'message' => "Error showing all transactions",
-
             ], 404);
         } catch (Throwable $e) {
-            return response()->json([
-                'type' => 'danger',
+            return response()->jsonApi([
                 'title' => "Update failed",
                 'message' => $e->getMessage(),
-
             ], 404);
         }
     }
@@ -279,28 +272,21 @@ class TransactionsController extends Controller
             // Get and return transaction data
             $transaction = Transaction::query()->findOrFail($id)->toArray();
 
-            return response()->json(
-                [
-                    'type' => 'success',
-                    'title' => 'Operation was success',
-                    'message' => 'The data was displayed successfully',
-                    'data' => $transaction,
-                ],
-                200);
+            return response()->jsonApi([
+                'title' => 'Operation was success',
+                'message' => 'The data was displayed successfully',
+                'data' => $transaction,
+            ]);
 
         } catch (ModelNotFoundException $e) {
-            return response()->json([
-                'type' => 'danger',
+            return response()->jsonApi([
                 'title' => "Transaction not found",
                 'message' => "Error displaying transaction",
-
             ], 404);
         } catch (Throwable $e) {
-            return response()->json([
-                'type' => 'danger',
+            return response()->jsonApi([
                 'title' => "Display failed",
                 'message' => $e->getMessage(),
-
             ], 404);
         }
     }
@@ -391,22 +377,17 @@ class TransactionsController extends Controller
 
             $transaction = Transaction::query()->create($validated);
 
-            return response()->json([
-                'type' => 'success',
+            return response()->jsonApi([
                 'title' => "Transaction",
                 "message" => "Transaction added successfully!",
                 'data' => $transaction,
-
-            ], 200);
+            ]);
         } catch (Throwable $th) {
-            return response()->json([
-                'type' => 'danger',
+            return response()->jsonApi([
                 'title' => "Transaction not added",
                 'message' => $th->getMessage(),
-
             ], 400);
         }
-
     }
 
     /**
@@ -563,19 +544,15 @@ class TransactionsController extends Controller
 
             $transaction->update($validated);
 
-            return response()->json([
-                'type' => 'success',
+            return response()->jsonApi([
                 'title' => "Transaction",
                 "message" => "Updated successfully",
                 "data" => $transaction->toArray(),
-            ], 200);
-
+            ]);
         } catch (Throwable $th) {
-            return response()->json([
-                'type' => 'danger',
+            return response()->jsonApi([
                 'title' => "Transaction failed",
                 'message' => $th->getMessage(),
-
             ], 400);
         }
     }
@@ -659,25 +636,20 @@ class TransactionsController extends Controller
             $transaction = Transaction::findOrFail($id);
             $transaction->delete();
 
+            return response()->jsonApi([
+                'title' => 'Operation was a success',
+                'message' => 'Transaction was deleted successfully',
+            ]);
         } catch (ModelNotFoundException $e) {
-            return response()->json([
-                'type' => 'danger',
+            return response()->jsonApi([
                 'title' => "Delete failed",
                 'message' => "Transaction does not exist",
-
             ], 404);
         } catch (Throwable $th) {
-            return response()->json([
-                'type' => 'danger',
+            return response()->jsonApi([
                 'title' => "Delete failed",
                 'message' => $th->getMessage(),
-
             ], 404);
         }
-        return response()->json([
-            'type' => 'success',
-            'title' => 'Operation was a success',
-            'message' => 'Transaction was deleted successfully',
-        ], 200);
     }
 }

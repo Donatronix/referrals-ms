@@ -36,7 +36,6 @@ class AdminTransactionTest extends TestCase
         ]);
         $response->seeStatusCode(200)
             ->seeJson(['type' => 'success']);
-
     }
 
     /**
@@ -133,6 +132,4 @@ class AdminTransactionTest extends TestCase
 
 //        dd($response->response->getContent());
     }
-
-
 }

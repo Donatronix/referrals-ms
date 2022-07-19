@@ -64,18 +64,15 @@ class ReferralController extends Controller
             }
 
             // Return response
-            return response()->json([
-                'type' => 'success',
+            return response()->jsonApi([
                 'title' => "Total Reward",
                 'message' => 'Total reward successfully retrieved',
                 'data' => $total,
-            ], 200);
+            ]);
         } catch (Exception $e) {
-            return response()->json([
-                'type' => 'danger',
+            return response()->jsonApi([
                 'title' => 'Total reward',
                 'message' => "Error retrieving total reward: " . $e->getMessage(),
-
             ], 404);
         }
     }

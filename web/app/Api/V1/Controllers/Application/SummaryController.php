@@ -128,16 +128,13 @@ class SummaryController extends Controller
                     return $item['id'] == $referrerId;
                 });
 
-
-            return response()->json([
-                'type' => 'success',
+            return response()->jsonApi([
                 'title' => "List referral and codes summary",
                 'message' => 'Referral and codes summary successfully received',
                 'data' => $summary,
-            ], 200);
+            ]);
         } catch (Throwable $e) {
-            return response()->json([
-                'type' => 'danger',
+            return response()->jsonApi([
                 'title' => "Not received list",
                 'message' => $e->getMessage(),
             ], 404);

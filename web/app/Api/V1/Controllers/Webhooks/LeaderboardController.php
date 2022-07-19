@@ -123,9 +123,7 @@ class LeaderboardController extends Controller
                 ];
             }
 
-
-            return response()->json([
-                'type' => 'success',
+            return response()->jsonApi([
                 'title' => 'Retrieval success',
                 'message' => 'The platform earnings were successfully retrieved',
                 'data' => [
@@ -133,13 +131,11 @@ class LeaderboardController extends Controller
                     'subTotalPlatformInvitedUsers' => $totalPlatformInvitedUsers,
                     'subTotalEarnings' => $totalPlatformInvitedUsers,
                 ],
-            ], 200);
+            ]);
         } catch (Throwable $e) {
-            return response()->json([
-                'type' => 'danger',
+            return response()->jsonApi([
                 'title' => "Not operation",
                 'message' => $e->getMessage(),
-
             ], 404);
         }
     }

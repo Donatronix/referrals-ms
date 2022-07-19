@@ -191,26 +191,20 @@ class LeaderboardController extends Controller
     public function index(Request $request): mixed
     {
         try {
-            return response()->json([
-                'type' => 'success',
+            return response()->jsonApi([
                 'title' => 'Retrieval success',
                 'message' => 'Leaderboard successfully generated',
                 'data' => $this->leaderboard($request),
-
-            ], 200);
+            ]);
         } catch (ModelNotFoundException $e) {
-            return response()->json([
-                'type' => 'danger',
+            return response()->jsonApi([
                 'title' => "Not operation",
                 'message' => "Error showing all users",
-
             ], 404);
         } catch (Throwable $e) {
-            return response()->json([
-                'type' => 'danger',
+            return response()->jsonApi([
                 'title' => "Not operation",
                 'message' => $e->getMessage(),
-
             ], 404);
         }
     }
@@ -331,21 +325,15 @@ class LeaderboardController extends Controller
                 ];
             }
 
-            return response()->json(
-                array_merge([
-                    'type' => 'success',
-                    'title' => 'Retrieval success',
-                    'message' => 'The referral code (link) has been successfully updated',
-                ], [
-                    'data' => $retVal,
-                ]),
-                200);
+            return response()->jsonApi([
+                'title' => 'Retrieval success',
+                'message' => 'The referral code (link) has been successfully updated',
+                'data' => $retVal,
+            ]);
         } catch (Throwable $e) {
-            return response()->json([
-                'type' => 'danger',
+            return response()->jsonApi([
                 'title' => "Not operation",
                 'message' => $e->getMessage(),
-
             ], 404);
         }
     }

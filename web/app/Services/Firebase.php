@@ -89,7 +89,7 @@ class Firebase
 
             return $dynamicLinks->createDynamicLink($parameters);
         } catch (FailedToCreateDynamicLink $e) {
-            return response()->json($e->getMessage());
+            return response()->jsonApi($e->getMessage());
         }
     }
 }

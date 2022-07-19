@@ -15,7 +15,6 @@ class AdminSummaryControllerTest extends TestCase
      */
     public function testAdminSummaryListing()
     {
-
         $summary = $this->get('/v1/admin/summary-listing', [
             'user-id' => '20000000-2000-2000-2000-000000000002',
         ])
@@ -23,5 +22,4 @@ class AdminSummaryControllerTest extends TestCase
             ->seeJson(['type' => 'success'])
             ->response->getContent();
     }
-
 }
