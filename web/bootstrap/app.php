@@ -112,7 +112,7 @@ $app->register(Spatie\CollectionMacros\CollectionMacroServiceProvider::class);
 /**
  * Pubsub - RabbitMQ
  */
-$app->configure('queues');
+$app->configure('queue');
 $app->register(VladimirYuldashev\LaravelQueueRabbitMQ\LaravelQueueRabbitMQServiceProvider::class);
 class_alias(\Illuminate\Support\Facades\App::class, 'App');
 $app->register(PubSubServiceProvider::class);
