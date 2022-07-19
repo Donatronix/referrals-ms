@@ -22,7 +22,7 @@ class ReferralController extends Controller
      *     path="/webhooks/total-earnings",
      *     summary="Get total earnings",
      *     description="Get total earnings",
-     *     tags={"Referrals"},
+     *     tags={"Webhooks"},
      *
      *     security={{
      *         "default": {
@@ -65,17 +65,14 @@ class ReferralController extends Controller
 
             // Return response
             return response()->jsonApi([
-                'type' => 'success',
                 'title' => "Total Reward",
                 'message' => 'Total reward successfully retrieved',
                 'data' => $total,
-            ], 200);
+            ]);
         } catch (Exception $e) {
             return response()->jsonApi([
-                'type' => 'danger',
                 'title' => 'Total reward',
                 'message' => "Error retrieving total reward: " . $e->getMessage(),
-                'data' => null,
             ], 404);
         }
     }

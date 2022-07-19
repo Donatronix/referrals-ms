@@ -139,19 +139,15 @@ class SummaryController extends Controller
                     ];
                 });
 
-
             $summary = collect($summary)->paginate(request()->get('limit', config('settings.pagination_limit')));
 
-
             return response()->jsonApi([
-                'type' => 'success',
                 'title' => "List referral and codes summary",
                 'message' => 'Referral and codes summary successfully received',
                 'data' => $summary,
-            ], 200);
+            ]);
         } catch (Throwable $e) {
             return response()->jsonApi([
-                'type' => 'danger',
                 'title' => "Not received list",
                 'message' => $e->getMessage(),
             ], 404);

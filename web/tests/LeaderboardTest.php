@@ -15,10 +15,11 @@ class LeaderboardTest extends TestCase
      */
     public function testLeaderboard(): void
     {
-        $this->get('v1/subscribers/leaderboard', [
+        $response = $this->get('v1/subscribers/leaderboard', [
             'user-id' => '20000000-2000-2000-2000-000000000002',
         ])
             ->seeStatusCode(200)
-            ->seeJson(['success' => true]);
+            ->seeJson(['type' => 'success'])
+            ->response->getContent();
     }
 }

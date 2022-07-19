@@ -36,8 +36,6 @@ class AdminTransactionTest extends TestCase
         ]);
         $response->seeStatusCode(200)
             ->seeJson(['type' => 'success']);
-
-        dd($response->response->getContent());
     }
 
     /**
@@ -110,7 +108,7 @@ class AdminTransactionTest extends TestCase
 
         $transaction->update($validated);
 
-        dd($transaction->toArray());
+//        dd($transaction->toArray());
     }
 
     /**
@@ -126,10 +124,12 @@ class AdminTransactionTest extends TestCase
                 'user-id' => '20000000-2000-2000-2000-000000000002',
             ]);
         $response->seeStatusCode(200)
-            ->seeJson(['type' => 'success']);
+            ->seeJson(['type' => 'success'])
+            ->response
+            ->getContent();
 
-        dd($response->response->getContent());
+        $response->assertResponseOk();
+
+//        dd($response->response->getContent());
     }
-
-
 }

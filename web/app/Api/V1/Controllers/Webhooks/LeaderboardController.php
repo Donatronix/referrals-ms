@@ -20,7 +20,7 @@ class LeaderboardController extends Controller
      * @OA\Get(
      *     path="/webhooks/leaderboard/overview-earnings/{id}",
      *     description="A list of leaders in the invitation referrals",
-     *     tags={"Platform earnings"},
+     *     tags={"Webhooks"},
      *
      *     security={{
      *         "default" :{
@@ -123,9 +123,7 @@ class LeaderboardController extends Controller
                 ];
             }
 
-
             return response()->jsonApi([
-                'type' => 'success',
                 'title' => 'Retrieval success',
                 'message' => 'The platform earnings were successfully retrieved',
                 'data' => [
@@ -133,13 +131,11 @@ class LeaderboardController extends Controller
                     'subTotalPlatformInvitedUsers' => $totalPlatformInvitedUsers,
                     'subTotalEarnings' => $totalPlatformInvitedUsers,
                 ],
-            ], 200);
+            ]);
         } catch (Throwable $e) {
             return response()->jsonApi([
-                'type' => 'danger',
                 'title' => "Not operation",
                 'message' => $e->getMessage(),
-                'data' => null,
             ], 404);
         }
     }

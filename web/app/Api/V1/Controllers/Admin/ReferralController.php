@@ -77,20 +77,16 @@ class ReferralController extends Controller
             $user_id = $validator->validated()['user_id'];
             $total = Total::where('user_id', $user_id)->get()->sum('reward');
 
-
             // Return response
             return response()->jsonApi([
-                'type' => 'success',
                 'title' => "Total Reward",
                 'message' => 'Total reward successfully retrieved',
                 'data' => $total,
-            ], 200);
+            ]);
         } catch (Exception $e) {
             return response()->jsonApi([
-                'type' => 'danger',
                 'title' => 'Total reward',
-                'message' => "Error retrieving total reward: " . $e->getMessage(),
-                'data' => [],
+                'message' => "Error retrieving total reward: " . $e->getMessage()
             ], 404);
         }
     }

@@ -15,16 +15,11 @@ class AdminSummaryControllerTest extends TestCase
      */
     public function testAdminSummaryListing()
     {
-
         $summary = $this->get('/v1/admin/summary-listing', [
             'user-id' => '20000000-2000-2000-2000-000000000002',
-        ]);
-
-        $summary->seeStatusCode(200)
-            ->seeJson(['success' => true])
-            ->response
-            ->getContent();
-
+        ])
+            ->seeStatusCode(200)
+            ->seeJson(['type' => 'success'])
+            ->response->getContent();
     }
-
 }
