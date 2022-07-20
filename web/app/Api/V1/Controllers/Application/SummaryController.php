@@ -93,7 +93,9 @@ class SummaryController extends Controller
     {
         try {
             $referrerId = Auth()->user()->getAuthIdentifier();
+
             $user = User::findOrFail($referrerId);
+
             $id = $user->id;
             $name = $user->name;
             $country = $user->country;
@@ -151,6 +153,22 @@ class SummaryController extends Controller
                 'message' => 'Referral and codes summary successfully received',
                 'data' => $summary,
             ]);
+        } catch (ModelNotFoundException $e) {
+                $summary = [
+                    'id' => "",
+                    'name' => "",
+                    'country' => "",
+                    'totalReferrals' => 0,
+                    'totalCodesGenerated' => 0,
+                    'amountEarned' => 0,
+                    'topReferralBonus' => 0,
+                    'rank' => 0,
+                ];
+                return response()->jsonApi([
+                    'title' => "List referral and codes summary",
+                    'message' => 'User does not exist',
+                    'data' => $summary,
+                ], 404);
         } catch (Throwable $e) {
             return response()->jsonApi([
                 'title' => "Not received list",

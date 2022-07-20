@@ -8,6 +8,7 @@ use App\Services\ReferralCodeService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -182,10 +183,17 @@ class ReferralCodeController extends Controller
             ], 400);
         }
 
+        DB::beginTransaction();
         // Try to create new code with link
         try {
+
+            ReferralCode::byOwner()->byApplication()->update([
+                'is_default' => false,
+            ]);
+
             $code = ReferralCodeService::createReferralCode($request);
 
+            DB::commit();
             return response()->jsonApi([
                 'title' => "Referral code generate",
                 'message' => 'The creation of the referral link was successful',
