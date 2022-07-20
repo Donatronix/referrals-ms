@@ -94,10 +94,16 @@ class SummaryController extends Controller
         try {
             $referrerId = Auth()->user()->getAuthIdentifier();
 
-            $referrers = User::whereNotNull('referrer_id')->distinct('referrer_id')->select('referrer_id')->get();
+            $referrers = User::whereNotNull('referrer_id')
+                ->distinct('referrer_id')
+                ->select('referrer_id')
+                ->get();
 
             $retVal = $referrers->map(function ($referrer) {
-                $user = User::query()->where('id', $referrer->referrer_id)->first();
+                $user = User::query()
+                    ->where('id', $referrer->referrer_id)
+                    ->first();
+
                 return [
                     'id' => $user->id,
                     'name' => $user->name,
@@ -110,7 +116,8 @@ class SummaryController extends Controller
                 ];
             });
 
-            $summary = collect($retVal)->sortByDesc('amountEarned')
+            $summary = collect($retVal)
+                ->sortByDesc('amountEarned')
                 ->values()
                 ->map(function ($item, $key) {
                     return [
