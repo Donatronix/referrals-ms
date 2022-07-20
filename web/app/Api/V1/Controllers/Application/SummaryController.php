@@ -93,21 +93,21 @@ class SummaryController extends Controller
     {
         try {
             $referrerId = Auth()->user()->getAuthIdentifier();
+            $user = User::findOrFail($referrerId);
+            $id = $user->id;
+            $name = $user->name;
+            $country = $user->country;
 
             $referrers = User::whereNotNull('referrer_id')
                 ->distinct('referrer_id')
                 ->select('referrer_id')
                 ->get();
 
-            $retVal = $referrers->map(function ($referrer) {
-                $user = User::query()
-                    ->where('id', $referrer->referrer_id)
-                    ->first();
-
+            $retVal = $referrers->map(function ($referrer) use ($id, $name, $country) {
                 return [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'country' => $user->country,
+                    'id' => $id,
+                    'name' => $name,
+                    'country' => $country,
                     'totalReferrals' => User::query()->where('referrer_id', $referrer->referrer_id)->count(),
                     'totalCodesGenerated' => ReferralCode::query()->where('user_id', $referrer->referrer_id)->count(),
                     'amountEarned' => Total::query()->where('user_id', $referrer->referrer_id)->sum('reward'),
@@ -132,8 +132,20 @@ class SummaryController extends Controller
                     ];
                 })->filter(function ($item) use ($referrerId) {
                     return $item['id'] == $referrerId;
-                });
+                })->first();
 
+            if (empty($summary)) {
+                $summary = [
+                    'id' => $id,
+                    'name' => $name,
+                    'country' => $country,
+                    'totalReferrals' => 0,
+                    'totalCodesGenerated' => 0,
+                    'amountEarned' => 0,
+                    'topReferralBonus' => 0,
+                    'rank' => 0,
+                ];
+            }
             return response()->jsonApi([
                 'title' => "List referral and codes summary",
                 'message' => 'Referral and codes summary successfully received',
