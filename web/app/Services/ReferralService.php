@@ -84,7 +84,7 @@ class ReferralService
 
             // We send data to the membership microservice for information
             // about the tariff plan and reward for the inviting user
-//            RemoteService::sendData('getDataAboutPlanAndReward', $newUser->id, 'Membership');
+            \PubSub::publish('getDataAboutPlanAndReward', $newUser->id, config('pubsub.queue.memberships'));
 
             return $newUser;
         } catch (Exception $e) {
@@ -92,21 +92,3 @@ class ReferralService
         }
     }
 }
-
-
-################## EXAMPLE CODE #######################
-/**
- * For wallet microservice
- */
-/*
-$array = [
-    'user_id' => $appUserId,
-    'status' => Arr::random([
-        User::STATUS_APPROVED,
-        User::STATUS_NOT_APPROVED,
-        User::STATUS_BLOCKED
-    ])
-];
-PubSub::transaction(function() {})->publish('ReferralBonus', $array, 'referral');
-*/
-################## EXAMPLE CODE #######################

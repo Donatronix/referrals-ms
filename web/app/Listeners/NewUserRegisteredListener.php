@@ -14,16 +14,6 @@ class NewUserRegisteredListener
     use GetCountryTrait;
 
     /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    /**
      * Handle the event.
      *
      * @param array $event
@@ -66,7 +56,7 @@ class NewUserRegisteredListener
                 })->publish('AddCoinsToBalanceInWallet', [
                     'reward' => User::REFERRER_POINTS,
                     'user_id' => $referral->user_id,
-                ], 'add_coins_to_balance');
+                ], config('pubsub.queue.crypto_wallets'));
             });
         }
     }
