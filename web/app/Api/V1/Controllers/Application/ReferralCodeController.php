@@ -338,22 +338,22 @@ class ReferralCodeController extends Controller
 
         // Try to find referral code and update it
         try {
-            $data = ReferralCode::find($id);
 
-            // Check if has is_default parameter, then reset all previous code
-            if ($request->has('is_default')) {
-                ReferralCodeService::defaultReset($data->user_id, $data->application_id);
+            DB::transaction(function () use ($request, $id) {
+                $code = ReferralCode::find($id);
+                $code->update($request->all());
+                ReferralCode::byOwner()->byApplication()->update([
+                    'is_default' => false,
+                ]);
 
-                $data->is_default = $request->boolean('is_default');
-            }
-
-            $data->note = $request->get('note', null);
-            $data->save();
+                $this->setDefault($id);
+            });
 
             // Send response
             return response()->jsonApi([
                 'title' => "Updating success",
                 'message' => 'The referral code (link) has been successfully updated',
+                'data' => ReferralCode::find($id),
             ]);
         } catch (Exception $e) {
             return response()->jsonApi([

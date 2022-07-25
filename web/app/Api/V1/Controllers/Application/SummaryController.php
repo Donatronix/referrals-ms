@@ -6,6 +6,7 @@ use App\Api\V1\Controllers\Controller;
 use App\Models\ReferralCode;
 use App\Models\Total;
 use App\Models\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Throwable;
 
@@ -100,41 +101,16 @@ class SummaryController extends Controller
             $name = $user->name;
             $country = $user->country;
 
-            $referrers = User::whereNotNull('referrer_id')
-                ->distinct('referrer_id')
-                ->select('referrer_id')
-                ->get();
-
-            $retVal = $referrers->map(function ($referrer) use ($id, $name, $country) {
-                return [
+            $summary =  [
                     'id' => $id,
                     'name' => $name,
                     'country' => $country,
-                    'totalReferrals' => User::query()->where('referrer_id', $referrer->referrer_id)->count(),
-                    'totalCodesGenerated' => ReferralCode::query()->where('user_id', $referrer->referrer_id)->count(),
-                    'amountEarned' => Total::query()->where('user_id', $referrer->referrer_id)->sum('reward'),
+                    'totalReferrals' => User::query()->where('referrer_id', $referrerId)->count(),
+                    'totalCodesGenerated' => ReferralCode::query()->where('user_id', $referrerId)->count(),
+                    'amountEarned' => Total::query()->where('user_id', $referrerId)->sum('reward'),
                     'topReferralBonus' => Total::query()->max('reward'),
                     'rank' => 0,
                 ];
-            });
-
-            $summary = collect($retVal)
-                ->sortByDesc('amountEarned')
-                ->values()
-                ->map(function ($item, $key) {
-                    return [
-                        'id' => $item['id'],
-                        'name' => $item['name'],
-                        'country' => $item['country'],
-                        'totalReferrals' => $item['totalReferrals'] ?? 0,
-                        'totalCodesGenerated' => $item['totalCodesGenerated'] ?? 0,
-                        'amountEarned' => $item['amountEarned'] ?? 0,
-                        'topReferralBonus' => $item['topReferralBonus'] ?? 0,
-                        'rank' => $key + 1,
-                    ];
-                })->filter(function ($item) use ($referrerId) {
-                    return $item['id'] == $referrerId;
-                })->first();
 
             if (empty($summary)) {
                 $summary = [
