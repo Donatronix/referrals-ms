@@ -6,6 +6,7 @@ use App\Api\V1\Controllers\Controller;
 use App\Models\ReferralCode;
 use App\Models\Total;
 use App\Models\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Throwable;
 
@@ -94,51 +95,56 @@ class SummaryController extends Controller
         try {
             $referrerId = Auth()->user()->getAuthIdentifier();
 
-            $referrers = User::whereNotNull('referrer_id')
-                ->distinct('referrer_id')
-                ->select('referrer_id')
-                ->get();
+            $user = User::findOrFail($referrerId);
 
-            $retVal = $referrers->map(function ($referrer) {
-                $user = User::query()
-                    ->where('id', $referrer->referrer_id)
-                    ->first();
+            $id = $user->id;
+            $name = $user->name;
+            $country = $user->country;
 
-                return [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'country' => $user->country,
-                    'totalReferrals' => User::query()->where('referrer_id', $referrer->referrer_id)->count(),
-                    'totalCodesGenerated' => ReferralCode::query()->where('user_id', $referrer->referrer_id)->count(),
-                    'amountEarned' => Total::query()->where('user_id', $referrer->referrer_id)->sum('reward'),
+            $summary =  [
+                    'id' => $id,
+                    'name' => $name,
+                    'country' => $country,
+                    'totalReferrals' => User::query()->where('referrer_id', $referrerId)->count(),
+                    'totalCodesGenerated' => ReferralCode::query()->where('user_id', $referrerId)->count(),
+                    'amountEarned' => Total::query()->where('user_id', $referrerId)->sum('reward'),
                     'topReferralBonus' => Total::query()->max('reward'),
                     'rank' => 0,
                 ];
-            });
 
-            $summary = collect($retVal)
-                ->sortByDesc('amountEarned')
-                ->values()
-                ->map(function ($item, $key) {
-                    return [
-                        'id' => $item['id'],
-                        'name' => $item['name'],
-                        'country' => $item['country'],
-                        'totalReferrals' => $item['totalReferrals'] ?? 0,
-                        'totalCodesGenerated' => $item['totalCodesGenerated'] ?? 0,
-                        'amountEarned' => $item['amountEarned'] ?? 0,
-                        'topReferralBonus' => $item['topReferralBonus'] ?? 0,
-                        'rank' => $key + 1,
-                    ];
-                })->filter(function ($item) use ($referrerId) {
-                    return $item['id'] == $referrerId;
-                });
-
+            if (empty($summary)) {
+                $summary = [
+                    'id' => $id,
+                    'name' => $name,
+                    'country' => $country,
+                    'totalReferrals' => 0,
+                    'totalCodesGenerated' => 0,
+                    'amountEarned' => 0,
+                    'topReferralBonus' => 0,
+                    'rank' => 0,
+                ];
+            }
             return response()->jsonApi([
                 'title' => "List referral and codes summary",
                 'message' => 'Referral and codes summary successfully received',
                 'data' => $summary,
             ]);
+        } catch (ModelNotFoundException $e) {
+                $summary = [
+                    'id' => "",
+                    'name' => "",
+                    'country' => "",
+                    'totalReferrals' => 0,
+                    'totalCodesGenerated' => 0,
+                    'amountEarned' => 0,
+                    'topReferralBonus' => 0,
+                    'rank' => 0,
+                ];
+                return response()->jsonApi([
+                    'title' => "List referral and codes summary",
+                    'message' => 'User does not exist',
+                    'data' => $summary,
+                ], 404);
         } catch (Throwable $e) {
             return response()->jsonApi([
                 'title' => "Not received list",
