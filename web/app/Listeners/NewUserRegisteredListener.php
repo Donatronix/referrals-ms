@@ -22,42 +22,43 @@ class NewUserRegisteredListener
      */
     public function handle(array $event): void
     {
-        $user = collect($event['user']);
-        $referralCode = $event['referralCode'];
+        $newUser = collect($event['user']);
 
-        $referral = ReferralCode::query()->where('referralCode', $referralCode)->first();
-        $user = User::where('id', $user->id)->first();
+        $checkUser = User::where('id', $newUser->id)->first();
 
-        if ($user->isEmpty() && !$referral->isEmpty()) {
-            DB::transaction(function () use ($user, $referral) {
-                PubSub::transaction(function () use ($user, $referral) {
-                    // Create order
-                    User::query()->create([
-                        'id' => $user->id,
-                        'country' => $this->getCountry($user->phone_number),
-                        'referrer_id' => $referral->user_id,
-                        'username' => $user->username ?? null,
-                        'name' => $user->name ?? null,
-                    ]);
+        if ($checkUser->isEmpty()) {
+            PubSub::transaction(function () use ($newUser, $event) {
+                $referrer_id = null;
+                if(isset($event['referral_code'])){
+                    $referral = ReferralCode::where('code', $event['referral_code'])->first();
+                    $referrer_id = $referral->user_id;
+                }
 
-                    DB::table('application_user')->insert([
-                        'user_id' => $user->id,
-                        'application_id' => $referral->application_id,
-                    ]);
+                // Create user
+                User::query()->create([
+                    'id' => $newUser->id,
+                    'country' => $this->getCountry($newUser->phone_number),
+                    'referrer_id' => $referrer_id,
+                    'username' => $newUser->username ?? null,
+                    'name' => $newUser->name ?? null,
+                ]);
 
-                    $referrerTotal = Total::where('user_id', $referral->user_id)->first();
-                    $reward = $referrerTotal->reward;
-                    $referrerTotal->increment('amount');
-                    $referrerTotal->increment('reward', User::REFERRER_POINTS);
-                    $referrerTotal->update([
-                        'twenty_four_hour_percentage' => ($referrerTotal->reward - $reward) * 100 / $referrerTotal->reward,
-                    ]);
+                DB::table('application_user')->insert([
+                    'user_id' => $newUser->id,
+                    'application_id' => $event['application_id'] ?? null,
+                ]);
 
-                })->publish('AddCoinsToBalanceInWallet', [
-                    'reward' => User::REFERRER_POINTS,
-                    'user_id' => $referral->user_id,
-                ], config('pubsub.queue.crypto_wallets'));
-            });
+                $referrerTotal = Total::where('user_id', $referrer_id)->first();
+                $reward = $referrerTotal->reward;
+                $referrerTotal->increment('amount');
+                $referrerTotal->increment('reward', User::REFERRER_POINTS);
+                $referrerTotal->update([
+                    'twenty_four_hour_percentage' => ($referrerTotal->reward - $reward) * 100 / $referrerTotal->reward,
+                ]);
+            })->publish('AddCoinsToBalanceInWallet', [
+                'reward' => User::REFERRER_POINTS,
+                'user_id' => $newUser->id,
+            ], config('pubsub.queue.crypto_wallets'));
         }
     }
 }

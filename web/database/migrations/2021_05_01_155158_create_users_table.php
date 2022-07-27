@@ -20,6 +20,17 @@ class CreateUsersTable extends Migration
                 ->nullable()
                 ->comment('The ID of the inviting user');
 
+            $table->string('name')
+                ->nullable()
+                ->comment('The fullname of the invited user');
+            $table->string('username')
+                ->nullable()
+                ->comment('The username of the invited user');
+
+            $table->string('country')
+                ->nullable()
+                ->comment('The country of the invited user');
+
             $table->timestamps();
             $table->softDeletes();
         });
