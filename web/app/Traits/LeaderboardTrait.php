@@ -65,7 +65,7 @@ trait LeaderboardTrait
             'today' => $query->whereDate('created_at', Carbon::now()->toDateString()),
             'this week' => $query->whereBetween('created_at', [$en->startOfWeek(), $en->endOfWeek()]),
             'this month' => $query->whereBetween('created_at', [$en->startOfMonth(), $en->endOfMonth()]),
-            'country' => $query->whereIn('country', request()->country ?? null),
+            'country' => $query->where('country', request()->country ?? null),
 //            'country_and_city' => $query->whereIn('user_id', $this->getUserIDByCountryCity(request()->country, request()->city)),
             default => $query->whereBetween('created_at', [$en->startOfYear(), $en->endOfYear()]),
         };
