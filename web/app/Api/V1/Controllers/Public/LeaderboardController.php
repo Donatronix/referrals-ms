@@ -37,6 +37,24 @@ class LeaderboardController extends Controller
      *             type="number"
      *         ),
      *     ),
+     *
+     *     @OA\Parameter(
+     *         name="filter",
+     *         in="query",
+     *         description="How to filter data: today, this week, this month, this year",
+     *         @OA\Schema(
+     *             type="string"
+     *         ),
+     *     ),
+     *
+     *     @OA\Parameter(
+     *         name="country",
+     *         in="query",
+     *         description="Filter results by country",
+     *         @OA\Schema(
+     *             type="string"
+     *         ),
+     *     ),
      *     @OA\Parameter(
      *         name="page",
      *         in="query",
