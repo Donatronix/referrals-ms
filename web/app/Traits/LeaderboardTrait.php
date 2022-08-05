@@ -22,6 +22,7 @@ trait LeaderboardTrait
     {
         $filter = strtolower($request->filter);
 
+
         $channels = $this->getFilterQuery(DB::table('referral_codes')
             ->distinct('application_id')
             ->select('application_id', 'user_id'), $filter);
@@ -29,7 +30,6 @@ trait LeaderboardTrait
         $totalReward = $this->getFilterQuery(DB::table('totals')
             ->select('user_id', 'twenty_four_hour_percentage', DB::raw('SUM(reward) as endOfYearCashPrize')), $filter)
             ->groupBy('user_id', 'twenty_four_hour_percentage');
-
 
         return DB::table('users')
             ->whereNotNull('referrer_id')->distinct('referrer_id')
@@ -40,7 +40,9 @@ trait LeaderboardTrait
                 'totals.endOfYearCashPrize as endOfYearCashPrize',
                 'totals.twenty_four_hour_percentage as twentyFourHourPercentage',
                 'channels.application_id as channels'
-            )
+            )->when(request('country') !== null, function ($query) {
+                return $query->where('country', 'LIKE', '%'.request('country') .'%');
+            })
             ->joinSub($channels, 'channels', function ($join) {
                 $join->on('users.referrer_id', '=', 'channels.user_id');
             })
@@ -65,7 +67,6 @@ trait LeaderboardTrait
             'today' => $query->whereDate('created_at', Carbon::now()->toDateString()),
             'this week' => $query->whereBetween('created_at', [$en->startOfWeek(), $en->endOfWeek()]),
             'this month' => $query->whereBetween('created_at', [$en->startOfMonth(), $en->endOfMonth()]),
-            'country' => $query->where('country', request()->country ?? null),
 //            'country_and_city' => $query->whereIn('user_id', $this->getUserIDByCountryCity(request()->country, request()->city)),
             default => $query->whereBetween('created_at', [$en->startOfYear(), $en->endOfYear()]),
         };
