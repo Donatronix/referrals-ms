@@ -444,7 +444,6 @@ class LeaderboardController extends Controller
         })->toArray();
     }
 
-
     /**
      * @param $referrer_id
      * @param $filter
