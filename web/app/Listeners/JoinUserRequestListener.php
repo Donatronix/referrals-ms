@@ -22,7 +22,7 @@ class JoinUserRequestListener
             // Adding an inviter to a new user
             ReferralService::setInviter($newUser, $data['new_user_id']);
         } catch (\Exception $e){
-            throw new Exception($e->getMessage());
+            throw new \Exception($e->getMessage());
         }
     }
 }
