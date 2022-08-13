@@ -15,6 +15,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Seede for all
+        $this->call([
+            //
+        ]);
+
         // Seeds for local and staging
         if (App::environment(['local', 'staging'])) {
             $this->call([
@@ -23,11 +28,6 @@ class DatabaseSeeder extends Seeder
                 TotalSeeder::class,
                 TransactionSeeder::class,
             ]);
-        }
-
-        // Seeds for production
-        if (App::environment('production')) {
-
         }
     }
 }

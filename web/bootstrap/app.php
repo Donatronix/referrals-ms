@@ -1,13 +1,5 @@
 <?php
 
-use Sumra\SDK\JsonApiServiceProvider;
-use Sumra\SDK\Middleware\CheckAdminMiddleware;
-use Sumra\SDK\Middleware\CheckMSMiddleware;
-use Sumra\SDK\Middleware\CheckUserMiddleware;
-use Sumra\SDK\Middleware\TrimStrings;
-use Sumra\SDK\PubSubServiceProvider;
-use SwaggerLume\ServiceProvider;
-
 require_once __DIR__ . '/../vendor/autoload.php';
 
 (new Laravel\Lumen\Bootstrap\LoadEnvironmentVariables(
@@ -83,14 +75,13 @@ $app->configure('settings');
 */
 
 $app->middleware([
-    TrimStrings::class,
+    \Sumra\SDK\Middleware\TrimStrings::class,
 ]);
 
 $app->routeMiddleware([
     //'auth' => App\Http\Middleware\Authenticate::class,
-    'checkUser' => CheckUserMiddleware::class,
-    'checkAdmin' => CheckAdminMiddleware::class,
-    'checkMS' => CheckMSMiddleware::class,
+    'checkUser' => \Sumra\SDK\Middleware\CheckUserMiddleware::class,
+    'checkAdmin' => \Sumra\SDK\Middleware\CheckAdminMiddleware::class,
 ]);
 
 /*
@@ -114,24 +105,21 @@ $app->register(Spatie\CollectionMacros\CollectionMacroServiceProvider::class);
  */
 $app->configure('queue');
 $app->register(VladimirYuldashev\LaravelQueueRabbitMQ\LaravelQueueRabbitMQServiceProvider::class);
-
 if (!class_exists('App')) {
     class_alias(\Illuminate\Support\Facades\App::class, 'App');
 }
-
-
-$app->register(PubSubServiceProvider::class);
+$app->register(\Sumra\SDK\PubSubServiceProvider::class);
 
 /**
  * Json API
  */
-$app->register(JsonApiServiceProvider::class);
+$app->register(\Sumra\SDK\JsonApiServiceProvider::class);
 
 /**
  * Swagger
  */
 $app->configure('swagger-lume');
-$app->register(ServiceProvider::class);
+$app->register(\SwaggerLume\ServiceProvider::class);
 
 /**
  * Artisan Commands Lumen Generator

@@ -2,10 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Application;
 use App\Models\ReferralCode;
 use App\Models\User;
-use App\Services\Firebase;
 use Illuminate\Database\Seeder;
 
 class ReferralCodesTableSeeder extends Seeder
