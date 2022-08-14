@@ -63,6 +63,7 @@ trait LeaderboardTrait
     protected function getFilterQuery($query, $filter): mixed
     {
         $en = CarbonImmutable::now()->locale('en_US');
+
         return match ($filter) {
             'today' => $query->whereDate('created_at', Carbon::now()->toDateString()),
             'this week' => $query->whereBetween('created_at', [$en->startOfWeek(), $en->endOfWeek()]),

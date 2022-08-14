@@ -178,7 +178,6 @@ class ReferralController extends Controller
      * @param Request $request
      *
      * @return mixed
-     * @throws ValidationException
      */
     public function store(Request $request): mixed
     {
@@ -205,9 +204,10 @@ class ReferralController extends Controller
             }
 
             // Find Referrer ID by its referral code and application ID
-            $parent_user_id = null;
+            $parent_user_id = config('settings.empty_uuid');
             if ($request->has('referral_code')) {
-                $parent_user_id = ReferralCode::query()->select('user_id')
+                $parent_user_id = ReferralCode::query()
+                    ->select('user_id')
                     ->byReferralCode()
                     ->byApplication()
                     ->pluck('user_id')
@@ -221,7 +221,7 @@ class ReferralController extends Controller
             ReferralService::setInviter($newUser, $parent_user_id);
 
             // Try to create new referral code with link
-            $userInfo = ReferralCodeService::createReferralCode($request, $newUser, true);
+            $userInfo = ReferralCodeService::createReferralCode($request, $newUser);
 
             // Send notification to contacts book
             PubSub::publish('invitedReferral', $userInfo->toArray(), config('pubsub.queue.contacts_books'));

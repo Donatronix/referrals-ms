@@ -3,8 +3,10 @@
 namespace App\Api\V1\Controllers\Application;
 
 use App\Api\V1\Controllers\Controller;
+use App\Exceptions\ReferralCodeLimitException;
 use App\Models\ReferralCode;
 use App\Services\ReferralCodeService;
+use App\Services\ReferralService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -56,10 +58,10 @@ class ReferralCodeController extends Controller
      *     )
      * )
      *
+     * @param Request $request
      * @return mixed
-     * @throws ValidationException
      */
-    public function index(Request $request)
+    public function index(Request $request): mixed
     {
         try {
             $codes = ReferralCode::byOwner()
@@ -69,17 +71,15 @@ class ReferralCodeController extends Controller
                 ->get();
 
             return response()->jsonApi([
-                'title' => "List referral",
-                'message' => 'list referral successfully received',
-                'data' => $codes->toArray(),
+                'title' => 'List referral codes',
+                'message' => 'list referral codes was received successfully',
+                'data' => $codes,
             ]);
         } catch (Exception $e) {
-            $currentUserId = Auth::user()->getAuthIdentifier();
-
             return response()->jsonApi([
-                'title' => "Not received list",
-                'message' => "Data #{$currentUserId} not found",
-            ], 404);
+                'title' => 'List referral codes',
+                'message' => 'Error reading list of referral codes: ' . $e->getMessage(),
+            ], 500);
         }
     }
 
@@ -171,39 +171,35 @@ class ReferralCodeController extends Controller
             throw new Exception($validator->errors()->first());
         }
 
-        $validated = $validator->validate();
-
-        // Check amount generated codes for current user
-        $codesTotal = ReferralCode::byOwner()->byApplication()->get()->count();
-
-        if ($codesTotal >= config('settings.referral_code.limit')) {
-            return response()->jsonApi([
-                'title' => "Exceeded the limit",
-                'message' => sprintf("You can generate up to %s codes for the current service", config('settings.referral_code.limit')),
-            ], 400);
-        }
-
-        DB::beginTransaction();
         // Try to create new code with link
         try {
+            // Check user in the referral program
+            $user = ReferralService::getUser(Auth::user()->getAuthIdentifier());
 
-            ReferralCode::byOwner()->byApplication()->update([
-                'is_default' => false,
-            ]);
+            // Create new code
+            $code = ReferralCodeService::createReferralCode($request, $user);
 
-            $code = ReferralCodeService::createReferralCode($request);
-
-            DB::commit();
             return response()->jsonApi([
                 'title' => "Referral code generate",
-                'message' => 'The creation of the referral link was successful',
-                'data' => $code->toArray(),
+                'message' => 'Referral code / link was created successfully',
+                'data' => [
+                    'id' => $code->id,
+                    'code' => $code->code,
+                    //'link' => $code->link,
+                    'note' => $code->note,
+                    'is_default' => $code->is_default
+                ],
             ]);
+        } catch (ReferralCodeLimitException $e) {
+            return response()->jsonApi([
+                'title' => 'Referral code generate',
+                'message' => $e->getMessage(),
+            ], 400);
         } catch (Exception $e) {
             return response()->jsonApi([
                 'title' => 'Referral code generate',
                 'message' => "There was an error while creating a referral code: " . $e->getMessage(),
-            ], 404);
+            ], 400);
         }
     }
 
@@ -340,8 +336,11 @@ class ReferralCodeController extends Controller
         try {
 
             DB::transaction(function () use ($request, $id) {
+
                 $code = ReferralCode::find($id);
+
                 $code->update($request->all());
+
                 ReferralCode::byOwner()->byApplication()->update([
                     'is_default' => false,
                 ]);
@@ -418,7 +417,7 @@ class ReferralCodeController extends Controller
      *
      * @return mixed
      */
-    public function destroy($id)
+    public function destroy($id): mixed
     {
         try {
             ReferralCode::destroy($id);

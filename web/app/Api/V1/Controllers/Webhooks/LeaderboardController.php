@@ -93,14 +93,17 @@ class LeaderboardController extends Controller
     {
         try {
             $query = User::query()->where('referrer_id', $id);
+
             $userTotalInvitees = $query->count();
+
             $invitees = $query->select('id')
                 ->get(['id'])
                 ->pluck('id')
                 ->toArray();
 
             $userPlatforms = DB::table('application_user')
-                ->whereIn('user_id', $invitees)->select('application_id')
+                ->whereIn('user_id', $invitees)
+                ->select('application_id')
                 ->get(['application_id'])->unique('application_id');
 
             $overviewEarnings = [];
