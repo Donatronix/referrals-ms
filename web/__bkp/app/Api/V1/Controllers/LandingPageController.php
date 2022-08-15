@@ -37,7 +37,7 @@ class LandingPageController extends Controller
      *         description="List of all landing pages"
      *     ),
      *     @OA\Response(
-     *         response=401,
+     *         response="401",
      *         description="Unauthorized"
      *     ),
      * )
@@ -61,17 +61,15 @@ class LandingPageController extends Controller
                 ];
             }
         } catch (Exception $e) {
-            return response()->json([
-                'success' => false,
+            return response()->jsonApi([
                 'error' => $e->getMessage(),
             ], 400);
         }
 
         // Return response
-        return response()->json([
-            'success' => true,
+        return response()->jsonApi([
             'data' => $pages,
-        ], 200);
+        ]);
     }
 
     /**
@@ -111,7 +109,7 @@ class LandingPageController extends Controller
      *         description="Save successfull"
      *     ),
      *     @OA\Response(
-     *         response=401,
+     *         response="401",
      *         description="Unauthorized"
      *     ),
      * )
@@ -141,16 +139,14 @@ class LandingPageController extends Controller
             $page->json = json_encode($request->jsonarray);
             $page->save();
         } catch (Exception $e) {
-            return response()->json([
-                'success' => false,
+            return response()->jsonApi([
                 'error' => $e->getMessage(),
             ], 400);
         }
 
         // Return response
-        return response()->json([
-            'success' => true,
+        return response()->jsonApi([
             'data' => $page->id,
-        ], 200);
+        ]);
     }
 }

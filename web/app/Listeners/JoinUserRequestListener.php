@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Services\ReferralService;
+use Illuminate\Support\Facades\Log;
 
 class JoinUserRequestListener
 {
@@ -22,7 +23,7 @@ class JoinUserRequestListener
             // Adding an inviter to a new user
             ReferralService::setInviter($newUser, $data['new_user_id']);
         } catch (\Exception $e){
-            throw new Exception($e->getMessage());
+            Log::error($e->getMessage());
         }
     }
 }

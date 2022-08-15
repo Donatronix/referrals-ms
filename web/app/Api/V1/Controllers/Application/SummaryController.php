@@ -6,6 +6,7 @@ use App\Api\V1\Controllers\Controller;
 use App\Models\ReferralCode;
 use App\Models\Total;
 use App\Models\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Throwable;
 
@@ -63,9 +64,9 @@ class SummaryController extends Controller
      *                      type="integer",
      *                      description="Amount earned by user",
      *                      example=450000,
-     *                 ),
-     *             ),
-     *         ),
+     *                 )
+     *             )
+     *         )
      *     ),
      *     @OA\Response(
      *         response="401",
@@ -92,30 +93,60 @@ class SummaryController extends Controller
     public function index(Request $request): mixed
     {
         try {
-
             $referrerId = Auth()->user()->getAuthIdentifier();
 
-            $totalReferrals = User::where('referrer_id', $referrerId)->count();
-            $totalCodesGenerated = ReferralCode::where('user_id', $referrerId)->count();
-            $topReferralBonus = $this->getTopReferralBonus();
-            $amountEarned = Total::where('user_id', $referrerId)->sum('reward');
-            $rank = (int)User::find($referrerId)?->rank;
+            $user = User::findOrFail($referrerId);
 
+            $id = $user->id;
+            $name = $user->name;
+            $country = $user->country;
+
+            $summary =  [
+                    'id' => $id,
+                    'name' => $name,
+                    'country' => $country,
+                    'totalReferrals' => User::query()->where('referrer_id', $referrerId)->count(),
+                    'totalCodesGenerated' => ReferralCode::query()->where('user_id', $referrerId)->count(),
+                    'amountEarned' => Total::query()->where('user_id', $referrerId)->sum('reward'),
+                    'topReferralBonus' => Total::query()->max('reward'),
+                    'rank' => 0,
+                ];
+
+            if (empty($summary)) {
+                $summary = [
+                    'id' => $id,
+                    'name' => $name,
+                    'country' => $country,
+                    'totalReferrals' => 0,
+                    'totalCodesGenerated' => 0,
+                    'amountEarned' => 0,
+                    'topReferralBonus' => 0,
+                    'rank' => 0,
+                ];
+            }
             return response()->jsonApi([
-                'type' => 'success',
                 'title' => "List referral and codes summary",
                 'message' => 'Referral and codes summary successfully received',
-                'data' => [
-                    'totalReferrals' => $totalReferrals,
-                    'totalCodesGenerated' => $totalCodesGenerated,
-                    'topReferralBonus' => $topReferralBonus,
-                    'amountEarned' => $amountEarned,
-                    'rank' => $rank,
-                ],
-            ], 200);
+                'data' => $summary,
+            ]);
+        } catch (ModelNotFoundException $e) {
+                $summary = [
+                    'id' => "",
+                    'name' => "",
+                    'country' => "",
+                    'totalReferrals' => 0,
+                    'totalCodesGenerated' => 0,
+                    'amountEarned' => 0,
+                    'topReferralBonus' => 0,
+                    'rank' => 0,
+                ];
+                return response()->jsonApi([
+                    'title' => "List referral and codes summary",
+                    'message' => 'User does not exist',
+                    'data' => $summary,
+                ], 404);
         } catch (Throwable $e) {
             return response()->jsonApi([
-                'type' => 'danger',
                 'title' => "Not received list",
                 'message' => $e->getMessage(),
             ], 404);
@@ -128,6 +159,7 @@ class SummaryController extends Controller
     protected function getTopReferralBonus(): mixed
     {
         $users = Total::distinct('user_id')->get('user_id');
+
         $topReferralBonus = $users->map(function ($user) {
             $userId = $user->user_id;
             $total = Total::where('user_id', $userId)->sum('reward');
@@ -135,7 +167,7 @@ class SummaryController extends Controller
                 'total' => $total,
             ];
         })->sortByDesc('total')->first();
+
         return $topReferralBonus['total'];
     }
-
 }

@@ -55,7 +55,7 @@ class TemplateController extends Controller
      *         description="List of all templates"
      *     ),
      *     @OA\Response(
-     *         response=401,
+     *         response="401",
      *         description="Unauthorized"
      *     ),
      * )
@@ -73,17 +73,15 @@ class TemplateController extends Controller
                 $t->jasonarray = json_decode($t->json);
             }
         } catch (Exception $e) {
-            return response()->json([
-                'success' => false,
+            return response()->jsonApi([
                 'error' => $e->getMessage(),
             ], 400);
         }
 
         // Return response
-        return response()->json([
-            'success' => true,
+        return response()->jsonApi([
             'data' => $templates,
-        ], 200);
+        ]);
     }
 
     /**
@@ -131,7 +129,7 @@ class TemplateController extends Controller
      *         description="Save successfull"
      *     ),
      *     @OA\Response(
-     *         response=401,
+     *         response="401",
      *         description="Unauthorized"
      *     ),
      * )
@@ -155,16 +153,14 @@ class TemplateController extends Controller
             $template->json = json_encode($request->jsonarray);
             $template->save();
         } catch (Exception $e) {
-            return response()->json([
-                'success' => false,
+            return response()->jsonApi([
                 'error' => $e->getMessage(),
             ], 400);
         }
 
         // Return response
-        return response()->json([
-            'success' => true,
+        return response()->jsonApi([
             'data' => $template->id,
-        ], 200);
+        ]);
     }
 }

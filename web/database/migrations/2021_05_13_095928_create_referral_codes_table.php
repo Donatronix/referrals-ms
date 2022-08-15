@@ -22,7 +22,7 @@ class CreateReferralCodesTable extends Migration
                 ->onDelete('restrict');
 
             $table->string('code', 8)->unique();
-            $table->string('link', 35)->unique();
+            $table->string('link')->unique();
 
             $table->string('application_id', 50)
                 ->nullable()
@@ -32,7 +32,7 @@ class CreateReferralCodesTable extends Migration
                 ->default(false)
                 ->comment('Default link');
 
-            $table->string('note')
+            $table->string('note', 250)
                 ->nullable()
                 ->comment('The user can mark what he created the link for');
 

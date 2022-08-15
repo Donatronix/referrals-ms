@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Models\Total;
 use App\Models\Transaction;
-use PubSub;
 
 class RemoteService
 {
@@ -17,7 +16,6 @@ class RemoteService
      */
     public static function accrualRemuneration($data)
     {
-
         if ($data !== null) {
             return false;
         }
@@ -50,10 +48,5 @@ class RemoteService
         ]);
 
         return true;
-    }
-
-    public static function sendData($action, $data, $microservice)
-    {
-        PubSub::publish($action, $data, $microservice);
     }
 }

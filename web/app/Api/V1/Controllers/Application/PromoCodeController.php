@@ -86,17 +86,14 @@ class PromoCodeController extends Controller
             ]);
 
             return response()->jsonApi([
-                'type' => 'success',
                 'title' => "Get promo code",
                 'message' => 'Get promo code',
                 'data' => $code,
-            ], 200);
+            ]);
         } catch (Throwable $th) {
             return response()->jsonApi([
-                'type' => 'danger',
                 'title' => "Get promo code",
                 'message' => "There was an error while creating a promo code: " . $th->getMessage(),
-                'data' => null,
             ], 404);
         }
     }
@@ -162,7 +159,6 @@ class PromoCodeController extends Controller
     public function validatePromoCode(Request $request): mixed
     {
         try {
-
             $this->validate($request, [
                 'code' => 'required|string|exists:promo_codes,code',
             ]);
@@ -170,17 +166,14 @@ class PromoCodeController extends Controller
             $code = PromoCode::query()->where('code', $request->code)->first();
 
             return response()->jsonApi([
-                'type' => 'success',
                 'title' => "Get promo code info",
-                'message' => 'Get promo code info',
+                'message' => 'Promo code validated',
                 'data' => $code,
-            ], 200);
+            ]);
         } catch (Throwable $e) {
             return response()->jsonApi([
-                'type' => 'danger',
                 'title' => "Get promo code info",
                 'message' => $e->getMessage(),
-                'data' => null,
             ], 404);
         }
     }

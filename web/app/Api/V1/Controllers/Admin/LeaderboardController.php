@@ -38,6 +38,24 @@ class LeaderboardController extends Controller
      *             type="number"
      *         ),
      *     ),
+     *
+     *     @OA\Parameter(
+     *         name="filter",
+     *         in="query",
+     *         description="How to filter data: today, this week, this month, this year",
+     *         @OA\Schema(
+     *             type="string"
+     *         ),
+     *     ),
+     *
+     *     @OA\Parameter(
+     *         name="country",
+     *         in="query",
+     *         description="Filter results by country",
+     *         @OA\Schema(
+     *             type="string"
+     *         ),
+     *     ),
      *     @OA\Parameter(
      *         name="page",
      *         in="query",
@@ -189,25 +207,19 @@ class LeaderboardController extends Controller
     {
         try {
             return response()->jsonApi([
-                'type' => 'success',
                 'title' => 'Retrieval success',
                 'message' => 'Leaderboard successfully generated',
                 'data' => $this->leaderboard($request),
-
-            ], 200);
+            ]);
         } catch (ModelNotFoundException $e) {
             return response()->jsonApi([
-                'type' => 'danger',
                 'title' => "Not operation",
                 'message' => "Error showing all users",
-                'data' => null,
             ], 404);
         } catch (Throwable $e) {
             return response()->jsonApi([
-                'type' => 'danger',
                 'title' => "Not operation",
                 'message' => $e->getMessage(),
-                'data' => null,
             ], 404);
         }
     }
@@ -282,9 +294,9 @@ class LeaderboardController extends Controller
      *                      type="string",
      *                      description="Referral code used by invitee",
      *                      example="qawdnasfkm",
-     *                 ),
-     *             ),
-     *         ),
+     *                 )
+     *             )
+     *         )
      *     ),
      *     @OA\Response(
      *          response="401",
@@ -328,21 +340,15 @@ class LeaderboardController extends Controller
                 ];
             }
 
-            return response()->jsonApi(
-                array_merge([
-                    'type' => 'success',
-                    'title' => 'Retrieval success',
-                    'message' => 'The referral code (link) has been successfully updated',
-                ], [
-                    'data' => $retVal,
-                ]),
-                200);
+            return response()->jsonApi([
+                'title' => 'Retrieval success',
+                'message' => 'The referral code (link) has been successfully updated',
+                'data' => $retVal,
+            ]);
         } catch (Throwable $e) {
             return response()->jsonApi([
-                'type' => 'danger',
                 'title' => "Not operation",
                 'message' => $e->getMessage(),
-                'data' => null,
             ], 404);
         }
     }
@@ -359,6 +365,7 @@ class LeaderboardController extends Controller
             //TODO get user id by country and city from identity ms
             return [];
         }
+
         //TODO get user id by country from identity ms
         return User::whereCountry($country)->get();
     }

@@ -1,28 +1,29 @@
 <?php
 
-namespace App\Api\V1\Controllers\Webhooks;
+namespace App\Api\V1\Controllers\Admin;
 
 use App\Api\V1\Controllers\Controller;
 use App\Models\Total;
 use Exception;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 /**
  * Class ReferralController
  *
- * @package App\Api\V1\Controllers
+ * @package App\Api\V1\Controllers\Application
  */
 class ReferralController extends Controller
 {
+
     /**
      * Get the total earnings
      *
      * @OA\Get(
-     *     path="/webhooks/total-earnings",
+     *     path="/wallets/total-earnings",
      *     summary="Get total earnings",
      *     description="Get total earnings",
-     *     tags={"Webhooks"},
+     *     tags={"Referrals"},
      *
      *     security={{
      *         "default": {
@@ -32,12 +33,20 @@ class ReferralController extends Controller
      *         }
      *     }},
      *
+     *     @OA\Parameter(
+     *         name="user_id",
+     *         in="query",
+     *         description="User Id",
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
      *     @OA\Response(
      *         response="200",
      *         description="Total reward successfully retrieved"
      *     ),
      *     @OA\Response(
-     *         response="401",
+     *         response=401,
      *         description="Unauthorized"
      *     ),
      *     @OA\Response(
@@ -52,16 +61,21 @@ class ReferralController extends Controller
      *
      * @param Request $request
      *
-     * @return JsonResponse
+     * @return mixed
      */
-    public function getReferralTotals(Request $request)
+    public function getWalletTotal(Request $request): mixed
     {
         try {
-            if ($request->header('user_id')) {
-                $total = Total::where('user_id', $request->header('user_id'))->get()->sum('reward');
-            } else {
-                $total = Total::all()->sum('reward');
+            $validator = Validator::make($request->all(), [
+                'user_id' => 'required|string|exists:referral_codes,user_id',
+            ]);
+
+            if ($validator->fails()) {
+                throw new Exception($validator->errors()->first());
             }
+
+            $user_id = $validator->validated()['user_id'];
+            $total = Total::where('user_id', $user_id)->get()->sum('reward');
 
             // Return response
             return response()->jsonApi([
@@ -72,7 +86,7 @@ class ReferralController extends Controller
         } catch (Exception $e) {
             return response()->jsonApi([
                 'title' => 'Total reward',
-                'message' => "Error retrieving total reward: " . $e->getMessage(),
+                'message' => "Error retrieving total reward: " . $e->getMessage()
             ], 404);
         }
     }

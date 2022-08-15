@@ -51,7 +51,7 @@ $router->group([
             'prefix' => 'referrals',
         ], function ($router) {
             $router->get('/', 'ReferralController@index');
-            $router->post('/', 'ReferralController@create');
+            $router->post('/', 'ReferralController@store');
 
             /**
              * Leaderboard
@@ -128,7 +128,7 @@ $router->group([
         $router->get('transactions', 'TransactionsController@index');
         $router->get('transactions/{id}', 'TransactionsController@show');
         $router->post('transactions', 'TransactionsController@store');
-        $router->patch('transactions/{id}', 'TransactionsController@update');
+        $router->put('transactions/{id}', 'TransactionsController@update');
         $router->delete('transactions/{id}', 'TransactionsController@destroy');
 
         /**
@@ -144,7 +144,6 @@ $router->group([
      */
     $router->group([
         'prefix' => 'webhooks',
-//        'middleware' => 'checkMS',
         'namespace' => 'Webhooks',
         'middleware' => 'checkMS',
     ], function ($router) {
@@ -152,6 +151,6 @@ $router->group([
          * Referrals total earnings
          */
         $router->get('total-earnings', 'ReferralController@getReferralTotals');
-        $router->get('leaderboard/overview-earnings/{referrerId}', 'ReferralController@getPlatformEarnings');
+        $router->get('leaderboard/overview-earnings/{id}', 'LeaderboardController@getPlatformEarnings');
     });
 });
