@@ -28,6 +28,12 @@ class EventServiceProvider extends ServiceProvider
         'NewUserRegistered' => [
             'App\Listeners\NewUserRegisteredListener',
         ],
+        'InfluencerCodeCreated' => [
+            'App\Listeners\InfluencerCodeCreatedListener',
+        ],
+        'InfluencerCodeUpdated' => [
+            'App\Listeners\InfluencerCodeUpdatedListener',
+        ],
     ];
 
     /**
