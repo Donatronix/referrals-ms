@@ -38,7 +38,7 @@ class ReferralCodeService
             }
 
             // Correcting is_default if $codesTotal === 0
-            if($codesTotal == 0){
+            if($codesTotal === 0){
                 $is_default = true;
             }
 
@@ -48,10 +48,10 @@ class ReferralCodeService
             }
 
             // Create new referral code
-            $rc = ReferralCode::create([
+            $rc = ReferralCode::query()->create([
                 'user_id' => $user->id,
                 'application_id' => $request->get('application_id'),
-                'link' => 'link' . rand(1, 1000),
+                'link' => 'link' . random_int(1, 1000),
                 'is_default' => $is_default,
                 'note' => $request->get('note', null),
             ]);
