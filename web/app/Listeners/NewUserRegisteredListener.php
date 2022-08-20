@@ -27,37 +27,47 @@ class NewUserRegisteredListener
         $checkUser = User::where('id', $newUser->id)->first();
 
         if ($checkUser->isEmpty()) {
-            PubSub::transaction(function () use ($newUser, $event) {
-                $referrer_id = null;
-                if(isset($event['referral_code'])){
-                    $referral = ReferralCode::where('code', $event['referral_code'])->first();
-                    $referrer_id = $referral->user_id;
-                }
 
-                // Create user
-                User::query()->create([
-                    'id' => $newUser->id,
-                    'country' => $this->getCountry($newUser->phone_number),
-                    'referrer_id' => $referrer_id,
-                    'username' => $newUser->username ?? null,
-                    'name' => $newUser->name ?? null,
-                ]);
 
-                DB::table('application_user')->insert([
-                    'user_id' => $newUser->id,
-                    'application_id' => $event['application_id'] ?? null,
-                ]);
+            $referrer_id = null;
+            if(isset($event['referral_code'])){
+                $referral = ReferralCode::where('code', $event['referral_code'])->first();
+                $referrer_id = $referral->user_id;
+            }
 
-                $referrerTotal = Total::where('user_id', $referrer_id)->first();
-                $reward = $referrerTotal->reward;
-                $referrerTotal->increment('amount');
-                $referrerTotal->increment('reward', User::REFERRER_POINTS);
-                $referrerTotal->update([
-                    'twenty_four_hour_percentage' => ($referrerTotal->reward - $reward) * 100 / $referrerTotal->reward,
-                ]);
-            })->publish('AddCoinsToBalanceInWallet', [
-                'reward' => User::REFERRER_POINTS,
+            // Create user
+            User::query()->create([
+                'id' => $newUser->id,
+                'country' => $this->getCountry($newUser->phone_number),
+                'referrer_id' => $referrer_id,
+                'username' => $newUser->username ?? null,
+                'name' => $newUser->name ?? null,
+            ]);
+
+            DB::table('application_user')->insert([
                 'user_id' => $newUser->id,
+                'application_id' => $event['application_id'] ?? null,
+            ]);
+
+            $referrerTotal = Total::where('user_id', $referrer_id)->first();
+            $reward = $referrerTotal->reward;
+            $referrerTotal->increment('amount');
+            $referrerTotal->increment('reward', User::REFERRER_POINTS);
+            $referrerTotal->update([
+                'twenty_four_hour_percentage' => ($referrerTotal->reward - $reward) * 100 / $referrerTotal->reward,
+            ]);
+
+
+            // Send request to wallet for update balance
+            PubSub::publish('UpdateBalanceRequest', [
+                'posting' => 'increase',
+                'amount' => User::REFERRER_POINTS,
+                'currency' => 'divit',
+                'type' => 'bonus',
+                'user_id' => $newUser->id,
+                'document_id' => $referrerTotal->id,
+                'document_object' => class_basename(get_class($referrerTotal)),
+                'document_service' => env('RABBITMQ_EXCHANGE_NAME')
             ], config('pubsub.queue.crypto_wallets'));
         }
     }
