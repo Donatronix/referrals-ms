@@ -7,6 +7,7 @@ use App\Models\Total;
 use App\Models\User;
 use App\Traits\GetCountryTrait;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use PubSub;
 
 class NewUserRegisteredListener
@@ -22,6 +23,11 @@ class NewUserRegisteredListener
      */
     public function handle(array $event): void
     {
+        // Logging income data
+        if(env('APP_DEBUG')){
+            Log::info($event);
+        }
+
         $newUser = collect($event['user']);
 
         $checkUser = User::where('id', $newUser->id)->first();
