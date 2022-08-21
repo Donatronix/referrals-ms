@@ -4,10 +4,8 @@ namespace App\Listeners;
 
 use App\Models\ReferralCode;
 
-class InfluencerCodeUpdatedListener
+class InfluencerCodeDeletedListener
 {
-
-
     /**
      * Handle the event.
      *
@@ -24,6 +22,5 @@ class InfluencerCodeUpdatedListener
             ->where('application_id', 'g-met')
             ->where('link', 'link' . $receivedData->code)
             ->delete();
-
     }
 }

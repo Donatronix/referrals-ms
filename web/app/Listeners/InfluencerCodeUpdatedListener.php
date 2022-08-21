@@ -6,8 +6,6 @@ use App\Models\ReferralCode;
 
 class InfluencerCodeUpdatedListener
 {
-
-
     /**
      * Handle the event.
      *
