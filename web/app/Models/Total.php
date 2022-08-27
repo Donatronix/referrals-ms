@@ -35,6 +35,7 @@ class Total extends Model
         'amount',
         'reward',
         'is_current',
+        'twenty_four_hour_percentage',
     ];
 
     /**
@@ -67,7 +68,7 @@ class Total extends Model
                 $informer = [
                     'rank' => $rank,
                     'reward' => $user->reward,
-                    'grow_this_month' => Total::getInvitedUsersByDate($user_id, 'current_month_count'),
+                    'growth_this_month' => Total::getInvitedUsersByDate($user_id, 'current_month_count'),
                 ];
                 break;
             }

@@ -31,21 +31,13 @@ class LandingPageController extends Controller
      *             "ManagerWrite"
      *         }
      *     }},
-     *     x={
-     *         "auth-type": "Application & Application User",
-     *         "throttling-tier": "Unlimited",
-     *         "wso2-application-security": {
-     *             "security-types": {"oauth2"},
-     *             "optional": "false"
-     *         }
-     *     },
      *
      *     @OA\Response(
      *         response="200",
      *         description="List of all landing pages"
      *     ),
      *     @OA\Response(
-     *         response=401,
+     *         response="401",
      *         description="Unauthorized"
      *     ),
      * )
@@ -69,17 +61,15 @@ class LandingPageController extends Controller
                 ];
             }
         } catch (Exception $e) {
-            return response()->json([
-                'success' => false,
+            return response()->jsonApi([
                 'error' => $e->getMessage(),
             ], 400);
         }
 
         // Return response
-        return response()->json([
-            'success' => true,
+        return response()->jsonApi([
             'data' => $pages,
-        ], 200);
+        ]);
     }
 
     /**
@@ -97,14 +87,6 @@ class LandingPageController extends Controller
      *             "ManagerWrite"
      *         }
      *     }},
-     *     x={
-     *         "auth-type": "Application & Application User",
-     *         "throttling-tier": "Unlimited",
-     *         "wso2-application-security": {
-     *             "security-types": {"oauth2"},
-     *             "optional": "false"
-     *         }
-     *     },
      *
      *     @OA\RequestBody(
      *          @OA\JsonContent(
@@ -127,7 +109,7 @@ class LandingPageController extends Controller
      *         description="Save successfull"
      *     ),
      *     @OA\Response(
-     *         response=401,
+     *         response="401",
      *         description="Unauthorized"
      *     ),
      * )
@@ -157,16 +139,14 @@ class LandingPageController extends Controller
             $page->json = json_encode($request->jsonarray);
             $page->save();
         } catch (Exception $e) {
-            return response()->json([
-                'success' => false,
+            return response()->jsonApi([
                 'error' => $e->getMessage(),
             ], 400);
         }
 
         // Return response
-        return response()->json([
-            'success' => true,
+        return response()->jsonApi([
             'data' => $page->id,
-        ], 200);
+        ]);
     }
 }

@@ -3,11 +3,15 @@
 namespace App\Api\V1\Controllers\Application;
 
 use App\Api\V1\Controllers\Controller;
+use App\Exceptions\ReferralCodeLimitException;
 use App\Models\ReferralCode;
 use App\Services\ReferralCodeService;
+use App\Services\ReferralService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 /**
@@ -32,14 +36,6 @@ class ReferralCodeController extends Controller
      *             "ManagerWrite"
      *         }
      *     }},
-     *     x={
-     *         "auth-type": "Application & Application User",
-     *         "throttling-tier": "Unlimited",
-     *         "wso2-application-security": {
-     *             "security-types": {"oauth2"},
-     *             "optional": "false"
-     *         }
-     *     },
      *
      *     @OA\Parameter(
      *         name="application_id",
@@ -62,10 +58,10 @@ class ReferralCodeController extends Controller
      *     )
      * )
      *
+     * @param Request $request
      * @return mixed
-     * @throws ValidationException
      */
-    public function index(Request $request)
+    public function index(Request $request): mixed
     {
         try {
             $codes = ReferralCode::byOwner()
@@ -75,20 +71,15 @@ class ReferralCodeController extends Controller
                 ->get();
 
             return response()->jsonApi([
-                'type' => 'success',
-                'title' => "List referral",
-                'message' => 'list referral successfully received',
-                'data' => $codes->toArray(),
-            ], 200);
+                'title' => 'List referral codes',
+                'message' => 'list referral codes was received successfully',
+                'data' => $codes,
+            ]);
         } catch (Exception $e) {
-            $currentUserId = Auth::user()->getAuthIdentifier();
-
             return response()->jsonApi([
-                'type' => 'danger',
-                'title' => "Not received list",
-                'message' => "Data #{$currentUserId} not found",
-                'data' => null,
-            ], 404);
+                'title' => 'List referral codes',
+                'message' => 'Error reading list of referral codes: ' . $e->getMessage(),
+            ], 500);
         }
     }
 
@@ -108,14 +99,6 @@ class ReferralCodeController extends Controller
      *             "ManagerWrite"
      *         }
      *     }},
-     *     x={
-     *         "auth-type": "Application & Application User",
-     *         "throttling-tier": "Unlimited",
-     *         "wso2-application-security": {
-     *             "security-types": {"oauth2"},
-     *             "optional": "false"
-     *         }
-     *     },
      *
      *     @OA\RequestBody(
      *         @OA\JsonContent(
@@ -175,44 +158,48 @@ class ReferralCodeController extends Controller
      * @param Request $request
      *
      * @return mixed
-     * @throws ValidationException
+     * @throws ValidationException|Exception
      */
-    public function store(Request $request)
+    public function store(Request $request): mixed
     {
         // Validate input data
-        $this->validate(
-            $request,
+        $validator = Validator::make($request->all(), [
             array_merge(['application_id' => 'required|string|max:36'], ReferralCode::$rules)
-        );
+        ]);
 
-        // Check amount generated codes for current user
-        $codesTotal = ReferralCode::byOwner()->byApplication()->get()->count();
-
-        if ($codesTotal >= config('settings.referral_code.limit')) {
-            return response()->jsonApi([
-                'type' => 'warning',
-                'title' => "Exceeded the limit",
-                'message' => sprintf("You can generate up to %s codes for the current service", config('settings.referral_code.limit')),
-            ], 200);
+        if ($validator->fails()) {
+            throw new Exception($validator->errors()->first());
         }
 
         // Try to create new code with link
         try {
-            $code = ReferralCodeService::createReferralCode($request);
+            // Check user in the referral program
+            $user = ReferralService::getUser(Auth::user()->getAuthIdentifier());
+
+            // Create new code
+            $code = ReferralCodeService::createReferralCode($request, $user);
 
             return response()->jsonApi([
-                'type' => 'success',
                 'title' => "Referral code generate",
-                'message' => 'The creation of the referral link was successful',
-                'data' => $code->toArray(),
-            ], 200);
+                'message' => 'Referral code / link was created successfully',
+                'data' => [
+                    'id' => $code->id,
+                    'code' => $code->code,
+                    //'link' => $code->link,
+                    'note' => $code->note,
+                    'is_default' => $code->is_default
+                ],
+            ]);
+        } catch (ReferralCodeLimitException $e) {
+            return response()->jsonApi([
+                'title' => 'Referral code generate',
+                'message' => $e->getMessage(),
+            ], 400);
         } catch (Exception $e) {
             return response()->jsonApi([
-                'type' => 'danger',
                 'title' => 'Referral code generate',
                 'message' => "There was an error while creating a referral code: " . $e->getMessage(),
-                'data' => null,
-            ], 404);
+            ], 400);
         }
     }
 
@@ -231,15 +218,6 @@ class ReferralCodeController extends Controller
      *              "ManagerWrite"
      *           }
      *     }},
-     *
-     *     x={
-     *          "auth-type": "Application & Application User",
-     *          "throttling-tier": "Unlimited",
-     *          "wso2-application-security": {
-     *              "security-types": {"oauth2"},
-     *              "optional": "false"
-     *          }
-     *     },
      *
      *     @OA\Parameter(
      *          name="id",
@@ -272,17 +250,14 @@ class ReferralCodeController extends Controller
             $code = ReferralCode::find($id);
 
             return response()->jsonApi([
-                'type' => 'success',
                 'title' => "Get referral code info",
                 'message' => 'Get referral code info with link',
                 'data' => $code,
-            ], 200);
+            ]);
         } catch (Exception $e) {
             return response()->jsonApi([
-                'type' => 'danger',
                 'title' => "Get referral code info",
                 'message' => "Referral code #{$id} not found",
-                'data' => null,
             ], 404);
         }
     }
@@ -302,15 +277,6 @@ class ReferralCodeController extends Controller
      *              "ManagerWrite"
      *          },
      *     }},
-     *
-     *     x={
-     *          "auth-type": "Application & Application User",
-     *          "throttling-tier": "Unlimited",
-     *          "wso2-application-security": {
-     *              "security-types": {"oauth2"},
-     *              "optional": "false"
-     *          }
-     *     },
      *
      *     @OA\Parameter(
      *          name="id",
@@ -355,7 +321,7 @@ class ReferralCodeController extends Controller
      *     ),
      * )
      *
-     * @param Request                  $request
+     * @param Request $request
      * @param                          $id
      *
      * @return mixed
@@ -368,27 +334,28 @@ class ReferralCodeController extends Controller
 
         // Try to find referral code and update it
         try {
-            $data = ReferralCode::find($id);
 
-            // Check if has is_default parameter, then reset all previous code
-            if ($request->has('is_default')) {
-                ReferralCodeService::defaultReset($data->user_id, $data->application_id);
+            DB::transaction(function () use ($request, $id) {
 
-                $data->is_default = $request->boolean('is_default');
-            }
+                $code = ReferralCode::find($id);
 
-            $data->note = $request->get('note', null);
-            $data->save();
+                $code->update($request->all());
+
+                ReferralCode::byOwner()->byApplication()->update([
+                    'is_default' => false,
+                ]);
+
+                $this->setDefault($id);
+            });
 
             // Send response
             return response()->jsonApi([
-                'type' => 'success',
                 'title' => "Updating success",
                 'message' => 'The referral code (link) has been successfully updated',
-            ], 200);
+                'data' => ReferralCode::find($id),
+            ]);
         } catch (Exception $e) {
             return response()->jsonApi([
-                'type' => 'danger',
                 'title' => 'Referrals link not found',
                 'message' => "Referral code #{$id} updated error: " . $e->getMessage(),
             ], 404);
@@ -410,14 +377,6 @@ class ReferralCodeController extends Controller
      *             "ManagerWrite"
      *         },
      *     }},
-     *     x={
-     *         "auth-type": "Application & Application User",
-     *         "throttling-tier": "Unlimited",
-     *         "wso2-application-security": {
-     *             "security-types": {"oauth2"},
-     *             "optional": "false"
-     *         }
-     *     },
      *
      *     @OA\Parameter(
      *         name="id",
@@ -458,19 +417,17 @@ class ReferralCodeController extends Controller
      *
      * @return mixed
      */
-    public function destroy($id)
+    public function destroy($id): mixed
     {
         try {
             ReferralCode::destroy($id);
 
             return response()->jsonApi([
-                'type' => 'success',
                 'title' => "Deleting success",
                 'message' => 'The referral link field has been successfully deleted',
-            ], 200);
+            ]);
         } catch (Exception $e) {
             return response()->jsonApi([
-                'type' => 'danger',
                 'title' => 'Not found',
                 'message' => "Referrals link #{$id} for deleted not found",
             ], 404);
@@ -492,14 +449,6 @@ class ReferralCodeController extends Controller
      *              "ManagerWrite"
      *           }
      *     }},
-     *     x={
-     *          "auth-type": "Application & Application User",
-     *          "throttling-tier": "Unlimited",
-     *          "wso2-application-security": {
-     *              "security-types": {"oauth2"},
-     *              "optional": "false"
-     *          }
-     *     },
      *
      *     @OA\Parameter(
      *          name="id",
@@ -537,13 +486,11 @@ class ReferralCodeController extends Controller
             $code->update(['is_default' => true]);
 
             return response()->jsonApi([
-                'type' => 'success',
                 'title' => "Update was success",
                 'message' => 'Changing the default а referral link was successful.',
-            ], 200);
+            ]);
         } catch (Exception $e) {
             return response()->jsonApi([
-                'type' => 'danger',
                 'title' => 'Operation not successful',
                 'message' => "Changing the default a referral link was not successful.",
             ], 404);
@@ -567,17 +514,14 @@ class ReferralCodeController extends Controller
                 ->first();
 
             return response()->jsonApi([
-                'type' => 'success',
                 'title' => "Update was success",
                 'message' => 'Changing the default а referral link was successful.',
                 'data' => $referral_data,
-            ], 200);
+            ]);
         } catch (Exception $e) {
             return response()->jsonApi([
-                'type' => 'danger',
                 'title' => 'Not received list',
                 'message' => "Data of referral code not found",
-                'data' => null,
             ], 404);
         }
     }

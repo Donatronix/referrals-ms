@@ -7,8 +7,7 @@ use App\Models\ReferralCode;
 use App\Models\Total;
 use App\Models\User;
 use App\Services\RemoteService;
-use Carbon\Carbon;
-use Carbon\CarbonImmutable;
+use App\Traits\LeaderboardTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,13 +15,15 @@ use Throwable;
 
 class LeaderboardController extends Controller
 {
+    use LeaderboardTrait;
+
     /**
      *  A list of leaders in the invitation referrals
      *
      * @OA\Get(
      *     path="/leaderboard",
      *     description="A list of leaders in the invitation referrals",
-     *     tags={"Leaderboard"},
+     *     tags={"Application Leaderboard"},
      *
      *     security={{
      *         "default" :{
@@ -32,21 +33,30 @@ class LeaderboardController extends Controller
      *         }
      *     }},
      *
-     *     x={
-     *         "auth-type": "Application & Application User",
-     *         "throttling-tier": "Unlimited",
-     *         "wso2-application-security": {
-     *             "security-types": {"oauth2"},
-     *             "optional": "false"
-     *         }
-     *     },
-     *
      *     @OA\Parameter(
      *         name="limit",
      *         in="query",
      *         description="Limit leaderboard of page",
      *         @OA\Schema(
      *             type="number"
+     *         ),
+     *     ),
+     *
+     *     @OA\Parameter(
+     *         name="filter",
+     *         in="query",
+     *         description="How to filter data: today, this week, this month, this year",
+     *         @OA\Schema(
+     *             type="string"
+     *         ),
+     *     ),
+     *
+     *     @OA\Parameter(
+     *         name="country",
+     *         in="query",
+     *         description="Filter results by country",
+     *         @OA\Schema(
+     *             type="string"
      *         ),
      *     ),
      *     @OA\Parameter(
@@ -179,7 +189,7 @@ class LeaderboardController extends Controller
      *          description="Unauthorized"
      *     ),
      *     @OA\Response(
-     *         response=400,
+     *         response="400",
      *         description="Invalid request"
      *     ),
      *     @OA\Response(
@@ -198,31 +208,21 @@ class LeaderboardController extends Controller
      */
     public function index(Request $request): mixed
     {
-        $user_id = Auth::user()->getAuthIdentifier();
-
         try {
-            $leaderboard = $this->getLeaderboard($request);
-
             return response()->jsonApi([
-                'type' => 'success',
                 'title' => 'Retrieval success',
                 'message' => 'Leaderboard successfully generated',
-                'data' => $leaderboard,
-
-            ], 200);
+                'data' => $this->leaderboard($request),
+            ]);
         } catch (ModelNotFoundException $e) {
             return response()->jsonApi([
-                'type' => 'danger',
                 'title' => "Not operation",
                 'message' => "Error showing all users",
-                'data' => null,
             ], 404);
         } catch (Throwable $e) {
             return response()->jsonApi([
-                'type' => 'danger',
                 'title' => "Not operation",
                 'message' => $e->getMessage(),
-                'data' => null,
             ], 404);
         }
     }
@@ -242,15 +242,6 @@ class LeaderboardController extends Controller
      *             "ManagerWrite"
      *         }
      *     }},
-     *
-     *     x={
-     *         "auth-type": "Application & Application User",
-     *         "throttling-tier": "Unlimited",
-     *         "wso2-application-security": {
-     *             "security-types": {"oauth2"},
-     *             "optional": "false"
-     *         }
-     *     },
      *
      *     @OA\Parameter(
      *         name="id",
@@ -315,7 +306,7 @@ class LeaderboardController extends Controller
      *          description="Unauthorized"
      *     ),
      *     @OA\Response(
-     *         response=400,
+     *         response="400",
      *         description="Invalid request"
      *     ),
      *     @OA\Response(
@@ -329,10 +320,10 @@ class LeaderboardController extends Controller
      * )
      *
      * @param Request $request
-     *
+     * @param $id
      * @return mixed
      */
-    public function show(Request $request): mixed
+    public function show(Request $request, $id): mixed
     {
         try {
             $referrerId = $request->user()->id ?? Auth::user()->getAuthIdentifier();
@@ -352,21 +343,15 @@ class LeaderboardController extends Controller
                 ];
             }
 
-            return response()->jsonApi(
-                array_merge([
-                    'type' => 'success',
-                    'title' => 'Retrieval success',
-                    'message' => 'The referral code (link) has been successfully updated',
-                ], [
-                    'data' => $retVal,
-                ]),
-                200);
+            return response()->jsonApi([
+                'title' => 'Retrieval success',
+                'message' => 'The referral code (link) has been successfully updated',
+                'data' => $retVal,
+            ]);
         } catch (Throwable $e) {
             return response()->jsonApi([
-                'type' => 'danger',
                 'title' => "Not operation",
                 'message' => $e->getMessage(),
-                'data' => null,
             ], 404);
         }
     }
@@ -414,7 +399,7 @@ class LeaderboardController extends Controller
     }
 
     /**
-     * @param string      $country
+     * @param string $country
      * @param string|null $city
      *
      * @return array
@@ -425,72 +410,11 @@ class LeaderboardController extends Controller
             //TODO get user id by country and city from identity ms
             return [];
         }
+
         //TODO get user id by country from identity ms
-        return [];
+        return User::whereCountry($country)->get();
     }
 
-    /**
-     * @param $query
-     * @param $filter
-     *
-     * @return mixed
-     */
-    protected function getFilterQuery($query, $filter): mixed
-    {
-        $en = CarbonImmutable::now()->locale('en_US');
-        return match ($filter) {
-            'today' => $query->whereDate('created_at', Carbon::now()->toDateString()),
-            'this week' => $query->whereBetween('created_at', [$en->startOfWeek(), $en->endOfWeek()]),
-            'this month' => $query->whereBetween('created_at', [$en->startOfMonth(), $en->endOfMonth()]),
-            'this year' => $query->whereBetween('created_at', [$en->startOfYear(), $en->endOfYear()]),
-            'country' => $query->whereIn('country', request()->country ?? null),
-//            'country_and_city' => $query->whereIn('user_id', $this->getUserIDByCountryCity(request()->country, request()->city)),
-            default => $query,
-        };
-    }
-
-    /**
-     * @param Request $request
-     *
-     * @return array
-     */
-    protected function getLeaderboard(Request $request): array
-    {
-        $filter = strtolower($request->filter);
-        $leaderboard = [];
-
-        $referrers = User::whereNotNull('referrer_id')->distinct('referrer_id')->pluck('referrer_id');
-
-
-        $query = $this->getFilterQuery(User::whereIn('referrer_id', $referrers), $filter);
-
-        foreach ($referrers as $referrer) {
-            $user = $this->getUserProfile($referrer);
-            if ($user == null) {
-                continue;
-            }
-            $leaderboard [] = ['name' => $user['name'] ?? null,
-                'channels' => $this->getChannels($referrer),
-                'country' => $user['country'] ?? null,
-                'invitees' => $this->getFilterQuery(User::where('referrer_id', $referrer), $filter)->count(),
-                'reward' => $this->getTotalReward($referrer, $filter),
-                'growth_this_month' => Total::getInvitedUsersByDate($referrer, 'current_month_count'),
-            ];
-        }
-
-
-        $columns = array_column($leaderboard, 'reward');
-        array_multisort($columns, SORT_DESC, SORT_NUMERIC, $leaderboard);
-
-        $retVal = [];
-        $rank = 1;
-        foreach ($leaderboard as $board) {
-            $retVal[] = array_merge($board, ['rank' => $rank]);
-            $rank++;
-        }
-
-        return $retVal;
-    }
 
     /**
      * @param $user_id
@@ -519,7 +443,6 @@ class LeaderboardController extends Controller
             return $item->application_id;
         })->toArray();
     }
-
 
     /**
      * @param $referrer_id

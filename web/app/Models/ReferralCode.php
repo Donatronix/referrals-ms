@@ -33,13 +33,6 @@ class ReferralCode extends Model
     /**
      * @var string[]
      */
-    protected $appends = [
-        // 'resource_url'
-    ];
-
-    /**
-     * @var string[]
-     */
     protected $casts = [
         'is_default' => 'boolean',
     ];
@@ -63,21 +56,6 @@ class ReferralCode extends Model
         'created_at',
         'updated_at',
     ];
-
-    /**
-     * Get codes / links by referral code
-     *
-     * @param             $query
-     * @param string|null $referral_code
-     *
-     * @return mixed
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     */
-    public static function scopeByReferralCode($query, string $referral_code = null): mixed
-    {
-        return $query->where('code', $referral_code ?? request()->get('referral_code'));
-    }
 
     /**
      * Boot the model.
@@ -122,13 +100,18 @@ class ReferralCode extends Model
         return $query->where('application_id', $application_id ?? request()->get('application_id'));
     }
 
-    /* ************************ ACCESSOR ************************* */
-
     /**
-     * @return string
+     * Get codes / links by referral code
+     *
+     * @param             $query
+     * @param string|null $referral_code
+     *
+     * @return mixed
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
-    public function getResourceUrlAttribute(): string
+    public static function scopeByReferralCode($query, string $referral_code = null): mixed
     {
-        return url('/admin/links/' . $this->getKey());
+        return $query->where('code', $referral_code ?? request()->get('referral_code'));
     }
 }

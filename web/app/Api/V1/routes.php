@@ -5,16 +5,33 @@
  */
 $router->group([
     'prefix' => env('APP_API_VERSION', ''),
-    'namespace' => '\App\Api\V1\Controllers',
+    'namespace' => '\App\Api\V1\Controllers'
 ], function ($router) {
     /**
      * PUBLIC ACCESS
+     *
+     * level with free access to the endpoint
      */
-//    $router->group([], function ($router) {
-//    });
+    $router->group([
+        'namespace' => 'Public'
+    ], function ($router) {
+        //
+    });
+
 
     /**
      * USER APPLICATION PRIVATE ACCESS
+     */
+    $router->group([
+        'namespace' => 'Application',
+    ], function ($router) {
+        $router->get('/subscribers/leaderboard', 'LeaderboardController@index');
+    });
+
+    /**
+     * USER APPLICATION PRIVATE ACCESS
+     *
+     * Application level for users
      */
     $router->group([
         'namespace' => 'Application',
@@ -35,7 +52,7 @@ $router->group([
         ], function ($router) {
             $router->get('/', 'ReferralController@index');
             $router->get('/{id}', 'ReferralController@show');
-            $router->post('/', 'ReferralController@create');
+            $router->post('/', 'ReferralController@store');
 
             /**
              * Leaderboard
@@ -73,7 +90,6 @@ $router->group([
         $router->group([
             'prefix' => '',
         ], function ($router) {
-
             //Referral and code summary
             $router->get('/summary', 'SummaryController@index');
         });
@@ -81,15 +97,26 @@ $router->group([
 
     /**
      * ADMIN PANEL ACCESS
+     *
+     * Admin / super admin access level (E.g CEO company)
      */
     $router->group([
         'prefix' => 'admin',
         'namespace' => 'Admin',
         'middleware' => [
             'checkUser',
-            'checkAdmin',
-        ],
+            'checkAdmin'
+        ]
     ], function ($router) {
+        //Referral and code summary
+        $router->get('/summary-listing', 'SummaryController@listing');
+
+        /**
+         * Leaderboard
+         */
+        $router->get('/leaderboard-listing', 'LeaderboardController@index');
+        $router->get('/leaderboard-listing/invited-users/{id}', 'LeaderboardController@show');
+
         /**
          * Referrals
          */
@@ -102,7 +129,7 @@ $router->group([
         $router->get('transactions', 'TransactionsController@index');
         $router->get('transactions/{id}', 'TransactionsController@show');
         $router->post('transactions', 'TransactionsController@store');
-        $router->patch('transactions/{id}', 'TransactionsController@update');
+        $router->put('transactions/{id}', 'TransactionsController@update');
         $router->delete('transactions/{id}', 'TransactionsController@destroy');
 
         /**
@@ -112,15 +139,19 @@ $router->group([
     });
 
     /**
-     * MICROSERVICE DATA EXCHANGE ACCESS
+     * WEBHOOKS
+     *
+     * Access level of external / internal software services
      */
     $router->group([
-        'namespace' => 'Application',
+        'prefix' => 'webhooks',
+        'namespace' => 'Webhooks',
         'middleware' => 'checkMS',
     ], function ($router) {
         /**
          * Referrals total earnings
          */
         $router->get('total-earnings', 'ReferralController@getReferralTotals');
+        $router->get('leaderboard/overview-earnings/{id}', 'LeaderboardController@getPlatformEarnings');
     });
 });

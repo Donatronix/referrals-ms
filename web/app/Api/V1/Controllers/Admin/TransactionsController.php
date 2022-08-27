@@ -8,8 +8,7 @@ use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Throwable;
 
@@ -35,15 +34,6 @@ class TransactionsController extends Controller
      *              "ManagerWrite"
      *          },
      *     }},
-     *
-     *     x={
-     *          "auth-type": "Applecation & Application Use",
-     *          "throttling-tier": "Unlimited",
-     *          "wso2-application-security": {
-     *              "security-types": {"oauth2"},
-     *              "optional": "false"
-     *           },
-     *     },
      *
      *     @OA\Response(
      *         response="200",
@@ -93,7 +83,7 @@ class TransactionsController extends Controller
      *          description="Unauthorized"
      *     ),
      *     @OA\Response(
-     *         response=400,
+     *         response="400",
      *         description="Invalid request"
      *     ),
      *
@@ -145,27 +135,20 @@ class TransactionsController extends Controller
         try {
             $transactions = Transaction::query()->orderBy('created_at')->paginate($request->get('limit', config('settings.pagination_limit')));
 
-            return response()->jsonApi(
-                [
-                    'type' => 'success',
-                    'title' => 'Operation was success',
-                    'message' => 'The data was displayed successfully',
-                    'data' => $transactions->toArray(),
-                ], 200);
-
+            return response()->jsonApi([
+                'title' => 'Operation was success',
+                'message' => 'The data was displayed successfully',
+                'data' => $transactions->toArray(),
+            ]);
         } catch (ModelNotFoundException $e) {
             return response()->jsonApi([
-                'type' => 'danger',
                 'title' => "Not operation",
                 'message' => "Error showing all transactions",
-                'data' => null,
             ], 404);
         } catch (Throwable $e) {
             return response()->jsonApi([
-                'type' => 'danger',
                 'title' => "Update failed",
                 'message' => $e->getMessage(),
-                'data' => null,
             ], 404);
         }
     }
@@ -185,15 +168,6 @@ class TransactionsController extends Controller
      *              "ManagerWrite"
      *          },
      *     }},
-     *
-     *     x={
-     *          "auth-type": "Applecation & Application Use",
-     *          "throttling-tier": "Unlimited",
-     *          "wso2-application-security": {
-     *              "security-types": {"oauth2"},
-     *              "optional": "false"
-     *           },
-     *     },
      *
      *     @OA\Response(
      *         response="200",
@@ -244,7 +218,7 @@ class TransactionsController extends Controller
      *          description="Unauthorized"
      *     ),
      *     @OA\Response(
-     *         response=400,
+     *         response="400",
      *         description="Invalid request"
      *     ),
      *
@@ -298,28 +272,21 @@ class TransactionsController extends Controller
             // Get and return transaction data
             $transaction = Transaction::query()->findOrFail($id)->toArray();
 
-            return response()->jsonApi(
-                [
-                    'type' => 'success',
-                    'title' => 'Operation was success',
-                    'message' => 'The data was displayed successfully',
-                    'data' => $transaction,
-                ],
-                200);
+            return response()->jsonApi([
+                'title' => 'Operation was success',
+                'message' => 'The data was displayed successfully',
+                'data' => $transaction,
+            ]);
 
         } catch (ModelNotFoundException $e) {
             return response()->jsonApi([
-                'type' => 'danger',
                 'title' => "Transaction not found",
                 'message' => "Error displaying transaction",
-                'data' => null,
             ], 404);
         } catch (Throwable $e) {
             return response()->jsonApi([
-                'type' => 'danger',
                 'title' => "Display failed",
                 'message' => $e->getMessage(),
-                'data' => null,
             ], 404);
         }
     }
@@ -381,11 +348,11 @@ class TransactionsController extends Controller
      *          ),
      *     ),
      *     @OA\Response(
-     *          response=200,
+     *          response="200",
      *          description="Success"
      *     ),
      *     @OA\Response(
-     *          response=400,
+     *          response="400",
      *          description="Bad Request"
      *     )
      * )
@@ -398,30 +365,35 @@ class TransactionsController extends Controller
     public function store(Request $request): Transaction|JsonResponse
     {
         try {
-            DB::transaction(function () use ($request) { // TODO fix date format (for birthday)
-                $rules = [
-                    'user_id' => 'required',
-                    'user_plan' => 'required|string',
-                    'reward' => 'required|numeric',
-                    'currency' => 'required|string',
-                    'operation_name' => 'required|string',
-                ];
+            $rules = [
+                'user_id' => 'required',
+                'user_plan' => 'required|string',
+                'reward' => 'required|numeric',
+                'currency' => 'required|string',
+                'operation_name' => 'required|string',
+            ];
 
-                $validated = $this->validate($request, $rules);
+            $validated = $this->validate($request, $rules);
 
-                $transaction = Transaction::query()->create($validated);
+            $transaction = Transaction::query()->create($validated);
 
-            });
+            return response()->jsonApi([
+                'title' => "Transaction",
+                "message" => "Transaction added successfully!",
+                'data' => $transaction,
+            ]);
         } catch (Throwable $th) {
-            return response()->jsonApi(['message' => $th->getMessage()], 400);
+            return response()->jsonApi([
+                'title' => "Transaction not added",
+                'message' => $th->getMessage(),
+            ], 400);
         }
-        return response()->jsonApi(["message" => "Transaction added successfully!"], 200);
     }
 
     /**
      * Update the specified resource in storage
      *
-     * @OA\Patch(
+     * @OA\Put(
      *     path="/admin/transactions/{id}",
      *     summary="update user",
      *     description="update user",
@@ -475,7 +447,7 @@ class TransactionsController extends Controller
      *          )
      *     ),
      *     @OA\Response(
-     *         response=200,
+     *         response="200",
      *         description="Success",
      *
      *         @OA\JsonContent(
@@ -539,48 +511,50 @@ class TransactionsController extends Controller
      *         ),
      *     ),
      *     @OA\Response(
-     *         response=404,
+     *         response="404",
      *         description="Not found"
      *     )
      * )
      *
      * @param Request $request
-     * @param mixed   $id
+     * @param $id
      *
-     * @return Response
+     * @return mixed
      * @throws ValidationException
      */
-    public function update(Request $request, mixed $id): Response
+    public function update(Request $request, $id): mixed
     {
         try {
-            $transaction = null;
-            DB::transaction(function () use ($request, $id, &$transaction) {
 
-                $validated = $this->validate($request, [
-                    'user_id' => 'required',
-                    'user_plan' => 'required|string',
-                    'reward' => 'required|numeric',
-                    'currency' => 'required|string',
-                    'operation_name' => 'required|string',
-                ]);
+            $validator = Validator::make($request->all(), [
+                'user_id' => 'required',
+                'user_plan' => 'required|string',
+                'reward' => 'required|numeric',
+                'currency' => 'required|string',
+                'operation_name' => 'required|string',
+            ]);
 
-                $transaction = Transaction::query()->findOrFail($id);
+            if ($validator->fails()) {
+                throw new Exception($validator->errors()->first());
+            }
 
+            $validated = $validator->validated();
 
-                if (empty($validated)) {
-                    throw new Exception("No data to update");
-                }
+            $transaction = Transaction::findOrFail($id);
 
-                $transaction->update($validated);
+            $transaction->update($validated);
 
-            });
+            return response()->jsonApi([
+                'title' => "Transaction",
+                "message" => "Updated successfully",
+                "data" => $transaction->toArray(),
+            ]);
         } catch (Throwable $th) {
-            return response()->jsonApi(["message" => $th->getMessage()], 200);
+            return response()->jsonApi([
+                'title' => "Transaction failed",
+                'message' => $th->getMessage(),
+            ], 400);
         }
-        return response()->jsonApi([
-            "message" => "Updated successfully",
-            "data" => $transaction,
-        ], 200);
     }
 
     /**
@@ -598,15 +572,6 @@ class TransactionsController extends Controller
      *              "ManagerWrite"
      *          },
      *     }},
-     *
-     *     x={
-     *          "auth-type": "Applecation & Application Use",
-     *          "throttling-tier": "Unlimited",
-     *          "wso2-application-security": {
-     *              "security-types": {"oauth2"},
-     *              "optional": "false"
-     *           },
-     *     },
      *
      *     @OA\Parameter(
      *         name="id",
@@ -635,7 +600,7 @@ class TransactionsController extends Controller
      *          description="Unauthorized"
      *     ),
      *     @OA\Response(
-     *         response=400,
+     *         response="400",
      *         description="Invalid request"
      *     ),
      *
@@ -668,29 +633,23 @@ class TransactionsController extends Controller
     public function destroy(mixed $id): mixed
     {
         try {
-            DB::transaction(function () use ($id) {
-                $transaction = Transaction::query()->findOrFail($id);
-                $transaction->delete();
-            });
+            $transaction = Transaction::findOrFail($id);
+            $transaction->delete();
+
+            return response()->jsonApi([
+                'title' => 'Operation was a success',
+                'message' => 'Transaction was deleted successfully',
+            ]);
         } catch (ModelNotFoundException $e) {
             return response()->jsonApi([
-                'type' => 'danger',
                 'title' => "Delete failed",
                 'message' => "Transaction does not exist",
-                'data' => null,
             ], 404);
         } catch (Throwable $th) {
             return response()->jsonApi([
-                'type' => 'danger',
                 'title' => "Delete failed",
                 'message' => $th->getMessage(),
-                'data' => null,
-            ], 404);
+            ], $th->getCode());
         }
-        return response()->jsonApi([
-            'type' => 'success',
-            'title' => 'Operation was a success',
-            'message' => 'Transaction was deleted successfully',
-        ], 200);
     }
 }

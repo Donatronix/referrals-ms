@@ -82,7 +82,6 @@ $app->routeMiddleware([
     //'auth' => App\Http\Middleware\Authenticate::class,
     'checkUser' => \Sumra\SDK\Middleware\CheckUserMiddleware::class,
     'checkAdmin' => \Sumra\SDK\Middleware\CheckAdminMiddleware::class,
-    'checkMS' => \Sumra\SDK\Middleware\CheckMSMiddleware::class,
 ]);
 
 /*
@@ -99,14 +98,16 @@ $app->routeMiddleware([
 $app->register(App\Providers\AppServiceProvider::class);
 $app->register(App\Providers\AuthServiceProvider::class);
 $app->register(App\Providers\EventServiceProvider::class);
-$app->register(Stevebauman\Location\LocationServiceProvider::class);
+$app->register(Spatie\CollectionMacros\CollectionMacroServiceProvider::class);
 
 /**
  * Pubsub - RabbitMQ
  */
-$app->configure('queues');
+$app->configure('queue');
 $app->register(VladimirYuldashev\LaravelQueueRabbitMQ\LaravelQueueRabbitMQServiceProvider::class);
-class_alias(\Illuminate\Support\Facades\App::class, 'App');
+if (!class_exists('App')) {
+    class_alias(\Illuminate\Support\Facades\App::class, 'App');
+}
 $app->register(\Sumra\SDK\PubSubServiceProvider::class);
 
 /**

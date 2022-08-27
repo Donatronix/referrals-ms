@@ -34,6 +34,10 @@ class CreateTotalsTable extends Migration
                 ->onUpdate('restrict')
                 ->onDelete('restrict');
 
+            $table->boolean('is_current')->default(false);
+
+            $table->decimal('twenty_four_hour_percentage', 5, 2)->nullable();
+
             $table->timestamps();
             $table->softDeletes();
         });

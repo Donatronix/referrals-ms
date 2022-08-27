@@ -32,14 +32,6 @@ class UsersController extends Controller
      *             "ManagerWrite"
      *         }
      *     }},
-     *     x={
-     *         "auth-type": "Application & Application User",
-     *         "throttling-tier": "Unlimited",
-     *         "wso2-application-security": {
-     *             "security-types": {"oauth2"},
-     *             "optional": "false"
-     *         }
-     *     },
      *
      *     @OA\Parameter(
      *         name="sort[by]",
@@ -96,7 +88,7 @@ class UsersController extends Controller
      *         )
      *     ),
      *     @OA\Response(
-     *         response=200,
+     *         response="200",
      *         description="Success",
      *     )
      * )
@@ -119,7 +111,6 @@ class UsersController extends Controller
 
         if ($validator->fails()) {
             return response()->jsonApi([
-                'type' => 'danger',
                 'title' => 'Error',
                 'message' => 'Validation error',
                 'errors' => $validator->errors(),
@@ -171,14 +162,6 @@ class UsersController extends Controller
      *             "ManagerWrite"
      *         }
      *     }},
-     *     x={
-     *         "auth-type": "Application & Application User",
-     *         "throttling-tier": "Unlimited",
-     *         "wso2-application-security": {
-     *             "security-types": {"oauth2"},
-     *             "optional": "false"
-     *         }
-     *     },
      *
      *     @OA\Parameter(
      *         name="id",
@@ -233,7 +216,6 @@ class UsersController extends Controller
             return response()->jsonApi($user, 200);
         } catch (ModelNotFoundException $e) {
             return response()->jsonApi([
-                'type' => 'danger',
                 'title' => 'User not found',
                 'message' => "User #{$id} not found",
             ], 404);

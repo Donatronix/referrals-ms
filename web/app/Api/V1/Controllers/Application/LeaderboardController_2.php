@@ -33,22 +33,13 @@ class LeaderboardController_2 extends Controller
      *         }
      *     }},
      *
-     *     x={
-     *         "auth-type": "Application & Application User",
-     *         "throttling-tier": "Unlimited",
-     *         "wso2-application-security": {
-     *             "security-types": {"oauth2"},
-     *             "optional": "false"
-     *         }
-     *     },
-     *
      *     @ OA \Parameter(
      *         name="limit",
      *         in="query",
      *         description="Limit leaderboard of page",
      *         @ OA \Schema(
      *             type="number"
-     *         ),
+     *         )
      *     ),
      *     @ OA \Parameter(
      *         name="page",
@@ -180,7 +171,7 @@ class LeaderboardController_2 extends Controller
      *          description="Unauthorized"
      *     ),
      *     @ OA \Response(
-     *         response=400,
+     *         response="400",
      *         description="Invalid request"
      *     ),
      *     @ OA \Response(
@@ -222,7 +213,6 @@ class LeaderboardController_2 extends Controller
             });
 
             return response()->jsonApi([
-                'type' => 'success',
                 'title' => 'Retrieval success',
                 'message' => 'Leaderboard successfully generated',
                 'data' => [
@@ -230,21 +220,17 @@ class LeaderboardController_2 extends Controller
                     'graph' => $graph_data,
                     'users' => $users->toArray(),
                     'leaderboard' => $this->getLeaderboard($request),
-                ],
-            ], 200);
+                ]
+            ]);
         } catch (ModelNotFoundException $e) {
             return response()->jsonApi([
-                'type' => 'danger',
                 'title' => "Not operation",
                 'message' => "Error showing all users",
-                'data' => null,
             ], 404);
         } catch (Throwable $e) {
             return response()->jsonApi([
-                'type' => 'danger',
                 'title' => "Not operation",
                 'message' => $e->getMessage(),
-                'data' => null,
             ], 404);
         }
     }
@@ -264,15 +250,6 @@ class LeaderboardController_2 extends Controller
      *             "ManagerWrite"
      *         }
      *     }},
-     *
-     *     x={
-     *         "auth-type": "Application & Application User",
-     *         "throttling-tier": "Unlimited",
-     *         "wso2-application-security": {
-     *             "security-types": {"oauth2"},
-     *             "optional": "false"
-     *         }
-     *     },
      *
      *     @ OA \Parameter(
      *         name="id",
@@ -337,7 +314,7 @@ class LeaderboardController_2 extends Controller
      *          description="Unauthorized"
      *     ),
      *     @ OA \Response(
-     *         response=400,
+     *         response="400",
      *         description="Invalid request"
      *     ),
      *     @ OA \Response(
@@ -374,21 +351,15 @@ class LeaderboardController_2 extends Controller
                 ];
             }
 
-            return response()->jsonApi(
-                array_merge([
-                    'type' => 'success',
-                    'title' => 'Retrieval success',
-                    'message' => 'The referral code (link) has been successfully updated',
-                ], [
-                    'data' => $retVal,
-                ]),
-                200);
+            return response()->jsonApi([
+                'title' => 'Retrieval success',
+                'message' => 'The referral code (link) has been successfully updated',
+                'data' => $retVal,
+            ]);
         } catch (Throwable $e) {
             return response()->jsonApi([
-                'type' => 'danger',
                 'title' => "Not operation",
                 'message' => $e->getMessage(),
-                'data' => null,
             ], 404);
         }
     }
@@ -436,7 +407,7 @@ class LeaderboardController_2 extends Controller
     }
 
     /**
-     * @param string      $country
+     * @param string $country
      * @param string|null $city
      *
      * @return array

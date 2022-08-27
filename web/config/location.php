@@ -1,4 +1,5 @@
 <?php
+
 return [
 
     /*
@@ -59,6 +60,8 @@ return [
     | If web service is disabled, it will try and retrieve the users location
     | from the MaxMind database file located in the local path below.
     |
+    | The MaxMind database file can be either City (default) or Country (smaller).
+    |
     */
 
     'maxmind' => [
@@ -80,6 +83,8 @@ return [
         ],
 
         'local' => [
+
+            'type' => 'city',
 
             'path' => database_path('maxmind/GeoLite2-City.mmdb'),
 
@@ -129,6 +134,21 @@ return [
     'ipdata' => [
 
         'token' => env('IPDATA_TOKEN'),
+
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Kloudend ~ ipapi.co Configuration
+    |--------------------------------------------------------------------------
+    |
+    | The configuration for the Kloudend driver.
+    |
+    */
+
+    'kloudend' => [
+
+        'token' => env('KLOUDEND_TOKEN'),
 
     ],
 

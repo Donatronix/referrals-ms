@@ -2,49 +2,62 @@
 
 namespace App\Services;
 
+use App\Exceptions\ReferralCodeLimitException;
 use App\Models\ReferralCode;
 use App\Models\User;
 use Exception;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class ReferralCodeService
 {
     /**
      * Create a referral code
      *
-     * @param Request   $request
-     * @param User|null $user
-     * @param bool      $is_default
-     *
+     * @param Request $request
+     * @param User $user
      * @return mixed
+     * @throws ReferralCodeLimitException
      * @throws Exception
      */
-    public static function createReferralCode(Request $request, User $user = null, bool $is_default = false): mixed
+    public static function createReferralCode(Request $request, User $user): mixed
     {
-        try {
+        // Check amount generated codes for current user
+        $codesList = ReferralCode::byOwner()->byApplication()->get();
+        $codesTotal = $codesList->count();
 
-            // Check user object
-            if (!$user) {
-                $user = Auth::user() ?? User::find(Auth::user()->getAuthIdentifier());
+        if ($codesTotal >= config('settings.referral_code.limit')) {
+            throw new ReferralCodeLimitException(sprintf("You can generate up to %s codes for the current service", config('settings.referral_code.limit')));
+        }
+
+        try {
+            // Detect code is_default
+            $is_default = false;
+            if($request->has('is_default')){
+                $is_default = $request->boolean('is_default', false);
+            }
+
+            // Correcting is_default if $codesTotal === 0
+            if($codesTotal === 0){
+                $is_default = true;
             }
 
             // Check if code is set as default, then reset all previous code
-            if ($is_default) {
-                self::defaultReset($user->id);
+            if ($is_default && $codesTotal > 0) {
+                self::defaultReset($user->id, null, $codesList);
             }
 
             // Create new referral code
-            $rc = ReferralCode::create([
-                'user_id' => Auth::user()->getAuthIdentifier(),
+            $rc = ReferralCode::query()->create([
+                'user_id' => $user->id,
                 'application_id' => $request->get('application_id'),
-                'link' => 'link' . rand(1, 1000),
-                'is_default' => $request->boolean('is_default', $is_default),
+                'link' => 'link' . random_int(1, 1000),
+                'is_default' => $is_default,
                 'note' => $request->get('note', null),
             ]);
 
-           // $generate_link = (string)Firebase::linkGenerate($rc->code, $request->get('application_id'));
-           // $rc->update(['link' => $generate_link]);
+            // $generate_link = (string)Firebase::linkGenerate($rc->code, $request->get('application_id'));
+            // $rc->update(['link' => $generate_link]);
 
             return $rc;
         } catch (Exception $e) {
@@ -57,14 +70,14 @@ class ReferralCodeService
      *
      * @param             $user_id
      * @param string|null $application_id
-     *
-     * @return null
+     * @param null $list
      */
-    public static function defaultReset($user_id, string $application_id = null)
+    public static function defaultReset(string $user_id, string $application_id = null, Collection $list = null): void
     {
-        $list = ReferralCode::byApplication($application_id)->byOwner($user_id)->get();
-        $list->each->update(['is_default' => false]);
+        if(!$list){
+            $list = ReferralCode::byApplication($application_id)->byOwner($user_id)->get();
+        }
 
-        return null;
+        $list->each->update(['is_default' => false]);
     }
 }
