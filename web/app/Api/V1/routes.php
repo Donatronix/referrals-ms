@@ -34,6 +34,7 @@ $router->group([
             'prefix' => 'referrals',
         ], function ($router) {
             $router->get('/', 'ReferralController@index');
+            $router->get('/{id}', 'ReferralController@show');
             $router->post('/', 'ReferralController@create');
 
             /**

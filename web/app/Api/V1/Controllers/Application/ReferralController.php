@@ -121,6 +121,84 @@ class ReferralController extends Controller
             ], 400);
         }
     }
+    /**
+     * 
+     *
+     * @OA\Get(
+     *     path="/referrals/{user_id}",
+     *     summary="Get who referred a user",
+     *     description="Return who referred a user",
+     *     tags={"Referrals"},
+     *
+     *     security={{
+     *         "default": {
+     *             "ManagerRead",
+     *             "User",
+     *             "ManagerWrite"
+     *         }
+     *     }},
+     *     x={
+     *         "auth-type": "Application & Application User",
+     *         "throttling-tier": "Unlimited",
+     *         "wso2-application-security": {
+     *             "security-types": {"oauth2"},
+     *             "optional": "false"
+     *         }
+     *     },
+     * 
+     *     @OA\Parameter(
+     *         name="user_id",
+     *         in="path",
+     *         description="user id",
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response="200",
+     *         description="Success getting list of referrals"
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="not found"
+     *     )
+     * )
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function show($id): JsonResponse
+    {
+        try {
+            // Get list all referrals by user id
+            $user = User::query()->where('user_id', $id)->first();
+
+            // Return response
+            return response()->json([
+                'type' => 'success',
+                'title' => "Get referrals list",
+                'message' => 'Referrals list received',
+                'data' => $user,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->jsonApi([
+                'type' => 'danger',
+                'title' => "Get referrals list",
+                'message' => $e->getMessage(),
+                'data' => null,
+            ], 400);
+        }
+    }
 
     /**
      * Joining a new user to the referral program in the presence of the referral code of the inviter
