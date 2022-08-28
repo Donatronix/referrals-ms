@@ -21,6 +21,22 @@ class User extends Model
     const REFERRER_POINTS = 3;
 
     /**
+     * Type / roles of users / referrals
+     */
+    const TYPE_CLIENT = 10;
+    const TYPE_PARTNER = 20;
+
+    /**
+     * User roles list
+     *
+     * @var array|int[]
+     */
+    public static array $types = [
+        'client' => self::TYPE_CLIENT,
+        'partner' => self::TYPE_PARTNER,
+    ];
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
@@ -28,7 +44,10 @@ class User extends Model
     protected $fillable = [
         'id',
         'referrer_id',
-        'application_id',
+        'name',
+        'username',
+        'country',
+        'type'
     ];
 
     /**
@@ -41,7 +60,6 @@ class User extends Model
         'updated_at',
         'deleted_at',
     ];
-
 
     /**
      * @return HasMany
@@ -59,18 +77,25 @@ class User extends Model
         return $this->hasOne(Total::class);
     }
 
+    /**
+     * @return string
+     */
     public function getAvatarAttribute(): string
     {
         return $this->createImage(strtoupper(substr($this->name, 0, 1)));
     }
 
+    /**
+     * @return HasOne
+     */
     public function getRankAttribute()
     {
         return $this->total()->select(DB::raw('
-          SELECT s.*, @rank := @rank + 1 rank FROM (
-            SELECT user_id, sum(reward) TotalPoints FROM t
-            GROUP BY user_id
-          ) s, (SELECT @rank := 0) init
-          ORDER BY TotalPoints DESC'));
+            SELECT s.*, @rank := @rank + 1 rank FROM (
+                SELECT user_id, sum(reward) TotalPoints FROM t
+                GROUP BY user_id
+            ) s, (SELECT @rank := 0) init
+            ORDER BY TotalPoints DESC')
+        );
     }
 }

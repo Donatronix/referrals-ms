@@ -21,7 +21,7 @@ class CreateReferralCodesTable extends Migration
                 ->onUpdate('restrict')
                 ->onDelete('restrict');
 
-            $table->string('code', 8)->unique();
+            $table->string('code', 15)->unique();
             $table->string('link')->unique();
 
             $table->string('application_id', 50)
