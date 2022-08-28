@@ -51,7 +51,6 @@ $router->group([
             'prefix' => 'referrals',
         ], function ($router) {
             $router->get('/', 'ReferralController@index');
-            $router->get('/{id}', 'ReferralController@show');
             $router->post('/', 'ReferralController@store');
 
             /**
@@ -60,6 +59,9 @@ $router->group([
             $router->get('/leaderboard', 'LeaderboardController@index');
             $router->post('/check-totals', 'LeaderboardController@checkRemoteServices');
             $router->get('/invited-users/{id}', 'LeaderboardController@show');
+
+            // get user influencer
+            $router->get('/{id}', 'ReferralController@show');
         });
 
         /**

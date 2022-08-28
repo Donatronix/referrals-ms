@@ -168,7 +168,7 @@ class ReferralController extends Controller
     {
         try {
             // Get list all referrals by user id
-            $user = User::query()->where('user_id', $id)->first();
+            $user = User::find($id);
 
             // Return response
             return response()->json([
