@@ -23,7 +23,7 @@ class ReferralCodeService
     public static function createReferralCode(Request $request, User $user): mixed
     {
         // Check amount generated codes for current user
-        $codesList = ReferralCode::byOwner()->byApplication()->get();
+        $codesList = ReferralCode::byOwner($user->id)->byApplication()->get();
         $codesTotal = $codesList->count();
 
         if ($codesTotal >= config('settings.referral_code.limit')) {
@@ -33,12 +33,12 @@ class ReferralCodeService
         try {
             // Detect code is_default
             $is_default = false;
-            if($request->has('is_default')){
+            if ($request->has('is_default')) {
                 $is_default = $request->boolean('is_default', false);
             }
 
             // Correcting is_default if $codesTotal === 0
-            if($codesTotal === 0){
+            if ($codesTotal === 0) {
                 $is_default = true;
             }
 
@@ -48,7 +48,7 @@ class ReferralCodeService
             }
 
             // Create new referral code
-            $rc = ReferralCode::query()->create([
+            $rc = ReferralCode::create([
                 'user_id' => $user->id,
                 'application_id' => $request->get('application_id'),
                 'link' => 'link' . random_int(1, 1000),
@@ -56,8 +56,17 @@ class ReferralCodeService
                 'note' => $request->get('note', null),
             ]);
 
-            // $generate_link = (string)Firebase::linkGenerate($rc->code, $request->get('application_id'));
-            // $rc->update(['link' => $generate_link]);
+            // If exist code then set custom code
+            if ($request->has('code')) {
+                $rc->update([
+                    'code' => $request->get('code')
+                ]);
+            }
+
+            $generate_link = (string)Firebase::linkGenerate($rc->code, $request->get('application_id'));
+            $rc->update([
+                'link' => $generate_link
+            ]);
 
             return $rc;
         } catch (Exception $e) {
@@ -74,7 +83,7 @@ class ReferralCodeService
      */
     public static function defaultReset(string $user_id, string $application_id = null, Collection $list = null): void
     {
-        if(!$list){
+        if (!$list) {
             $list = ReferralCode::byApplication($application_id)->byOwner($user_id)->get();
         }
 

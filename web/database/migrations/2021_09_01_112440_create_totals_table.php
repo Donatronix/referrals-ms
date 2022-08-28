@@ -5,6 +5,11 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
+/**
+ * Responsible for storing general data on the number of invitees and the amount of accrual for referrals
+ *
+ * Class CreateTotalsTable
+ */
 class CreateTotalsTable extends Migration
 {
     /**
@@ -41,8 +46,6 @@ class CreateTotalsTable extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
-
-        DB::statement("ALTER TABLE {$table_name} COMMENT 'Responsible for storing general data on the number of invitees and the amount of accrual for referrals'");
     }
 
     /**

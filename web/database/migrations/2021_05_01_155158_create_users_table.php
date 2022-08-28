@@ -15,21 +15,12 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->uuid('id')->primary()->index();
+            $table->uuid('referrer_id')->nullable();
 
-            $table->uuid('referrer_id')
-                ->nullable()
-                ->comment('The ID of the inviting user');
-
-            $table->string('name')
-                ->nullable()
-                ->comment('The fullname of the invited user');
-            $table->string('username')
-                ->nullable()
-                ->comment('The username of the invited user');
-
-            $table->string('country')
-                ->nullable()
-                ->comment('The country of the invited user');
+            $table->string('name')->nullable();
+            $table->string('username')->nullable();
+            $table->string('country')->nullable();
+            $table->unsignedTinyInteger('type')->default(\App\Models\User::TYPE_CLIENT);
 
             $table->timestamps();
             $table->softDeletes();

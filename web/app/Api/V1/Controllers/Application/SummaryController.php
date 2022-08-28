@@ -163,6 +163,7 @@ class SummaryController extends Controller
         $topReferralBonus = $users->map(function ($user) {
             $userId = $user->user_id;
             $total = Total::where('user_id', $userId)->sum('reward');
+
             return [
                 'total' => $total,
             ];

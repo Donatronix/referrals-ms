@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Listeners\InvitedReferralResponseListener;
 use Laravel\Lumen\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -13,27 +12,16 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'ReferralBonus' => [
-            'App\Listeners\ReferralBonusListener',
+        /**
+         * Join new user to referral program request
+         */
+        'JoinNewUserRequest' => [
+            'App\Listeners\JoinNewUserRequestListener',
         ],
-        'JoinUserToReferralProgramRequest' => [
-            'App\Listeners\JoinUserRequestListener',
-        ],
+
         'SendReward' => [
             'App\Listeners\AccrualRemunerationListener',
-        ],
-        'InvitedReferralResponse' => [
-            InvitedReferralResponseListener::class,
-        ],
-        'NewUserRegistered' => [
-            'App\Listeners\NewUserRegisteredListener',
-        ],
-        'InfluencerCodeCreated' => [
-            'App\Listeners\InfluencerCodeCreatedListener',
-        ],
-        'InfluencerCodeUpdated' => [
-            'App\Listeners\InfluencerCodeUpdatedListener',
-        ],
+        ]
     ];
 
     /**
