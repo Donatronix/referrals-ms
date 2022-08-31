@@ -80,12 +80,7 @@ class JoinNewUserRequestListener
 
         // If is referrer, the increase bonus and stats
         if($parent_user_id !== config('settings.empty_uuid')){
-            // Calculate divit rewards amount
-            if($newUser->type === User::TYPE_CLIENT){
-                $rewardAdd = 200;
-            }else{
-                $rewardAdd = 10 / 0.5814; // 10 USD / divit price stage 5
-            }
+            $rewardAdd = 10; // 10 USD per each referral
 
             $total = Total::where('user_id', $parent_user_id)->first();
 
@@ -110,7 +105,7 @@ class JoinNewUserRequestListener
                 'title' => 'Referral bonus for new user',
                 'posting' => 'increase',
                 'amount' => $rewardAdd,
-                'currency' => 'divit',
+                'currency' => 'usd',
                 'type' => 'bonus',
                 'receiver_id' => $parent_user_id,
                 'document_id' => $total->id,
