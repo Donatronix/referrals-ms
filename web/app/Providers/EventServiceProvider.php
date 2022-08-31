@@ -11,7 +11,7 @@ class EventServiceProvider extends ServiceProvider
      *
      * @var array
      */
-    protected array $listen = [
+    protected $listen = [
         /**
          * Join new user to referral program request
          */
