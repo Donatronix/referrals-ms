@@ -100,18 +100,28 @@ class JoinNewUserRequestListener
                 ]);
             }
 
-            // Send request to wallet for update balance
-            PubSub::publish('UpdateBalanceRequest', [
-                'title' => 'Referral bonus for new user',
-                'posting' => 'increase',
-                'amount' => $rewardAdd,
-                'currency' => 'usd',
-                'type' => 'bonus',
-                'receiver_id' => $parent_user_id,
-                'document_id' => $total->id,
-                'document_object' => class_basename(get_class($total)),
-                'document_service' => env('RABBITMQ_EXCHANGE_NAME')
-            ], config('pubsub.queue.crypto_wallets'));
+            if($inputData->type == User::TYPE_PARTNER){
+                // influencer earns $10 commission
+                PubSub::publish('EarnCommission', [
+                    'user_id' => $parent_user_id,
+                    'earning_type' => 'referrals',
+                    'amount' => $rewardAdd,
+                    'document_id' => null,
+                ], config('pubsub.queue.g_met'));
+            }else{
+                // Send request to wallet for update balance
+                PubSub::publish('UpdateBalanceRequest', [
+                    'title' => 'Referral bonus for new user',
+                    'posting' => 'increase',
+                    'amount' => $rewardAdd,
+                    'currency' => 'usd',
+                    'type' => 'bonus',
+                    'receiver_id' => $parent_user_id,
+                    'document_id' => $total->id,
+                    'document_object' => class_basename(get_class($total)),
+                    'document_service' => env('RABBITMQ_EXCHANGE_NAME')
+                ], config('pubsub.queue.crypto_wallets'));
+            }
         }
 
         // If exist application_id, then set relation
