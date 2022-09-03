@@ -38,8 +38,8 @@ class JoinNewUserRequestListener
             'user_id' => 'required|string|min:36|max:36',
             'name' => 'sometimes|string',
             'username' => 'sometimes|string',
-            'phone' => 'sometimes|string',
-            'country' => 'sometimes|string',
+            'phone' => 'sometimes|numeric',
+            'country' => 'sometimes',
             'application_id' => 'sometimes|string|min:10',
             'referral_code' => 'sometimes|string|min:8',
             'custom_code' => 'sometimes|string|min:8',
@@ -92,7 +92,7 @@ class JoinNewUserRequestListener
                     'twenty_four_hour_percentage' => ($total->reward - $rewardBefore) * 100 / $total->reward,
                 ]);
             }else{
-                Total::create([
+                $total = Total::create([
                     'user_id' => $parent_user_id,
                     'amount' => 1,
                     'reward' => $rewardAdd,
