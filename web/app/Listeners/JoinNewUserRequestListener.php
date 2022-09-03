@@ -61,11 +61,13 @@ class JoinNewUserRequestListener
         // Find Referrer ID by its referral code and application ID
         $parent_user_id = config('settings.empty_uuid');
         if(isset($inputData->referral_code)){
-            $parent_user_id = ReferralCode::query()
-                ->select('user_id')
-                ->byReferralCode($inputData->referral_code)
-                ->pluck('user_id')
+            $parent = User::query()
+                ->with('referralCodes', function ($q) use ($inputData){
+                    return $q->where('code', $inputData->referral_code);
+                })
                 ->first();
+
+            $parent_user_id = $parent->id;
         }
 
         // Fill user data and save
@@ -100,7 +102,8 @@ class JoinNewUserRequestListener
                 ]);
             }
 
-            if($inputData->type == User::TYPE_PARTNER){
+            // If Type is partner
+            if($parent->type == User::TYPE_PARTNER){
                 // influencer earns $10 commission
                 PubSub::publish('EarnCommission', [
                     'user_id' => $parent_user_id,
