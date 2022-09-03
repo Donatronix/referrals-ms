@@ -61,13 +61,12 @@ class JoinNewUserRequestListener
         // Find Referrer ID by its referral code and application ID
         $parent_user_id = config('settings.empty_uuid');
         if(isset($inputData->referral_code)){
-            $parent = User::query()
-                ->with('referralCodes', function ($q) use ($inputData){
-                    return $q->where('code', $inputData->referral_code);
-                })
+            $parent = ReferralCode::query()
+                ->with('user')
+                ->byReferralCode($inputData->referral_code)
                 ->first();
 
-            $parent_user_id = $parent->id;
+            $parent_user_id = $parent->user_id;
         }
 
         // Fill user data and save
@@ -103,13 +102,13 @@ class JoinNewUserRequestListener
             }
 
             // If Type is partner
-            if($parent->type == User::TYPE_PARTNER){
+            if($parent->user->type == User::TYPE_PARTNER){
                 // influencer earns $10 commission
                 PubSub::publish('EarnCommission', [
-                    'user_id' => $parent_user_id,
+                    'user_id' => $newUser->id,
                     'earning_type' => 'referrals',
                     'amount' => $rewardAdd,
-                    'document_id' => null,
+                    'referrer_id' => $parent_user_id
                 ], config('pubsub.queue.g_met'));
             }else{
                 // Send request to wallet for update balance
