@@ -19,7 +19,10 @@ class CreateTransactionsTable extends Migration
         Schema::create($table_name, function (Blueprint $table) {
             $table->uuid('id')->primary();
 
-            $table->uuid('user_id')->index();
+            $table->foreignUuid('user_id')
+                ->constrained()
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
 
             $table->string('user_plan')
                 ->comment('User\'s current tariff plan at the time of accrual');
