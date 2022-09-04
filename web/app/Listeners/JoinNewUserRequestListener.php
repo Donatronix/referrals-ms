@@ -117,7 +117,7 @@ class JoinNewUserRequestListener
                     'posting' => 'increase',
                     'amount' => $rewardAdd,
                     'currency' => 'usd',
-                    'type' => 'bonus',
+                    'type' => 'referral-bonus',
                     'receiver_id' => $parent_user_id,
                     'document_id' => $total->id,
                     'document_object' => class_basename(get_class($total)),

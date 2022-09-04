@@ -108,8 +108,9 @@ class ReferralController extends Controller
             ], 400);
         }
     }
+
     /**
-     * 
+     *
      *
      * @OA\Get(
      *     path="/referrals/{user_id}",
@@ -132,7 +133,7 @@ class ReferralController extends Controller
      *             "optional": "false"
      *         }
      *     },
-     * 
+     *
      *     @OA\Parameter(
      *         name="user_id",
      *         in="path",
