@@ -16,8 +16,8 @@ class CreateApplicationUserTable extends Migration
         Schema::create('application_user', function (Blueprint $table) {
             $table->foreignUuid('user_id')
                 ->constrained()
-                ->onUpdate('restrict')
-                ->onDelete('restrict');
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
 
             $table->string('application_id', 50)
                 ->comment('Application ID / Package Name');

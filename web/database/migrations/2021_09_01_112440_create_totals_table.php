@@ -36,8 +36,8 @@ class CreateTotalsTable extends Migration
 
             $table->foreignUuid('user_id')
                 ->constrained()
-                ->onUpdate('restrict')
-                ->onDelete('restrict');
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
 
             $table->boolean('is_current')->default(false);
 

@@ -18,8 +18,8 @@ class CreateReferralCodesTable extends Migration
 
             $table->foreignUuid('user_id')
                 ->constrained()
-                ->onUpdate('restrict')
-                ->onDelete('restrict');
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
 
             $table->string('code', 15)->unique();
             $table->string('link')->unique();
