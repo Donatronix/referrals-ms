@@ -14,8 +14,9 @@ class Firebase
      * @param $application_id
      *
      * @return mixed
+     * @throws \Exception
      */
-    public static function linkGenerate($referralCode, $application_id)
+    public static function linkGenerate($referralCode, $application_id): mixed
     {
         $referrerData = [
             'utm_source' => $referralCode,
@@ -89,7 +90,7 @@ class Firebase
 
             return $dynamicLinks->createDynamicLink($parameters);
         } catch (FailedToCreateDynamicLink $e) {
-            return response()->jsonApi($e->getMessage());
+            throw new \Exception('Firebase: ' . $e->getMessage());
         }
     }
 }

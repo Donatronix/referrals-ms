@@ -23,14 +23,6 @@ class ReferralCode extends Model
     const MEDIUM = 'Invite Friends';
 
     /**
-     * @var array|string[]
-     */
-    public static array $rules = [
-        'is_default' => 'boolean',
-        'note' => 'string|max:255',
-    ];
-
-    /**
      * @var string[]
      */
     protected $casts = [
@@ -55,6 +47,14 @@ class ReferralCode extends Model
     protected $hidden = [
         'created_at',
         'updated_at',
+    ];
+
+    /**
+     * @var array|string[]
+     */
+    public static array $rules = [
+        'is_default' => 'sometimes|boolean',
+        'note' => 'sometimes|string|max:255',
     ];
 
     /**

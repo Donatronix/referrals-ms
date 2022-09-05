@@ -63,14 +63,14 @@ class ReferralCodeService
                 ]);
             }
 
-            $generate_link = (string)Firebase::linkGenerate($rc->code, $request->get('application_id'));
-            $rc->update([
-                'link' => $generate_link
-            ]);
+//            $generate_link = (string)Firebase::linkGenerate($rc->code, $request->get('application_id'));
+//            $rc->update([
+//                'link' => $generate_link
+//            ]);
 
             return $rc;
         } catch (Exception $e) {
-            throw new Exception("There was an error while creating a referral code: " . $e->getMessage());
+            throw $e;
         }
     }
 

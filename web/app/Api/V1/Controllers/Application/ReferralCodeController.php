@@ -8,6 +8,7 @@ use App\Models\ReferralCode;
 use App\Services\ReferralCodeService;
 use App\Services\ReferralService;
 use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -98,13 +99,6 @@ class ReferralCodeController extends Controller
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(
-     *                 property="application_id",
-     *                 type="string",
-     *                 maximum=36,
-     *                 description="Application ID",
-     *                 example="app.sumra.chat"
-     *             ),
-     *             @OA\Property(
      *                 property="is_default",
      *                 type="boolean",
      *                 description="Is Default referral code / link. Accept 1, 0, true, false",
@@ -116,7 +110,7 @@ class ReferralCodeController extends Controller
      *                 description="Note about referral code",
      *                 example="Code for facebook"
      *             )
-     *         ),
+     *         )
      *     ),
      *
      *     @OA\Response(
@@ -133,37 +127,33 @@ class ReferralCodeController extends Controller
      *     ),
      *     @OA\Response(
      *         response="404",
-     *         description="Not found",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(
-     *                 property="code",
-     *                 type="string",
-     *                 description="Your request requires the valid parameters"
-     *             ),
-     *         ),
+     *         description="Not found"
      *     ),
      *     @OA\Response(
      *         response="500",
      *         description="Unknown error"
-     *     ),
+     *     )
      * )
      *
      * @param Request $request
      *
      * @return mixed
-     * @throws ValidationException|Exception
+     * @throws Exception
      */
     public function store(Request $request): mixed
     {
         // Validate input data
-        $validator = Validator::make($request->all(), [
-            array_merge(['application_id' => 'required|string|max:36'], ReferralCode::$rules)
-        ]);
+        $validator = Validator::make($request->all(), ReferralCode::$rules);
 
         if ($validator->fails()) {
-            throw new Exception($validator->errors()->first());
+            return response()->jsonApi([
+                'title' => 'Referral code generate',
+                'message' => $validator->errors()->first()
+            ], 422);
         }
+
+        // @ToDo Temporary set application ID
+        $request->merge(['application_id' => 'default_app']);
 
         // Try to create new code with link
         try {
@@ -182,17 +172,12 @@ class ReferralCodeController extends Controller
                     //'link' => $code->link,
                     'note' => $code->note,
                     'is_default' => $code->is_default
-                ],
+                ]
             ]);
-        } catch (ReferralCodeLimitException $e) {
+        } catch (ReferralCodeLimitException | Exception $e) {
             return response()->jsonApi([
                 'title' => 'Referral code generate',
                 'message' => $e->getMessage(),
-            ], 400);
-        } catch (Exception $e) {
-            return response()->jsonApi([
-                'title' => 'Referral code generate',
-                'message' => "There was an error while creating a referral code: " . $e->getMessage(),
             ], 400);
         }
     }
@@ -318,34 +303,45 @@ class ReferralCodeController extends Controller
     public function update(Request $request, $id): mixed
     {
         // Validate input data
-        $this->validate($request, ReferralCode::$rules);
+        $validator = Validator::make($request->all(), ReferralCode::$rules);
+
+        if ($validator->fails()) {
+            return response()->jsonApi([
+                'title' => 'Updating Referral code',
+                'message' => $validator->errors()->first()
+            ], 422);
+        }
 
         // Try to find referral code and update it
         try {
+            $code = ReferralCode::findOrFail($id);
 
-            DB::transaction(function () use ($request, $id) {
+            $code->update($request->all());
 
-                $code = ReferralCode::find($id);
 
-                $code->update($request->all());
 
-                ReferralCode::byOwner()->byApplication()->update([
-                    'is_default' => false,
-                ]);
+            ReferralCode::byOwner()->byApplication()->update([
+                'is_default' => false,
+            ]);
 
-                $this->setDefault($id);
-            });
+            $this->setDefault($id);
+
 
             // Send response
             return response()->jsonApi([
-                'title' => "Updating success",
+                'title' => 'Updating Referral code',
                 'message' => 'The referral code (link) has been successfully updated',
                 'data' => ReferralCode::find($id),
             ]);
+        } catch (ModelNotFoundException $e) {
+            return response()->jsonApi([
+                'title' => 'Updating Referral code',
+                'message' => 'Referral code not found',
+            ], 404);
         } catch (Exception $e) {
             return response()->jsonApi([
-                'title' => 'Referrals link not found',
-                'message' => "Referral code #{$id} updated error: " . $e->getMessage(),
+                'title' => 'Updating Referral code',
+                'message' => 'Referral code updated error: ' . $e->getMessage(),
             ], 404);
         }
     }
