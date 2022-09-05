@@ -60,7 +60,7 @@ class JoinNewUserRequestListener
 
         // Find Referrer ID by its referral code and application ID
         $parent_user_id = config('settings.empty_uuid');
-        if(isset($inputData->referral_code)){
+        if(isset($inputData->referral_code) && !empty($inputData->referral_code)){
             $parent = ReferralCode::query()
                 ->with('user')
                 ->byReferralCode($inputData->referral_code)
