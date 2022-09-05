@@ -27,14 +27,11 @@ class ReferralCodeController extends Controller
      * @OA\Get(
      *     path="/referral-codes",
      *     description="Get all user's referral codes and links",
-     *     tags={"Referral Code"},
+     *     tags={"Application | Referral Codes"},
      *
      *     security={{
-     *         "default": {
-     *             "ManagerRead",
-     *             "User",
-     *             "ManagerWrite"
-     *         }
+     *         "bearerAuth": {},
+     *         "apiKey": {}
      *     }},
      *
      *     @OA\Parameter(
@@ -90,14 +87,11 @@ class ReferralCodeController extends Controller
      *     path="/referral-codes",
      *     summary="Create link and code for an existing user",
      *     description="Create link and code for an existing user",
-     *     tags={"Referral Code"},
+     *     tags={"Application | Referral Codes"},
      *
      *     security={{
-     *         "default": {
-     *             "ManagerRead",
-     *             "User",
-     *             "ManagerWrite"
-     *         }
+     *         "bearerAuth": {},
+     *         "apiKey": {}
      *     }},
      *
      *     @OA\RequestBody(
@@ -209,14 +203,11 @@ class ReferralCodeController extends Controller
      * @OA\Get(
      *     path="/referral-codes/{id}",
      *     description="Show referral code and link",
-     *     tags={"Referral Code"},
+     *     tags={"Application | Referral Codes"},
      *
      *     security={{
-     *          "default":{
-     *              "ManagerRead",
-     *              "User",
-     *              "ManagerWrite"
-     *           }
+     *         "bearerAuth": {},
+     *         "apiKey": {}
      *     }},
      *
      *     @OA\Parameter(
@@ -268,14 +259,11 @@ class ReferralCodeController extends Controller
      * @OA\Put(
      *     path="/referral-codes/{id}",
      *     description="Update referral code and link",
-     *     tags={"Referral Code"},
+     *     tags={"Application | Referral Codes"},
      *
      *     security={{
-     *          "default":{
-     *              "ManagerRead",
-     *              "User",
-     *              "ManagerWrite"
-     *          },
+     *         "bearerAuth": {},
+     *         "apiKey": {}
      *     }},
      *
      *     @OA\Parameter(
@@ -368,14 +356,11 @@ class ReferralCodeController extends Controller
      * @OA\Delete(
      *     path="/referral-codes/{id}",
      *     description="Delete referral code",
-     *     tags={"Referral Code"},
+     *     tags={"Application | Referral Codes"},
      *
      *     security={{
-     *         "default": {
-     *             "ManagerRead",
-     *             "User",
-     *             "ManagerWrite"
-     *         },
+     *         "bearerAuth": {},
+     *         "apiKey": {}
      *     }},
      *
      *     @OA\Parameter(
@@ -440,14 +425,11 @@ class ReferralCodeController extends Controller
      * @OA\Put(
      *     path="/referral-codes/{id}/default",
      *     description="Set new referral code and link",
-     *     tags={"Referral Code"},
+     *     tags={"Application | Referral Codes"},
      *
      *     security={{
-     *          "default":{
-     *              "ManagerRead",
-     *              "User",
-     *              "ManagerWrite"
-     *           }
+     *         "bearerAuth": {},
+     *         "apiKey": {}
      *     }},
      *
      *     @OA\Parameter(

@@ -23,14 +23,11 @@ class SummaryController extends Controller
      * @OA\Get(
      *     path="/summary",
      *     description="Get referral programm summary",
-     *     tags={"Summary"},
+     *     tags={"Application | Summary"},
      *
      *     security={{
-     *         "default": {
-     *             "ManagerRead",
-     *             "User",
-     *             "ManagerWrite"
-     *         }
+     *         "bearerAuth": {},
+     *         "apiKey": {}
      *     }},
      *
      *     @OA\Response(

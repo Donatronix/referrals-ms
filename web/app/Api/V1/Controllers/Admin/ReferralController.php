@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\Validator;
  */
 class ReferralController extends Controller
 {
-
     /**
      * Get the total earnings
      *
@@ -23,14 +22,11 @@ class ReferralController extends Controller
      *     path="/wallets/total-earnings",
      *     summary="Get total earnings",
      *     description="Get total earnings",
-     *     tags={"Referrals"},
+     *     tags={"Admin | Referrals"},
      *
      *     security={{
-     *         "default": {
-     *             "ManagerRead",
-     *             "Reward",
-     *             "ManagerWrite"
-     *         }
+     *         "bearerAuth": {},
+     *         "apiKey": {}
      *     }},
      *
      *     @OA\Parameter(

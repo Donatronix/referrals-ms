@@ -25,14 +25,11 @@ class TransactionsController extends Controller
      * @OA\Get(
      *     path="/admin/transactions",
      *     description="Get all transactions",
-     *     tags={"Admin / Transactions"},
+     *     tags={"Admin | Transactions"},
      *
      *     security={{
-     *          "default" :{
-     *              "ManagerRead",
-     *              "Transaction",
-     *              "ManagerWrite"
-     *          },
+     *         "bearerAuth": {},
+     *         "apiKey": {}
      *     }},
      *
      *     @OA\Response(
@@ -159,14 +156,11 @@ class TransactionsController extends Controller
      * @OA\Get(
      *     path="/admin/transactions/{id}",
      *     description="Get transaction by id",
-     *     tags={"Admin / Transactions"},
+     *     tags={"Admin | Transactions"},
      *
      *     security={{
-     *          "default" :{
-     *              "ManagerRead",
-     *              "Transaction",
-     *              "ManagerWrite"
-     *          },
+     *         "bearerAuth": {},
+     *         "apiKey": {}
      *     }},
      *
      *     @OA\Response(
@@ -298,13 +292,11 @@ class TransactionsController extends Controller
      *     path="/admin/transactions",
      *     summary="Create new transaction",
      *     description="Create new transaction",
-     *     tags={"Admin / Transactions"},
+     *     tags={"Admin | Transactions"},
      *
      *     security={{
-     *         "passport": {
-     *             "ManagerRead",
-     *             "ManagerWrite"
-     *         }
+     *         "bearerAuth": {},
+     *         "apiKey": {}
      *     }},
      *
      *     @OA\Parameter(
@@ -397,13 +389,11 @@ class TransactionsController extends Controller
      *     path="/admin/transactions/{id}",
      *     summary="update user",
      *     description="update user",
-     *     tags={"Admin / Transactions"},
+     *     tags={"Admin | Transactions"},
      *
      *     security={{
-     *         "passport": {
-     *             "ManagerRead",
-     *             "ManagerWrite"
-     *         }
+     *         "bearerAuth": {},
+     *         "apiKey": {}
      *     }},
      *
      *     @OA\Parameter(
@@ -563,14 +553,11 @@ class TransactionsController extends Controller
      * @OA\Delete(
      *     path="/admin/transactions/{id}",
      *     description="Delete transaction",
-     *     tags={"Admin / Transactions"},
+     *     tags={"Admin | Transactions"},
      *
      *     security={{
-     *          "default" :{
-     *              "ManagerRead",
-     *              "transaction",
-     *              "ManagerWrite"
-     *          },
+     *         "bearerAuth": {},
+     *         "apiKey": {}
      *     }},
      *
      *     @OA\Parameter(

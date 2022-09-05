@@ -25,11 +25,8 @@ class LandingPageController extends Controller
      *     tags={"Landing pages"},
      *
      *     security={{
-     *         "default": {
-     *             "ManagerRead",
-     *             "User",
-     *             "ManagerWrite"
-     *         }
+     *         "bearerAuth": {},
+     *         "apiKey": {}
      *     }},
      *
      *     @OA\Response(
@@ -81,11 +78,8 @@ class LandingPageController extends Controller
      *     tags={"Landing pages"},
      *
      *     security={{
-     *         "default": {
-     *             "ManagerRead",
-     *             "User",
-     *             "ManagerWrite"
-     *         }
+     *         "bearerAuth": {},
+     *         "apiKey": {}
      *     }},
      *
      *     @OA\RequestBody(

@@ -22,15 +22,7 @@ class ReferralController extends Controller
      *     path="/webhooks/total-earnings",
      *     summary="Get total earnings",
      *     description="Get total earnings",
-     *     tags={"Webhooks"},
-     *
-     *     security={{
-     *         "default": {
-     *             "ManagerRead",
-     *             "Reward",
-     *             "ManagerWrite"
-     *         }
-     *     }},
+     *     tags={"Webhooks | Referrals"},
      *
      *     @OA\Response(
      *         response="200",

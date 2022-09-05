@@ -15,20 +15,12 @@ class LeaderboardController extends Controller
     use LeaderboardTrait;
 
     /**
-     *  Get platform earnings for user
+     * Get platform earnings for user
      *
      * @OA\Get(
      *     path="/webhooks/leaderboard/overview-earnings/{id}",
      *     description="A list of leaders in the invitation referrals",
-     *     tags={"Webhooks"},
-     *
-     *     security={{
-     *         "default" :{
-     *             "ManagerRead",
-     *             "User",
-     *             "ManagerWrite"
-     *         }
-     *     }},
+     *     tags={"Webhooks | Leaderboard"},
      *
      *     @OA\Parameter(
      *         name="id",
@@ -36,7 +28,7 @@ class LeaderboardController extends Controller
      *         description="User id",
      *         @OA\Schema(
      *             type="string"
-     *         ),
+     *         )
      *     ),
      *
      *     @OA\Response(
@@ -48,42 +40,42 @@ class LeaderboardController extends Controller
      *                 property="data",
      *                 type="object",
      *                 @OA\Property(
-     *                      property="overview_earnings",
-     *                      type="string",
-     *                      description="total earnings per platform and number of users",
-     *                      example=450000,
-     *                 ),
-     *                  @OA\Property(
-     *                      property="subTotalPlatformInvitedUsers",
-     *                      type="integer",
-     *                      description="Subtotal of number of platform users",
-     *                      example="300",
+     *                     property="overview_earnings",
+     *                     type="string",
+     *                     description="total earnings per platform and number of users",
+     *                     example=450000
      *                 ),
      *                 @OA\Property(
-     *                      property="subTotalEarnings",
-     *                      type="string",
-     *                      description="Total earnings on all platforms",
-     *                      example="WhatsApp",
+     *                     property="subTotalPlatformInvitedUsers",
+     *                     type="integer",
+     *                     description="Subtotal of number of platform users",
+     *                     example="300"
      *                 ),
-     *             ),
-     *         ),
+     *                 @OA\Property(
+     *                     property="subTotalEarnings",
+     *                     type="string",
+     *                     description="Total earnings on all platforms",
+     *                     example="WhatsApp"
+     *                 )
+     *             )
+     *         )
      *     ),
      *     @OA\Response(
-     *          response="401",
-     *          description="Unauthorized"
+     *         response="401",
+     *         description="Unauthorized"
      *     ),
      *     @OA\Response(
      *         response=400,
      *         description="Invalid request"
      *     ),
      *     @OA\Response(
-     *          response="404",
-     *          description="User not found",
+     *         response="404",
+     *         description="User not found",
      *     ),
      *     @OA\Response(
      *         response="500",
      *         description="Unknown error"
-     *     ),
+     *     )
      * )
      *
      * @param $id

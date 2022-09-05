@@ -23,14 +23,11 @@ class UsersController extends Controller
      * @OA\Get(
      *     path="/admin/referrals-list",
      *     description="Get referral users",
-     *     tags={"Admin"},
+     *     tags={"Admin | Referrals"},
      *
      *     security={{
-     *         "default": {
-     *             "ManagerRead",
-     *             "User",
-     *             "ManagerWrite"
-     *         }
+     *         "bearerAuth": {},
+     *         "apiKey": {}
      *     }},
      *
      *     @OA\Parameter(
@@ -153,14 +150,11 @@ class UsersController extends Controller
      *     path="/admin/referrals-list/{id}",
      *     summary="Get detail info about user",
      *     description="Get detail info about user",
-     *     tags={"Admin"},
+     *     tags={"Admin | Referrals"},
      *
      *     security={{
-     *         "default": {
-     *             "ManagerRead",
-     *             "User",
-     *             "ManagerWrite"
-     *         }
+     *         "bearerAuth": {},
+     *         "apiKey": {}
      *     }},
      *
      *     @OA\Parameter(

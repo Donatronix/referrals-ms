@@ -14,20 +14,12 @@ class LeaderboardController extends Controller
     use LeaderboardTrait;
 
     /**
-     *  A list of leaders in the invitation referrals
+     * A list of leaders in the invitation referrals
      *
      * @OA\Get(
      *     path="/subscribers/leaderboard",
      *     description="A list of leaders in the invitation referrals",
-     *     tags={"Public Leaderboard"},
-     *
-     *     security={{
-     *         "default" :{
-     *             "ManagerRead",
-     *             "User",
-     *             "ManagerWrite"
-     *         }
-     *     }},
+     *     tags={"Public | Leaderboard"},
      *
      *     @OA\Parameter(
      *         name="limit",
@@ -35,7 +27,7 @@ class LeaderboardController extends Controller
      *         description="Limit leaderboard of page",
      *         @OA\Schema(
      *             type="number"
-     *         ),
+     *         )
      *     ),
      *
      *     @OA\Parameter(
@@ -44,7 +36,7 @@ class LeaderboardController extends Controller
      *         description="How to filter data: today, this week, this month, this year",
      *         @OA\Schema(
      *             type="string"
-     *         ),
+     *         )
      *     ),
      *
      *     @OA\Parameter(
@@ -53,7 +45,7 @@ class LeaderboardController extends Controller
      *         description="Filter results by country",
      *         @OA\Schema(
      *             type="string"
-     *         ),
+     *         )
      *     ),
      *     @OA\Parameter(
      *         name="page",
@@ -61,7 +53,7 @@ class LeaderboardController extends Controller
      *         description="Count leaderboard of page",
      *         @OA\Schema(
      *             type="number"
-     *         ),
+     *         )
      *     ),
      *     @OA\Parameter(
      *         name="graph_filtr",
@@ -69,7 +61,7 @@ class LeaderboardController extends Controller
      *         description="Sort option for the graph. Possible values: week, month, year",
      *         @OA\Schema(
      *             type="string",
-     *         ),
+     *         )
      *     ),
      *
      *     @OA\Response(
@@ -99,83 +91,83 @@ class LeaderboardController extends Controller
      *                     example="Lonzo",
      *                 ),
      *                 @OA\Property(
-     *                      property="amount",
-     *                      type="integer",
-     *                      description="Number of invited users",
-     *                      example=100,
+     *                     property="amount",
+     *                     type="integer",
+     *                     description="Number of invited users",
+     *                     example=100,
      *                 ),
      *                 @OA\Property(
-     *                      property="reward",
-     *                      type="double",
-     *                      description="Amount of remuneration",
-     *                      example=50.50,
+     *                     property="reward",
+     *                     type="double",
+     *                     description="Amount of remuneration",
+     *                     example=50.50,
      *                 ),
      *                 @OA\Property(
-     *                      property="is_current",
-     *                      type="boolean",
-     *                      description="Determine the user who made the request",
-     *                 ),
+     *                     property="is_current",
+     *                     type="boolean",
+     *                     description="Determine the user who made the request",
+     *                 )
      *             ),
      *             @OA\Property(
      *                 property="informer",
      *                 type="object",
      *                 @OA\Property(
-     *                      property="rank",
-     *                      type="integer",
-     *                      description="User rating place",
-     *                      example=1000000000,
+     *                     property="rank",
+     *                     type="integer",
+     *                     description="User rating place",
+     *                     example=1000000000
      *                 ),
      *                 @OA\Property(
-     *                      property="reward",
-     *                      type="integer",
-     *                      description="How much user earned",
-     *                      example=7,
+     *                     property="reward",
+     *                     type="integer",
+     *                     description="How much user earned",
+     *                     example=7
      *                 ),
      *                 @OA\Property(
-     *                      property="growth_this_month",
-     *                      type="integer",
-     *                      description="",
-     *                      example=100000,
-     *                 ),
+     *                     property="growth_this_month",
+     *                     type="integer",
+     *                     description="",
+     *                     example=100000
+     *                 )
      *             ),
      *             @OA\Property(
      *                 property="leaderboard",
      *                 type="object",
      *                 @OA\Property(
-     *                      property="rank",
-     *                      type="integer",
-     *                      description="User ranking place",
-     *                      example=1,
-     *                 ),
-     *                  @OA\Property(
-     *                      property="name",
-     *                      type="string",
-     *                      description="User name",
-     *                      example="Vsaya",
-     *                 ),
-     *                  @OA\Property(
-     *                      property="channels",
-     *                      type="string",
-     *                      description="Platform used for referral",
-     *                      example="WhatsApp",
+     *                     property="rank",
+     *                     type="integer",
+     *                     description="User ranking place",
+     *                     example=1
      *                 ),
      *                 @OA\Property(
-     *                      property="invitees",
-     *                      type="integer",
-     *                      description="Number of invited users",
-     *                      example=10,
+     *                     property="name",
+     *                     type="string",
+     *                     description="User name",
+     *                     example="Vsaya"
      *                 ),
      *                 @OA\Property(
-     *                      property="Country",
-     *                      type="string",
-     *                      description="User country",
-     *                      example="Ukraine",
+     *                     property="channels",
+     *                     type="string",
+     *                     description="Platform used for referral",
+     *                     example="WhatsApp"
      *                 ),
      *                 @OA\Property(
-     *                      property="growth_this_month",
-     *                      type="integer",
-     *                      description="",
-     *                      example=100000,
+     *                     property="invitees",
+     *                     type="integer",
+     *                     description="Number of invited users",
+     *                     example=10
+     *                 ),
+     *                 @OA\Property(
+     *                     property="Country",
+     *                     type="string",
+     *                     description="User country",
+     *                     example="Ukraine"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="growth_this_month",
+     *                     type="integer",
+     *                     description="",
+     *                     example=100000
      *                 )
      *             )
      *         )

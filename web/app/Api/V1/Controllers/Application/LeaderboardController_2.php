@@ -23,14 +23,11 @@ class LeaderboardController_2 extends Controller
      * @ OA \Get(
      *     path="/leaderboard",
      *     description="A list of leaders in the invitation referrals",
-     *     tags={"Leaderboard"},
+     *     tags={"Application | Leaderboard"},
      *
      *     security={{
-     *         "default" :{
-     *             "ManagerRead",
-     *             "User",
-     *             "ManagerWrite"
-     *         }
+     *         "bearerAuth": {},
+     *         "apiKey": {}
      *     }},
      *
      *     @ OA \Parameter(
@@ -241,14 +238,11 @@ class LeaderboardController_2 extends Controller
      * @ OA \Get(
      *     path="/invited-users/{id}",
      *     description="A list of leaders in the invitation referrals",
-     *     tags={"Invited Users"},
+     *     tags={"Application | Invited Users"},
      *
      *     security={{
-     *         "default" :{
-     *             "ManagerRead",
-     *             "User",
-     *             "ManagerWrite"
-     *         }
+     *         "bearerAuth": {},
+     *         "apiKey": {}
      *     }},
      *
      *     @ OA \Parameter(

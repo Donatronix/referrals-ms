@@ -18,14 +18,11 @@ class PromoCodeController extends Controller
      * @OA\Get(
      *     path="/promo-codes/generate",
      *     description="Show promo code",
-     *     tags={"Promo Code"},
+     *     tags={"Application | Promo Code"},
      *
      *     security={{
-     *          "default":{
-     *              "ManagerRead",
-     *              "User",
-     *              "ManagerWrite"
-     *           }
+     *         "bearerAuth": {},
+     *         "apiKey": {}
      *     }},
      *
      *     @OA\Parameter(
@@ -104,14 +101,11 @@ class PromoCodeController extends Controller
      * @OA\Post(
      *     path="/promo-codes/validate",
      *     description="Validate promo code",
-     *     tags={"Promo Code"},
+     *     tags={"Application | Promo Code"},
      *
      *     security={{
-     *          "default":{
-     *              "ManagerRead",
-     *              "User",
-     *              "ManagerWrite"
-     *           }
+     *         "bearerAuth": {},
+     *         "apiKey": {}
      *     }},
      *
      *     @OA\Parameter(

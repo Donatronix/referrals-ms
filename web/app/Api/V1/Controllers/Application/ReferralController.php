@@ -29,14 +29,11 @@ class ReferralController extends Controller
      *     path="/referrals",
      *     summary="List all referrals for current user",
      *     description="List all referrals for current user",
-     *     tags={"Referrals"},
+     *     tags={"Application | Referrals"},
      *
      *     security={{
-     *         "default": {
-     *             "ManagerRead",
-     *             "User",
-     *             "ManagerWrite"
-     *         }
+     *         "bearerAuth": {},
+     *         "apiKey": {}
      *     }},
      *
      *     @OA\Parameter(
@@ -116,23 +113,12 @@ class ReferralController extends Controller
      *     path="/referrals/{user_id}",
      *     summary="Get who referred a user",
      *     description="Return who referred a user",
-     *     tags={"Referrals"},
+     *     tags={"Application | Referrals"},
      *
      *     security={{
-     *         "default": {
-     *             "ManagerRead",
-     *             "User",
-     *             "ManagerWrite"
-     *         }
+     *         "bearerAuth": {},
+     *         "apiKey": {}
      *     }},
-     *     x={
-     *         "auth-type": "Application & Application User",
-     *         "throttling-tier": "Unlimited",
-     *         "wso2-application-security": {
-     *             "security-types": {"oauth2"},
-     *             "optional": "false"
-     *         }
-     *     },
      *
      *     @OA\Parameter(
      *         name="user_id",
@@ -196,14 +182,11 @@ class ReferralController extends Controller
      *     path="/referrals",
      *     summary="Joining a new user to the referral program in the presence of the referral code of the inviter",
      *     description="Joining a new user to the referral program in the presence of the referral code of the inviter",
-     *     tags={"Referrals"},
+     *     tags={"Application | Referrals"},
      *
      *     security={{
-     *         "default": {
-     *             "ManagerRead",
-     *             "User",
-     *             "ManagerWrite"
-     *         }
+     *         "bearerAuth": {},
+     *         "apiKey": {}
      *     }},
      *
      *     @OA\RequestBody(
