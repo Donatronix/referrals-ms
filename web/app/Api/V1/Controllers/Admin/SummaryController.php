@@ -6,10 +6,10 @@
     use App\Models\ReferralCode;
     use App\Models\Total;
     use App\Models\User;
+    use App\Traits\RankingsTrait;
     use Illuminate\Database\Eloquent\Builder;
     use Illuminate\Database\Eloquent\Collection;
     use Illuminate\Http\Request;
-    use Illuminate\Support\Facades\DB;
     use Throwable;
 
     /**
@@ -19,6 +19,8 @@
      */
     class SummaryController extends Controller
     {
+        use RankingsTrait;
+
         /**
          * @var Builder[]|Collection|\Illuminate\Support\Collection
          */
@@ -29,7 +31,7 @@
          */
         public function __construct()
         {
-            $this->rankings = $this->getRankings();
+            $this->rankings = self::getRankings();
         }
 
         /**
@@ -124,7 +126,7 @@
         {
             try {
 
-                $referrers = User::whereNotNull('referrer_id')->distinct('referrer_id')->select('referrer_id')->get();
+                $referrers = User::query()->whereNotNull('referrer_id')->distinct('referrer_id')->select('referrer_id')->get();
 
                 $retVal = $referrers->map(function ($referrer) {
                     $user = User::query()->where('id', $referrer->referrer_id)->first();
@@ -136,14 +138,15 @@
                         'totalCodesGenerated' => ReferralCode::query()->where('user_id', $referrer->referrer_id)->count(),
                         'amountEarned' => Total::query()->where('user_id', $referrer->referrer_id)->sum('reward'),
                         'topReferralBonus' => $this->topReferralBonus(),
-                        'rank' => $this->rankings->first(function ($value, $key) use ($user) {
+                        'rank' => $this->rankings->first(function ($value) use ($user) {
                             return $value['user_id'] === $user->id;
-                        }),
+                        })['rank'],
                     ];
                 });
 
                 $summary = collect($retVal)->sortByDesc('rank')
-                    ->values()->map(function ($item, $key) {
+                    ->values()
+                    ->map(function ($item) {
                         return $item;
                     });
 
@@ -160,38 +163,5 @@
                     'message' => $e->getMessage(),
                 ], 404);
             }
-        }
-
-        /**
-         * @return mixed
-         */
-        protected function topReferralBonus(): mixed
-        {
-            return $this->rankings->first()['reward'];
-        }
-
-        /**
-         * @return \Illuminate\Support\Collection
-         */
-        protected function getRankings(): \Illuminate\Support\Collection
-        {
-            $users = DB::table('totals')->distinct('user_id')->get('user_id');
-            $retVal = $users->map(function ($item) {
-                return [
-                    'user_id' => $item->user_id,
-                    'reward' => Total::query()->where('user_id', $item->user_id)->sum('reward'),
-                ];
-            });
-
-            return collect($retVal)
-                ->sortByDesc('reward')
-                ->values()
-                ->map(function ($item, $key) {
-                    return [
-                        'user_id' => $item['user_id'],
-                        'rank' => $key + 1,
-                        'reward' => $item['reward'],
-                    ];
-                });
         }
     }
